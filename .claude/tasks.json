@@ -1,0 +1,98 @@
+{
+  "project": {
+    "name": "RPGGame",
+    "type": "Phaser 3 RPG",
+    "startDate": "2025-10-18",
+    "currentBranch": "feature/title-screen-and-pause-menu"
+  },
+  "latestUpdate": "2026-02-23",
+  "status": "Gameflowエディタ（Blueprint風ノードエディタ）実装完了。BGMマップ再生バグ3件修正済み（stopAll削除・fade:0即時再生・destroy()リスナー特定削除）。テスト未実施。",
+  "completedFeatures": [
+    "タイトル画面実装",
+    "ポーズメニュー実装",
+    "BGM管理システム",
+    "タッチ操作対応（仮想ジョイスティック・攻撃ボタン）",
+    "ボスバトルシステム",
+    "ストーリーシステム",
+    "ゲーム状態管理システム",
+    "ゲームフロー一元管理システム（gameflow.json + GameFlowManager）",
+    "Gameflowエディタ（tools/gameflow-editor/ - Blueprint風ノードエディタ）"
+  ],
+  "resolvedIssues": [
+    {
+      "issue": "古いコンパイル済みJSファイル問題",
+      "description": "src/フォルダに残った.js/.js.mapファイルがViteに優先読み込みされた",
+      "solution": "find src -name '*.js' -delete で全削除",
+      "resolvedDate": "2025-11-16"
+    },
+    {
+      "issue": "ストーリー終了後のシーン遷移",
+      "description": "clear.json/gameover.jsonのreturnToが'game'になっていた",
+      "solution": "returnToを'title'に変更",
+      "resolvedDate": "2025-11-16"
+    },
+    {
+      "issue": "ポーズメニューの位置ずれ",
+      "description": "プレイヤー位置によってポーズメニューの位置が変わる",
+      "solution": "PauseMenuのcontainerにsetScrollFactor(0)を追加",
+      "resolvedDate": "2025-11-16"
+    },
+    {
+      "issue": "ポーズメニューのボタン当たり判定ずれ",
+      "description": "ボタンの表示位置と当たり判定がずれて押せない",
+      "solution": "scrollFactorを廃止し、show()時にカメラ位置に合わせて動的配置に変更",
+      "resolvedDate": "2025-11-16"
+    },
+    {
+      "issue": "タイトル画面の表示問題",
+      "description": "ゲームクリア/オーバー後、タイトル画面に遷移するが背景とボタンが表示されない（画面真っ黒）",
+      "rootCause": "Phaserのシーン描画順の問題。MainSceneがpause()で一時停止中のまま残り、TitleSceneより前面（index 2 > index 1）に黒く描画されていた",
+      "solution": "StoryScene.endStory()でTitleScene遷移前にscene.isPaused('MainScene')を確認し、pausedならscene.stop('MainScene')で完全停止。TitleScene.create()にもカメラリセット（stopFollow/setScroll/removeBounds/resetFX）を追加",
+      "resolvedDate": "2026-02-18"
+    }
+  ],
+  "currentIssues": [
+    {
+      "issue": "BGMマップ再生バグ修正のテスト未実施",
+      "description": "StoryScene.stopAll()削除・BGMManager.fade:0・destroy()リスナー修正を実装済みだが、動作確認が次回セッション待ち"
+    }
+  ],
+  "recentWork_2026_02_23": [
+    {
+      "task": "Gameflowエディタ実装",
+      "description": "tools/gameflow-editor/ にBlueprint風ノードエディタを新規作成。index.html/style.css/editor.js (Vanilla JS, Catppuccin Mocha)。gameflow.jsonのOpen/Save、ノードドラッグ・ポート接続・プロパティパネル・パン/ズーム対応",
+      "status": "completed"
+    },
+    {
+      "task": "BGMマップ再生バグ修正（3件）",
+      "description": "①StoryScene.initializeStory()のthis.sound.stopAll()を削除（マップBGMを強制停止していた）②BGMManager.playMapBGMをfade:0に変更（volume:0+tween方式はシーンpause中に機能しない）③BGMManager.destroy()をevents.off(event, callback)に変更（全リスナー削除バグ修正）",
+      "status": "completed_untested"
+    }
+  ],
+  "recentWork_2026_02_22": [
+    {
+      "task": "ゲームフロー一元管理システム実装",
+      "description": "gameflow.json・GameFlowTypes.ts・GameFlowManager.tsを新規作成。マップ別イベントトリガー・死亡/クリアシナリオ・onEnterをJSONで一元管理。ThenAction（stay/exit/goto_map）でストーリー後の遷移を制御",
+      "status": "completed"
+    },
+    {
+      "task": "BGMマップ再生バグ修正",
+      "description": "BGMManagerが'story-end'（ハイフン）を待っていたが、StorySceneが発火するのは'story:end'（コロン）だった。イベント名を統一してマップBGMが再生されるよう修正",
+      "status": "completed"
+    },
+    {
+      "task": "2回目プレイ時マップ読み込みバグ修正",
+      "description": "Phaserシーン再起動時にコンストラクタが再呼び出しされないため、this.wallsに前回プレイのシャットダウン済みStaticGroupが残存。switchMap()でclear()呼び出し時にクラッシュしマップが表示されなかった。walls型をoptionalに変更しcreate()でリセット",
+      "status": "completed"
+    }
+  ],
+  "mainDocuments": [
+    "PROJECT_STRUCTURE_AND_SPEC.md - メインの仕様・構成ドキュメント",
+    "PROGRESS_LOG.md - 最新の開発進捗（2025-11-16更新）",
+    "test_11_16.txt - 最新のテスト結果",
+    "README.md - 起動方法とアニメ仕様",
+    "ANIMATION_SPRITES_UPDATE.md - スプライト/アニメ定義",
+    "ENEMY_UPDATE_SPEC.md - 敵AI仕様",
+    "PROGRESS_BOSS_IMPLEMENTATION.md - ボス実装進捗"
+  ]
+}
