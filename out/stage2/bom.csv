@@ -1,0 +1,23 @@
+﻿Refs,Qty,Name,Value,MPN,Manufacturer,Package,UnitMass_g,Alternatives,Verify,Search
+C1 C2,2,積層セラミックコンデンサ 47 µF 6.3 V X5R 1206,47 µF,GRM31CR60J476ME19L,Murata,C1206,0.03,Samsung Electro-Mechanics CL シリーズ同等品 / TDK C シリーズ同等品,,https://www.digikey.jp/ja/products/result?keywords=GRM31CR60J476ME19L
+C3 C7,2,積層セラミックコンデンサ 1 µF 10 V X5R 0603,1 µF,GRM188R61A105KA61D,Murata,C0603,0.005,Samsung Electro-Mechanics CL シリーズ同等品 / TDK C シリーズ同等品,,https://www.digikey.jp/ja/products/result?keywords=GRM188R61A105KA61D
+C4 C5,2,積層セラミックコンデンサ 10 µF 10 V X5R 0805,10 µF,GRM21BR61A106KE19L,Murata,C0805,0.012,Samsung Electro-Mechanics CL シリーズ同等品 / TDK C シリーズ同等品,,https://www.digikey.jp/ja/products/result?keywords=GRM21BR61A106KE19L
+C6 C8 C9 C10 C11,5,積層セラミックコンデンサ 100 nF 16 V X7R 0603,100 nF,GRM188R71C104KA01D,Murata,C0603,0.005,Samsung Electro-Mechanics CL シリーズ同等品 / TDK C シリーズ同等品,,https://www.digikey.jp/ja/products/result?keywords=GRM188R71C104KA01D
+D1 D2 D3 D4,4,ショットキーダイオード 40 V 1 A（モータ還流用）,B5819W,B5819W,各社（汎用品）,SOD-123,0.01,各社 SS14 / onsemi MBR0540,,https://www.digikey.jp/ja/products/result?keywords=B5819W
+D5,1,チップ LED 赤 0603(1608),APT1608EC,APT1608EC,Kingbright,LED0603,0.003,ROHM SML-D12U1W,,https://www.digikey.jp/ja/products/result?keywords=APT1608EC
+H1 H2 H3 H4,4,M2 取付穴,—,—,—,MountHole-M2,0,,,
+J1,1,電池リード直付けパッド（2 極、20 AWG 用）,—,—,—,BatteryPad-2,0,J.S.T. Mfg. B2B-PH-K-S,,
+J2,1,フロー＋ToF モジュール用 JST SH 8 ピン（SMD）,SM08B-SRSS-TB(LF)(SN),SM08B-SRSS-TB(LF)(SN),J.S.T. Mfg.,JST-SH-8-SMD,0.1,各社 SH 互換 1.0 mm 8P,,https://www.digikey.jp/ja/products/result?keywords=SM08B-SRSS-TB(LF)(SN)
+J3 J4 J5 J6,4,モータ配線用スルーホールパッド（2 極）,—,—,—,MotorPad-2,0,,,
+J7,1,書込み用ピンヘッダ 1×6 2.54 mm（飛行時は未実装可）,PH-1x6 2.54mm,PH-1x6 2.54mm,各社（汎用品）,PinHeader-1x6-2.54,0.4,— ポゴピン治具,,https://www.digikey.jp/ja/products/result?keywords=PH-1x6
+Q1 Q2 Q3 Q4,4,N-ch MOSFET 30 V 5.7 A（ロジックレベル）,AO3400A,AO3400A,Alpha & Omega Semiconductor,SOT-23,0.008,Vishay SI2302CDS / Diodes Inc. DMG3420U,,https://www.digikey.jp/ja/products/result?keywords=AO3400A
+R1 R2 R6 R8 R10 R12,6,チップ抵抗 10kΩ 1% 0603(1608),10kΩ,RC0603FR-0710KL,Yageo,R0603,0.002,Panasonic ERJ-3EKF10KV 相当 / KOA RK73H1JTTD 相当,,https://www.digikey.jp/ja/products/result?keywords=RC0603FR-0710KL
+R3 R4,2,チップ抵抗 4.7kΩ 1% 0603(1608),4.7kΩ,RC0603FR-074K7L,Yageo,R0603,0.002,Panasonic ERJ-3EKF4K7V 相当 / KOA RK73H1JTTD 相当,,https://www.digikey.jp/ja/products/result?keywords=RC0603FR-074K7L
+R5 R7 R9 R11,4,チップ抵抗 47Ω 1% 0603(1608),47Ω,RC0603FR-0747RL,Yageo,R0603,0.002,Panasonic ERJ-3EKF47RV 相当 / KOA RK73H1JTTD 相当,,https://www.digikey.jp/ja/products/result?keywords=RC0603FR-0747RL
+R13 R14,2,チップ抵抗 100kΩ 1% 0603(1608),100kΩ,RC0603FR-07100KL,Yageo,R0603,0.002,Panasonic ERJ-3EKF100KV 相当 / KOA RK73H1JTTD 相当,,https://www.digikey.jp/ja/products/result?keywords=RC0603FR-07100KL
+R15,1,チップ抵抗 1kΩ 1% 0603(1608),1kΩ,RC0603FR-071KL,Yageo,R0603,0.002,Panasonic ERJ-3EKF1KV 相当 / KOA RK73H1JTTD 相当,,https://www.digikey.jp/ja/products/result?keywords=RC0603FR-071KL
+SW1 SW2,2,タクトスイッチ 3×4 mm（SMD）,TS-1187A-B-A-B,TS-1187A-B-A-B,XKB Connection,Tact-3x4-SMD,0.05,Alps Alpine SKRPACE010,,https://www.digikey.jp/ja/products/result?keywords=TS-1187A-B-A-B
+U1,1,3.3 V LDO レギュレータ 1 A,XC6220B331MR-G,XC6220B331MR-G,Torex,SOT-23-5,0.015,Diodes Inc. AP2112K-3.3TRG1 / Microne ME6211C33M5G,SOT-25 のピン配置（VIN/VSS/CE/NC/VOUT）,https://www.digikey.jp/ja/products/result?keywords=XC6220B331MR-G
+U2,1,"Wi-Fi/BLE マイコンモジュール ESP32-S3（8MB Flash, PSRAM なし）",ESP32-S3-WROOM-1-N8,ESP32-S3-WROOM-1-N8,Espressif Systems,ESP32-S3-WROOM-1,3,Espressif Systems ESP32-S3-MINI-1-N8 / M5Stack M5Stamp S3 / STMicroelectronics STM32F405 + 外付け無線,モジュール寸法とパッド位置（1.27 mm ピッチ）、アンテナ禁止領域,https://www.digikey.jp/ja/products/result?keywords=ESP32-S3-WROOM-1-N8
+U3,1,6軸 IMU（ジャイロ＋加速度）,ICM-42688-P,ICM-42688-P,TDK InvenSense,LGA-14-2.5x3,0.02,Bosch Sensortec BMI270 / STMicroelectronics LSM6DSO,ピン番号と RESV ピンの処理、推奨デカップリング容量,https://www.digikey.jp/ja/products/result?keywords=ICM-42688-P
+U4,1,気圧センサ,BMP390,BMP390,Bosch Sensortec,LGA-10-2x2,0.01,Infineon DPS310 / STMicroelectronics LPS22HB,ピン配置と通気穴の向き,https://www.digikey.jp/ja/products/result?keywords=BMP390

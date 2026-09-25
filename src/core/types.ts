@@ -22,7 +22,11 @@ export interface MotorSpec {
   length: number;
   /** Shaft diameter [m]. */
   shaftDiameter: number;
+  /** Market availability (multi-vendor generic part = common). */
+  availability?: Availability;
 }
+
+export type Availability = 'common' | 'limited';
 
 export interface PropSpec {
   id: string;
@@ -39,6 +43,7 @@ export interface PropSpec {
   mass: number;
   /** Shaft bore [m]. */
   bore: number;
+  availability?: Availability;
 }
 
 export interface RotorSpec {

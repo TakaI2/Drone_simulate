@@ -1,0 +1,2186 @@
+{
+  "name": "Class A フライトコントローラ（4 ロータ）",
+  "components": [
+    {
+      "ref": "J1",
+      "part": "BatteryPad",
+      "mpn": "—",
+      "package": "BatteryPad-2",
+      "block": "power",
+      "pins": [
+        {
+          "num": "1",
+          "name": "BAT+",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "BAT-",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C1",
+      "part": "C1206-47u",
+      "mpn": "GRM31CR60J476ME19L",
+      "package": "C1206",
+      "block": "power",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C2",
+      "part": "C1206-47u",
+      "mpn": "GRM31CR60J476ME19L",
+      "package": "C1206",
+      "block": "power",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U1",
+      "part": "XC6220B331MR",
+      "mpn": "XC6220B331MR-G",
+      "package": "SOT-23-5",
+      "block": "power",
+      "pins": [
+        {
+          "num": "1",
+          "name": "VIN",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "VSS",
+          "net": "GND"
+        },
+        {
+          "num": "3",
+          "name": "CE",
+          "net": "VBAT"
+        },
+        {
+          "num": "4",
+          "name": "NC",
+          "net": null
+        },
+        {
+          "num": "5",
+          "name": "VOUT",
+          "net": "3V3"
+        }
+      ]
+    },
+    {
+      "ref": "C3",
+      "part": "C0603-1u",
+      "mpn": "GRM188R61A105KA61D",
+      "package": "C0603",
+      "block": "power",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C4",
+      "part": "C0805-10u",
+      "mpn": "GRM21BR61A106KE19L",
+      "package": "C0805",
+      "block": "power",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U2",
+      "part": "ESP32-S3-WROOM-1-N8",
+      "mpn": "ESP32-S3-WROOM-1-N8",
+      "package": "ESP32-S3-WROOM-1",
+      "block": "mcu",
+      "pins": [
+        {
+          "num": "1",
+          "name": "GND",
+          "net": "GND"
+        },
+        {
+          "num": "2",
+          "name": "3V3",
+          "net": "3V3"
+        },
+        {
+          "num": "3",
+          "name": "EN",
+          "net": "EN"
+        },
+        {
+          "num": "4",
+          "name": "IO4",
+          "net": "PWM1"
+        },
+        {
+          "num": "5",
+          "name": "IO5",
+          "net": "PWM2"
+        },
+        {
+          "num": "6",
+          "name": "IO6",
+          "net": "PWM3"
+        },
+        {
+          "num": "7",
+          "name": "IO7",
+          "net": "PWM4"
+        },
+        {
+          "num": "8",
+          "name": "IO15",
+          "net": null
+        },
+        {
+          "num": "9",
+          "name": "IO16",
+          "net": null
+        },
+        {
+          "num": "10",
+          "name": "IO17",
+          "net": null
+        },
+        {
+          "num": "11",
+          "name": "IO18",
+          "net": null
+        },
+        {
+          "num": "12",
+          "name": "IO8",
+          "net": "I2C_SDA"
+        },
+        {
+          "num": "13",
+          "name": "IO19",
+          "net": null
+        },
+        {
+          "num": "14",
+          "name": "IO20",
+          "net": null
+        },
+        {
+          "num": "15",
+          "name": "IO3",
+          "net": null
+        },
+        {
+          "num": "16",
+          "name": "IO46",
+          "net": null
+        },
+        {
+          "num": "17",
+          "name": "IO9",
+          "net": "IMU_INT"
+        },
+        {
+          "num": "18",
+          "name": "IO10",
+          "net": "IMU_CS"
+        },
+        {
+          "num": "19",
+          "name": "IO11",
+          "net": "SPI_MOSI"
+        },
+        {
+          "num": "20",
+          "name": "IO12",
+          "net": "SPI_SCK"
+        },
+        {
+          "num": "21",
+          "name": "IO13",
+          "net": "SPI_MISO"
+        },
+        {
+          "num": "22",
+          "name": "IO14",
+          "net": "FLOW_CS"
+        },
+        {
+          "num": "23",
+          "name": "IO21",
+          "net": "I2C_SCL"
+        },
+        {
+          "num": "24",
+          "name": "IO47",
+          "net": null
+        },
+        {
+          "num": "25",
+          "name": "IO48",
+          "net": null
+        },
+        {
+          "num": "26",
+          "name": "IO45",
+          "net": null
+        },
+        {
+          "num": "27",
+          "name": "IO0",
+          "net": "BOOT"
+        },
+        {
+          "num": "28",
+          "name": "IO35",
+          "net": null
+        },
+        {
+          "num": "29",
+          "name": "IO36",
+          "net": null
+        },
+        {
+          "num": "30",
+          "name": "IO37",
+          "net": null
+        },
+        {
+          "num": "31",
+          "name": "IO38",
+          "net": null
+        },
+        {
+          "num": "32",
+          "name": "IO39",
+          "net": null
+        },
+        {
+          "num": "33",
+          "name": "IO40",
+          "net": null
+        },
+        {
+          "num": "34",
+          "name": "IO41",
+          "net": null
+        },
+        {
+          "num": "35",
+          "name": "IO42",
+          "net": null
+        },
+        {
+          "num": "36",
+          "name": "RXD0",
+          "net": "RXD0"
+        },
+        {
+          "num": "37",
+          "name": "TXD0",
+          "net": "TXD0"
+        },
+        {
+          "num": "38",
+          "name": "IO2",
+          "net": "LED"
+        },
+        {
+          "num": "39",
+          "name": "IO1",
+          "net": "VBAT_SENSE"
+        },
+        {
+          "num": "40",
+          "name": "GND",
+          "net": "GND"
+        },
+        {
+          "num": "41",
+          "name": "EPAD",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C5",
+      "part": "C0805-10u",
+      "mpn": "GRM21BR61A106KE19L",
+      "package": "C0805",
+      "block": "mcu",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C6",
+      "part": "C0603-100n",
+      "mpn": "GRM188R71C104KA01D",
+      "package": "C0603",
+      "block": "mcu",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R1",
+      "part": "R0603-10kΩ",
+      "mpn": "RC0603FR-0710KL",
+      "package": "R0603",
+      "block": "mcu",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "EN"
+        }
+      ]
+    },
+    {
+      "ref": "C7",
+      "part": "C0603-1u",
+      "mpn": "GRM188R61A105KA61D",
+      "package": "C0603",
+      "block": "mcu",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "EN"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R2",
+      "part": "R0603-10kΩ",
+      "mpn": "RC0603FR-0710KL",
+      "package": "R0603",
+      "block": "mcu",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "BOOT"
+        }
+      ]
+    },
+    {
+      "ref": "U3",
+      "part": "ICM-42688-P",
+      "mpn": "ICM-42688-P",
+      "package": "LGA-14-2.5x3",
+      "block": "sensors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "AP_SDO",
+          "net": "SPI_MISO"
+        },
+        {
+          "num": "2",
+          "name": "RESV",
+          "net": null
+        },
+        {
+          "num": "3",
+          "name": "RESV",
+          "net": null
+        },
+        {
+          "num": "4",
+          "name": "INT1",
+          "net": "IMU_INT"
+        },
+        {
+          "num": "5",
+          "name": "VDDIO",
+          "net": "3V3"
+        },
+        {
+          "num": "6",
+          "name": "GND",
+          "net": "GND"
+        },
+        {
+          "num": "7",
+          "name": "RESV",
+          "net": null
+        },
+        {
+          "num": "8",
+          "name": "VDD",
+          "net": "3V3"
+        },
+        {
+          "num": "9",
+          "name": "INT2",
+          "net": null
+        },
+        {
+          "num": "10",
+          "name": "RESV",
+          "net": null
+        },
+        {
+          "num": "11",
+          "name": "RESV",
+          "net": null
+        },
+        {
+          "num": "12",
+          "name": "AP_CS",
+          "net": "IMU_CS"
+        },
+        {
+          "num": "13",
+          "name": "AP_SCLK",
+          "net": "SPI_SCK"
+        },
+        {
+          "num": "14",
+          "name": "AP_SDI",
+          "net": "SPI_MOSI"
+        }
+      ]
+    },
+    {
+      "ref": "C8",
+      "part": "C0603-100n",
+      "mpn": "GRM188R71C104KA01D",
+      "package": "C0603",
+      "block": "sensors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C9",
+      "part": "C0603-100n",
+      "mpn": "GRM188R71C104KA01D",
+      "package": "C0603",
+      "block": "sensors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "U4",
+      "part": "BMP390",
+      "mpn": "BMP390",
+      "package": "LGA-10-2x2",
+      "block": "sensors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "VDDIO",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "SCK",
+          "net": "I2C_SCL"
+        },
+        {
+          "num": "3",
+          "name": "VSS",
+          "net": "GND"
+        },
+        {
+          "num": "4",
+          "name": "SDI",
+          "net": "I2C_SDA"
+        },
+        {
+          "num": "5",
+          "name": "SDO",
+          "net": "GND"
+        },
+        {
+          "num": "6",
+          "name": "CSB",
+          "net": "3V3"
+        },
+        {
+          "num": "7",
+          "name": "INT",
+          "net": null
+        },
+        {
+          "num": "8",
+          "name": "VSS",
+          "net": "GND"
+        },
+        {
+          "num": "9",
+          "name": "VSS",
+          "net": "GND"
+        },
+        {
+          "num": "10",
+          "name": "VDD",
+          "net": "3V3"
+        }
+      ]
+    },
+    {
+      "ref": "C10",
+      "part": "C0603-100n",
+      "mpn": "GRM188R71C104KA01D",
+      "package": "C0603",
+      "block": "sensors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R3",
+      "part": "R0603-4.7kΩ",
+      "mpn": "RC0603FR-074K7L",
+      "package": "R0603",
+      "block": "sensors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "I2C_SDA"
+        }
+      ]
+    },
+    {
+      "ref": "R4",
+      "part": "R0603-4.7kΩ",
+      "mpn": "RC0603FR-074K7L",
+      "package": "R0603",
+      "block": "sensors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "I2C_SCL"
+        }
+      ]
+    },
+    {
+      "ref": "J2",
+      "part": "JST-SM08B-SRSS-TB",
+      "mpn": "SM08B-SRSS-TB(LF)(SN)",
+      "package": "JST-SH-8-SMD",
+      "block": "sensors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "3V3",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "GND",
+          "net": "GND"
+        },
+        {
+          "num": "3",
+          "name": "SCK",
+          "net": "SPI_SCK"
+        },
+        {
+          "num": "4",
+          "name": "MOSI",
+          "net": "SPI_MOSI"
+        },
+        {
+          "num": "5",
+          "name": "MISO",
+          "net": "SPI_MISO"
+        },
+        {
+          "num": "6",
+          "name": "CS",
+          "net": "FLOW_CS"
+        },
+        {
+          "num": "7",
+          "name": "SDA",
+          "net": "I2C_SDA"
+        },
+        {
+          "num": "8",
+          "name": "SCL",
+          "net": "I2C_SCL"
+        },
+        {
+          "num": "MP1",
+          "name": "MP",
+          "net": "GND"
+        },
+        {
+          "num": "MP2",
+          "name": "MP",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R5",
+      "part": "R0603-47Ω",
+      "mpn": "RC0603FR-0747RL",
+      "package": "R0603",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "PWM1"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GATE1"
+        }
+      ]
+    },
+    {
+      "ref": "R6",
+      "part": "R0603-10kΩ",
+      "mpn": "RC0603FR-0710KL",
+      "package": "R0603",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "GATE1"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "Q1",
+      "part": "AO3400A",
+      "mpn": "AO3400A",
+      "package": "SOT-23",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "G",
+          "net": "GATE1"
+        },
+        {
+          "num": "2",
+          "name": "S",
+          "net": "GND"
+        },
+        {
+          "num": "3",
+          "name": "D",
+          "net": "MOT1-"
+        }
+      ]
+    },
+    {
+      "ref": "D1",
+      "part": "B5819W",
+      "mpn": "B5819W",
+      "package": "SOD-123",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "K",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "A",
+          "net": "MOT1-"
+        }
+      ]
+    },
+    {
+      "ref": "J3",
+      "part": "MotorPad",
+      "mpn": "—",
+      "package": "MotorPad-2",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "M+",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "M-",
+          "net": "MOT1-"
+        }
+      ]
+    },
+    {
+      "ref": "R7",
+      "part": "R0603-47Ω",
+      "mpn": "RC0603FR-0747RL",
+      "package": "R0603",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "PWM2"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GATE2"
+        }
+      ]
+    },
+    {
+      "ref": "R8",
+      "part": "R0603-10kΩ",
+      "mpn": "RC0603FR-0710KL",
+      "package": "R0603",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "GATE2"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "Q2",
+      "part": "AO3400A",
+      "mpn": "AO3400A",
+      "package": "SOT-23",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "G",
+          "net": "GATE2"
+        },
+        {
+          "num": "2",
+          "name": "S",
+          "net": "GND"
+        },
+        {
+          "num": "3",
+          "name": "D",
+          "net": "MOT2-"
+        }
+      ]
+    },
+    {
+      "ref": "D2",
+      "part": "B5819W",
+      "mpn": "B5819W",
+      "package": "SOD-123",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "K",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "A",
+          "net": "MOT2-"
+        }
+      ]
+    },
+    {
+      "ref": "J4",
+      "part": "MotorPad",
+      "mpn": "—",
+      "package": "MotorPad-2",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "M+",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "M-",
+          "net": "MOT2-"
+        }
+      ]
+    },
+    {
+      "ref": "R9",
+      "part": "R0603-47Ω",
+      "mpn": "RC0603FR-0747RL",
+      "package": "R0603",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "PWM3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GATE3"
+        }
+      ]
+    },
+    {
+      "ref": "R10",
+      "part": "R0603-10kΩ",
+      "mpn": "RC0603FR-0710KL",
+      "package": "R0603",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "GATE3"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "Q3",
+      "part": "AO3400A",
+      "mpn": "AO3400A",
+      "package": "SOT-23",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "G",
+          "net": "GATE3"
+        },
+        {
+          "num": "2",
+          "name": "S",
+          "net": "GND"
+        },
+        {
+          "num": "3",
+          "name": "D",
+          "net": "MOT3-"
+        }
+      ]
+    },
+    {
+      "ref": "D3",
+      "part": "B5819W",
+      "mpn": "B5819W",
+      "package": "SOD-123",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "K",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "A",
+          "net": "MOT3-"
+        }
+      ]
+    },
+    {
+      "ref": "J5",
+      "part": "MotorPad",
+      "mpn": "—",
+      "package": "MotorPad-2",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "M+",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "M-",
+          "net": "MOT3-"
+        }
+      ]
+    },
+    {
+      "ref": "R11",
+      "part": "R0603-47Ω",
+      "mpn": "RC0603FR-0747RL",
+      "package": "R0603",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "PWM4"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GATE4"
+        }
+      ]
+    },
+    {
+      "ref": "R12",
+      "part": "R0603-10kΩ",
+      "mpn": "RC0603FR-0710KL",
+      "package": "R0603",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "GATE4"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "Q4",
+      "part": "AO3400A",
+      "mpn": "AO3400A",
+      "package": "SOT-23",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "G",
+          "net": "GATE4"
+        },
+        {
+          "num": "2",
+          "name": "S",
+          "net": "GND"
+        },
+        {
+          "num": "3",
+          "name": "D",
+          "net": "MOT4-"
+        }
+      ]
+    },
+    {
+      "ref": "D4",
+      "part": "B5819W",
+      "mpn": "B5819W",
+      "package": "SOD-123",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "K",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "A",
+          "net": "MOT4-"
+        }
+      ]
+    },
+    {
+      "ref": "J6",
+      "part": "MotorPad",
+      "mpn": "—",
+      "package": "MotorPad-2",
+      "block": "motors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "M+",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "M-",
+          "net": "MOT4-"
+        }
+      ]
+    },
+    {
+      "ref": "R13",
+      "part": "R0603-100kΩ",
+      "mpn": "RC0603FR-07100KL",
+      "package": "R0603",
+      "block": "monitor",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "VBAT"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "VBAT_SENSE"
+        }
+      ]
+    },
+    {
+      "ref": "R14",
+      "part": "R0603-100kΩ",
+      "mpn": "RC0603FR-07100KL",
+      "package": "R0603",
+      "block": "monitor",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "VBAT_SENSE"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "C11",
+      "part": "C0603-100n",
+      "mpn": "GRM188R71C104KA01D",
+      "package": "C0603",
+      "block": "monitor",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "VBAT_SENSE"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "R15",
+      "part": "R0603-1kΩ",
+      "mpn": "RC0603FR-071KL",
+      "package": "R0603",
+      "block": "monitor",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "LED"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "LED_A"
+        }
+      ]
+    },
+    {
+      "ref": "D5",
+      "part": "LED0603-R",
+      "mpn": "APT1608EC",
+      "package": "LED0603",
+      "block": "monitor",
+      "pins": [
+        {
+          "num": "1",
+          "name": "K",
+          "net": "GND"
+        },
+        {
+          "num": "2",
+          "name": "A",
+          "net": "LED_A"
+        }
+      ]
+    },
+    {
+      "ref": "J7",
+      "part": "PinHeader-1x6",
+      "mpn": "PH-1x6 2.54mm",
+      "package": "PinHeader-1x6-2.54",
+      "block": "connectors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "3V3",
+          "net": "3V3"
+        },
+        {
+          "num": "2",
+          "name": "GND",
+          "net": "GND"
+        },
+        {
+          "num": "3",
+          "name": "TX",
+          "net": "TXD0"
+        },
+        {
+          "num": "4",
+          "name": "RX",
+          "net": "RXD0"
+        },
+        {
+          "num": "5",
+          "name": "EN",
+          "net": "EN"
+        },
+        {
+          "num": "6",
+          "name": "IO0",
+          "net": "BOOT"
+        }
+      ]
+    },
+    {
+      "ref": "SW1",
+      "part": "Tact-3x4",
+      "mpn": "TS-1187A-B-A-B",
+      "package": "Tact-3x4-SMD",
+      "block": "connectors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "EN"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "SW2",
+      "part": "Tact-3x4",
+      "mpn": "TS-1187A-B-A-B",
+      "package": "Tact-3x4-SMD",
+      "block": "connectors",
+      "pins": [
+        {
+          "num": "1",
+          "name": "1",
+          "net": "BOOT"
+        },
+        {
+          "num": "2",
+          "name": "2",
+          "net": "GND"
+        }
+      ]
+    },
+    {
+      "ref": "H1",
+      "part": "MountHole-M2",
+      "mpn": "—",
+      "package": "MountHole-M2",
+      "block": "mechanical",
+      "pins": []
+    },
+    {
+      "ref": "H2",
+      "part": "MountHole-M2",
+      "mpn": "—",
+      "package": "MountHole-M2",
+      "block": "mechanical",
+      "pins": []
+    },
+    {
+      "ref": "H3",
+      "part": "MountHole-M2",
+      "mpn": "—",
+      "package": "MountHole-M2",
+      "block": "mechanical",
+      "pins": []
+    },
+    {
+      "ref": "H4",
+      "part": "MountHole-M2",
+      "mpn": "—",
+      "package": "MountHole-M2",
+      "block": "mechanical",
+      "pins": []
+    }
+  ],
+  "nets": [
+    {
+      "name": "VBAT",
+      "cls": "power",
+      "pins": [
+        {
+          "ref": "J1",
+          "pin": "1"
+        },
+        {
+          "ref": "C1",
+          "pin": "1"
+        },
+        {
+          "ref": "C2",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "1"
+        },
+        {
+          "ref": "U1",
+          "pin": "3"
+        },
+        {
+          "ref": "C3",
+          "pin": "1"
+        },
+        {
+          "ref": "D1",
+          "pin": "1"
+        },
+        {
+          "ref": "J3",
+          "pin": "1"
+        },
+        {
+          "ref": "D2",
+          "pin": "1"
+        },
+        {
+          "ref": "J4",
+          "pin": "1"
+        },
+        {
+          "ref": "D3",
+          "pin": "1"
+        },
+        {
+          "ref": "J5",
+          "pin": "1"
+        },
+        {
+          "ref": "D4",
+          "pin": "1"
+        },
+        {
+          "ref": "J6",
+          "pin": "1"
+        },
+        {
+          "ref": "R13",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GND",
+      "cls": "gnd",
+      "pins": [
+        {
+          "ref": "J1",
+          "pin": "2"
+        },
+        {
+          "ref": "C1",
+          "pin": "2"
+        },
+        {
+          "ref": "C2",
+          "pin": "2"
+        },
+        {
+          "ref": "U1",
+          "pin": "2"
+        },
+        {
+          "ref": "C3",
+          "pin": "2"
+        },
+        {
+          "ref": "C4",
+          "pin": "2"
+        },
+        {
+          "ref": "U2",
+          "pin": "1"
+        },
+        {
+          "ref": "U2",
+          "pin": "40"
+        },
+        {
+          "ref": "U2",
+          "pin": "41"
+        },
+        {
+          "ref": "C5",
+          "pin": "2"
+        },
+        {
+          "ref": "C6",
+          "pin": "2"
+        },
+        {
+          "ref": "C7",
+          "pin": "2"
+        },
+        {
+          "ref": "U3",
+          "pin": "6"
+        },
+        {
+          "ref": "C8",
+          "pin": "2"
+        },
+        {
+          "ref": "C9",
+          "pin": "2"
+        },
+        {
+          "ref": "U4",
+          "pin": "3"
+        },
+        {
+          "ref": "U4",
+          "pin": "5"
+        },
+        {
+          "ref": "U4",
+          "pin": "8"
+        },
+        {
+          "ref": "U4",
+          "pin": "9"
+        },
+        {
+          "ref": "C10",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "MP1"
+        },
+        {
+          "ref": "J2",
+          "pin": "MP2"
+        },
+        {
+          "ref": "R6",
+          "pin": "2"
+        },
+        {
+          "ref": "Q1",
+          "pin": "2"
+        },
+        {
+          "ref": "R8",
+          "pin": "2"
+        },
+        {
+          "ref": "Q2",
+          "pin": "2"
+        },
+        {
+          "ref": "R10",
+          "pin": "2"
+        },
+        {
+          "ref": "Q3",
+          "pin": "2"
+        },
+        {
+          "ref": "R12",
+          "pin": "2"
+        },
+        {
+          "ref": "Q4",
+          "pin": "2"
+        },
+        {
+          "ref": "R14",
+          "pin": "2"
+        },
+        {
+          "ref": "C11",
+          "pin": "2"
+        },
+        {
+          "ref": "D5",
+          "pin": "1"
+        },
+        {
+          "ref": "J7",
+          "pin": "2"
+        },
+        {
+          "ref": "SW1",
+          "pin": "2"
+        },
+        {
+          "ref": "SW2",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "3V3",
+      "cls": "power",
+      "pins": [
+        {
+          "ref": "U1",
+          "pin": "5"
+        },
+        {
+          "ref": "C4",
+          "pin": "1"
+        },
+        {
+          "ref": "U2",
+          "pin": "2"
+        },
+        {
+          "ref": "C5",
+          "pin": "1"
+        },
+        {
+          "ref": "C6",
+          "pin": "1"
+        },
+        {
+          "ref": "R1",
+          "pin": "1"
+        },
+        {
+          "ref": "R2",
+          "pin": "1"
+        },
+        {
+          "ref": "U3",
+          "pin": "5"
+        },
+        {
+          "ref": "U3",
+          "pin": "8"
+        },
+        {
+          "ref": "C8",
+          "pin": "1"
+        },
+        {
+          "ref": "C9",
+          "pin": "1"
+        },
+        {
+          "ref": "U4",
+          "pin": "1"
+        },
+        {
+          "ref": "U4",
+          "pin": "6"
+        },
+        {
+          "ref": "U4",
+          "pin": "10"
+        },
+        {
+          "ref": "C10",
+          "pin": "1"
+        },
+        {
+          "ref": "R3",
+          "pin": "1"
+        },
+        {
+          "ref": "R4",
+          "pin": "1"
+        },
+        {
+          "ref": "J2",
+          "pin": "1"
+        },
+        {
+          "ref": "J7",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "EN",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "3"
+        },
+        {
+          "ref": "R1",
+          "pin": "2"
+        },
+        {
+          "ref": "C7",
+          "pin": "1"
+        },
+        {
+          "ref": "J7",
+          "pin": "5"
+        },
+        {
+          "ref": "SW1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "PWM1",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "4"
+        },
+        {
+          "ref": "R5",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "PWM2",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "5"
+        },
+        {
+          "ref": "R7",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "PWM3",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "6"
+        },
+        {
+          "ref": "R9",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "PWM4",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "7"
+        },
+        {
+          "ref": "R11",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "I2C_SDA",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "12"
+        },
+        {
+          "ref": "U4",
+          "pin": "4"
+        },
+        {
+          "ref": "R3",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "7"
+        }
+      ]
+    },
+    {
+      "name": "IMU_INT",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "17"
+        },
+        {
+          "ref": "U3",
+          "pin": "4"
+        }
+      ]
+    },
+    {
+      "name": "IMU_CS",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "18"
+        },
+        {
+          "ref": "U3",
+          "pin": "12"
+        }
+      ]
+    },
+    {
+      "name": "SPI_MOSI",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "19"
+        },
+        {
+          "ref": "U3",
+          "pin": "14"
+        },
+        {
+          "ref": "J2",
+          "pin": "4"
+        }
+      ]
+    },
+    {
+      "name": "SPI_SCK",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "20"
+        },
+        {
+          "ref": "U3",
+          "pin": "13"
+        },
+        {
+          "ref": "J2",
+          "pin": "3"
+        }
+      ]
+    },
+    {
+      "name": "SPI_MISO",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "21"
+        },
+        {
+          "ref": "U3",
+          "pin": "1"
+        },
+        {
+          "ref": "J2",
+          "pin": "5"
+        }
+      ]
+    },
+    {
+      "name": "FLOW_CS",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "22"
+        },
+        {
+          "ref": "J2",
+          "pin": "6"
+        }
+      ]
+    },
+    {
+      "name": "I2C_SCL",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "23"
+        },
+        {
+          "ref": "U4",
+          "pin": "2"
+        },
+        {
+          "ref": "R4",
+          "pin": "2"
+        },
+        {
+          "ref": "J2",
+          "pin": "8"
+        }
+      ]
+    },
+    {
+      "name": "BOOT",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "27"
+        },
+        {
+          "ref": "R2",
+          "pin": "2"
+        },
+        {
+          "ref": "J7",
+          "pin": "6"
+        },
+        {
+          "ref": "SW2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "RXD0",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "36"
+        },
+        {
+          "ref": "J7",
+          "pin": "4"
+        }
+      ]
+    },
+    {
+      "name": "TXD0",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "37"
+        },
+        {
+          "ref": "J7",
+          "pin": "3"
+        }
+      ]
+    },
+    {
+      "name": "LED",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "38"
+        },
+        {
+          "ref": "R15",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "VBAT_SENSE",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "U2",
+          "pin": "39"
+        },
+        {
+          "ref": "R13",
+          "pin": "2"
+        },
+        {
+          "ref": "R14",
+          "pin": "1"
+        },
+        {
+          "ref": "C11",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "GATE1",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "R5",
+          "pin": "2"
+        },
+        {
+          "ref": "R6",
+          "pin": "1"
+        },
+        {
+          "ref": "Q1",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MOT1-",
+      "cls": "motor",
+      "pins": [
+        {
+          "ref": "Q1",
+          "pin": "3"
+        },
+        {
+          "ref": "D1",
+          "pin": "2"
+        },
+        {
+          "ref": "J3",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "GATE2",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "R7",
+          "pin": "2"
+        },
+        {
+          "ref": "R8",
+          "pin": "1"
+        },
+        {
+          "ref": "Q2",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MOT2-",
+      "cls": "motor",
+      "pins": [
+        {
+          "ref": "Q2",
+          "pin": "3"
+        },
+        {
+          "ref": "D2",
+          "pin": "2"
+        },
+        {
+          "ref": "J4",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "GATE3",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "R9",
+          "pin": "2"
+        },
+        {
+          "ref": "R10",
+          "pin": "1"
+        },
+        {
+          "ref": "Q3",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MOT3-",
+      "cls": "motor",
+      "pins": [
+        {
+          "ref": "Q3",
+          "pin": "3"
+        },
+        {
+          "ref": "D3",
+          "pin": "2"
+        },
+        {
+          "ref": "J5",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "GATE4",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "R11",
+          "pin": "2"
+        },
+        {
+          "ref": "R12",
+          "pin": "1"
+        },
+        {
+          "ref": "Q4",
+          "pin": "1"
+        }
+      ]
+    },
+    {
+      "name": "MOT4-",
+      "cls": "motor",
+      "pins": [
+        {
+          "ref": "Q4",
+          "pin": "3"
+        },
+        {
+          "ref": "D4",
+          "pin": "2"
+        },
+        {
+          "ref": "J6",
+          "pin": "2"
+        }
+      ]
+    },
+    {
+      "name": "LED_A",
+      "cls": "signal",
+      "pins": [
+        {
+          "ref": "R15",
+          "pin": "2"
+        },
+        {
+          "ref": "D5",
+          "pin": "2"
+        }
+      ]
+    }
+  ],
+  "gpio": [
+    {
+      "signal": "モータ 1 PWM",
+      "gpio": "IO4",
+      "note": "LEDC 20 kHz 推奨（可聴域外）"
+    },
+    {
+      "signal": "モータ 2 PWM",
+      "gpio": "IO5",
+      "note": "LEDC 20 kHz 推奨（可聴域外）"
+    },
+    {
+      "signal": "モータ 3 PWM",
+      "gpio": "IO6",
+      "note": "LEDC 20 kHz 推奨（可聴域外）"
+    },
+    {
+      "signal": "モータ 4 PWM",
+      "gpio": "IO7",
+      "note": "LEDC 20 kHz 推奨（可聴域外）"
+    },
+    {
+      "signal": "SPI SCK",
+      "gpio": "IO12",
+      "note": "IMU とフローセンサで共用"
+    },
+    {
+      "signal": "SPI MOSI",
+      "gpio": "IO11",
+      "note": ""
+    },
+    {
+      "signal": "SPI MISO",
+      "gpio": "IO13",
+      "note": ""
+    },
+    {
+      "signal": "IMU CS",
+      "gpio": "IO10",
+      "note": ""
+    },
+    {
+      "signal": "IMU INT1",
+      "gpio": "IO9",
+      "note": "データレディ割込み"
+    },
+    {
+      "signal": "フロー CS",
+      "gpio": "IO14",
+      "note": ""
+    },
+    {
+      "signal": "I²C SDA",
+      "gpio": "IO8",
+      "note": "気圧センサ・ToF"
+    },
+    {
+      "signal": "I²C SCL",
+      "gpio": "IO21",
+      "note": ""
+    },
+    {
+      "signal": "電池電圧",
+      "gpio": "IO1",
+      "note": "ADC1_CH0（Wi-Fi 使用中も読める ADC1 を使用）"
+    },
+    {
+      "signal": "状態 LED",
+      "gpio": "IO2",
+      "note": ""
+    },
+    {
+      "signal": "UART0 TX/RX",
+      "gpio": "IO43 / IO44",
+      "note": "書込み・ログ"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "rotorCount": 4,
+  "motor": "coreless-0820",
+  "prop": "prop-65",
+  "battery": "lipo-1s-600",
+  "electronicsMassG": 6.8394639999999995,
+  "auwG": 60.84693764279043,
+  "armLengthM": 0.053033008588991064,
+  "twr": 2.0415656171532732,
+  "flightTimeMin": 12.226941027601441,
+  "traceWidth": {
+    "signal": 0.2,
+    "power3v3": 0.3,
+    "motor": 0.82,
+    "vbat": 2.15
+  },
+  "goals": [
+    {
+      "id": "G2-1",
+      "title": "推力余裕",
+      "criteria": "TWR ≥ 2.0 かつ ホバリングスロットル ≤ 60 %",
+      "result": "TWR 2.04、スロットル 55.1 %",
+      "pass": true
+    },
+    {
+      "id": "G2-2",
+      "title": "飛行時間",
+      "criteria": "ホバリング飛行時間 ≥ 5 分",
+      "result": "12.2 分",
+      "pass": true
+    },
+    {
+      "id": "G2-3",
+      "title": "電気的検証",
+      "criteria": "全 22 項目に合格",
+      "result": "22 / 22 合格",
+      "pass": true
+    },
+    {
+      "id": "G2-4",
+      "title": "ネットリスト健全性",
+      "criteria": "1 ピンだけのネット 0、電源ピンの未接続 0",
+      "result": "1 ピンネット 0、電源未接続 0",
+      "pass": true
+    }
+  ]
+}

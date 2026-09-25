@@ -14,8 +14,8 @@ export const MOTORS: MotorSpec[] = [
   { id: 'coreless-0615', name: 'Coreless 615 (6x15mm) brushed', kind: 'brushed', kv: 19000, resistance: 1.6, noLoadCurrent: 0.06, timeConstant: 0.025, maxCurrent: 1.2, mass: g(2.6), diameter: mm(6), length: mm(15), shaftDiameter: mm(0.8) },
   { id: 'coreless-0716', name: 'Coreless 716 (7x16mm) brushed', kind: 'brushed', kv: 16000, resistance: 1.1, noLoadCurrent: 0.07, timeConstant: 0.03, maxCurrent: 1.6, mass: g(3.3), diameter: mm(7), length: mm(16), shaftDiameter: mm(0.8) },
   { id: 'coreless-0820', name: 'Coreless 8520 (8.5x20mm) brushed', kind: 'brushed', kv: 12000, resistance: 0.65, noLoadCurrent: 0.1, timeConstant: 0.04, maxCurrent: 2.8, mass: g(5.0), diameter: mm(8.5), length: mm(20), shaftDiameter: mm(1.0) },
-  { id: 'coreless-1020', name: 'Coreless 1020 (10x20mm) brushed', kind: 'brushed', kv: 11000, resistance: 0.45, noLoadCurrent: 0.15, timeConstant: 0.045, maxCurrent: 3.5, mass: g(7.0), diameter: mm(10), length: mm(20), shaftDiameter: mm(1.0) },
-  { id: 'bl-1103-10000', name: 'Brushless 1103 10000KV', kind: 'brushless', kv: 10000, resistance: 0.55, noLoadCurrent: 0.25, timeConstant: 0.02, maxCurrent: 4, mass: g(3.8), diameter: mm(14), length: mm(10), shaftDiameter: mm(1.5) },
+  { id: 'coreless-1020', name: 'Coreless 1020 (10x20mm) brushed', kind: 'brushed', kv: 11000, resistance: 0.45, noLoadCurrent: 0.15, timeConstant: 0.045, maxCurrent: 3.5, mass: g(7.0), diameter: mm(10), length: mm(20), shaftDiameter: mm(1.0), availability: 'limited' },
+  { id: 'bl-1103-10000', name: 'Brushless 1103 10000KV', kind: 'brushless', kv: 10000, resistance: 0.25, noLoadCurrent: 0.25, timeConstant: 0.02, maxCurrent: 4, mass: g(3.8), diameter: mm(14), length: mm(10), shaftDiameter: mm(1.5), availability: 'limited' },
   { id: 'bl-2204-2300', name: 'Brushless 2204 2300KV', kind: 'brushless', kv: 2300, resistance: 0.11, noLoadCurrent: 0.6, timeConstant: 0.035, maxCurrent: 18, mass: g(25), diameter: mm(27.5), length: mm(17), shaftDiameter: mm(5) },
 ];
 
@@ -23,7 +23,7 @@ export const PROPS: PropSpec[] = [
   { id: 'prop-46', name: '46mm 2-blade', diameter: mm(46), pitch: mm(22), blades: 2, ct: 0.095, cp: 0.05, mass: g(0.25), bore: mm(0.8) },
   { id: 'prop-55', name: '55mm 2-blade', diameter: mm(55), pitch: mm(25), blades: 2, ct: 0.1, cp: 0.05, mass: g(0.35), bore: mm(0.8) },
   { id: 'prop-65', name: '65mm 2-blade', diameter: mm(65), pitch: mm(30), blades: 2, ct: 0.1, cp: 0.05, mass: g(0.5), bore: mm(1.0) },
-  { id: 'prop-75', name: '75mm 2-blade', diameter: mm(75), pitch: mm(35), blades: 2, ct: 0.1, cp: 0.05, mass: g(0.7), bore: mm(1.0) },
+  { id: 'prop-75', name: '75mm 2-blade', diameter: mm(75), pitch: mm(35), blades: 2, ct: 0.1, cp: 0.05, mass: g(0.7), bore: mm(1.0), availability: 'limited' },
   { id: 'prop-40-3b', name: '40mm 3-blade (whoop)', diameter: mm(40), pitch: mm(20), blades: 3, ct: 0.12, cp: 0.07, mass: g(0.3), bore: mm(1.5) },
   { id: 'prop-5045', name: '5045 2-blade (127mm)', diameter: mm(127), pitch: mm(114), blades: 2, ct: 0.11, cp: 0.055, mass: g(4), bore: mm(5) },
 ];
