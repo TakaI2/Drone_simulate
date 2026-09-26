@@ -79,6 +79,6 @@ export const renderPcbSvg = (d: PcbDesign, o: PcbSvgOptions = {}): string => {
   if (o.title) parts.push(`<text x="${12}" y="${24}" font-size="18" fill="#fff" font-family="system-ui">${o.title}</text>`);
   // scale bar 10 mm
   parts.push(`<line x1="${X(-W / 2)}" y1="${vh - 0.3 * margin * s}" x2="${X(-W / 2 + 10)}" y2="${vh - 0.3 * margin * s}" stroke="#fff" stroke-width="2"/><text x="${X(-W / 2 + 10) + 6}" y="${vh - 0.3 * margin * s + 5}" fill="#fff" font-size="14" font-family="system-ui">10 mm</text>`);
-  parts.push(`<text x="${X(W / 2)}" y="${vh - 0.3 * margin * s + 5}" fill="#fff" font-size="14" text-anchor="end" font-family="system-ui">↑ +y（左）　→ +x（機首）</text>`);
+  parts.push(`<text x="${X(W / 2)}" y="${vh - 0.3 * margin * s + 5}" fill="#fff" font-size="14" text-anchor="end" font-family="system-ui">↑ +y（左） → +x（機首）</text>`);
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${vw} ${vh}" width="${vw}" height="${vh}">${parts.join('')}</svg>`;
 };

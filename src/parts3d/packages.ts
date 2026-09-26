@@ -229,7 +229,8 @@ export const lga = (id: string, bw: number, bh: number, H: number, counts: [numb
 
 export const qfn = (pins: number, size: number, pitch: number): PackageDef => {
   const per = pins / 4;
-  const pads = perimeterPads(size, size, pitch, 0.3, 0.8, [per, per, per, per], 0.3);
+  // IPC-7351 nominal (as KiCad QFN-32 5x5 P0.5): 0.875 x 0.25 pads with toe extending past the body edge
+  const pads = perimeterPads(size, size, pitch, 0.25, 0.875, [per, per, per, per], -0.0625);
   pads.push({ num: String(pins + 1), x: 0, y: 0, w: size * 0.6, h: size * 0.6, shape: 'rect' });
   return finish({
     id: `QFN-${pins}-${size}x${size}`,
@@ -444,9 +445,10 @@ export const to92 = (): PackageDef =>
     description: 'TO-92 小信号トランジスタ（2SC1815、2N7000 等）',
     standard: 'JEDEC TO-92',
     pads: [
-      { num: '1', x: -1.27, y: 0, w: 1.3, h: 1.3, shape: 'rect', drill: 0.75 },
-      { num: '2', x: 0, y: 0, w: 1.3, h: 1.3, shape: 'circle', drill: 0.75 },
-      { num: '3', x: 1.27, y: 0, w: 1.3, h: 1.3, shape: 'circle', drill: 0.75 },
+      // inline 1.27 mm pitch needs oval pads (as KiCad TO-92_Inline)
+      { num: '1', x: -1.27, y: 0, w: 1.05, h: 1.5, shape: 'rect', drill: 0.75 },
+      { num: '2', x: 0, y: 0, w: 1.05, h: 1.5, shape: 'oval', drill: 0.75 },
+      { num: '3', x: 1.27, y: 0, w: 1.05, h: 1.5, shape: 'oval', drill: 0.75 },
     ],
     body: [
       { kind: 'cyl', c: [0, 0.4, 5.5], s: [2.4, 2.4, 5.0], axis: 'z', color: COL.black },

@@ -116,6 +116,7 @@ const main = async (): Promise<void> => {
     references: [REFS.espDrone, REFS.crazyflie, REFS.skidl, REFS.am32, REFS.betaflight, REFS.ardupilot],
   });
   writeText('reports/stage2.html', html);
+  writeJson('out/stage2/results.json', { goals, iterations: r.iterations, checks: r.calc.checks.map((c) => ({ label: c.label, pass: c.pass })) });
   const pass = goals.every((g) => g.pass);
   console.log(`[stage2] ${pass ? 'ALL GOALS PASSED' : 'SOME GOALS FAILED'}`);
   if (!pass) process.exitCode = 1;

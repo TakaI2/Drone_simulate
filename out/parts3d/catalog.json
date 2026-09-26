@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-26 09:08",
+  "generated": "2026-09-26 09:27",
   "units": "mm",
   "entries": [
     {
@@ -329,8 +329,8 @@
       "standard": "JEDEC MO-220, IPC-7351 nominal",
       "pads": 33,
       "courtyardMm": [
-        5.7,
-        5.7
+        6.5,
+        6.5
       ],
       "heightMm": 0.92,
       "verify": false,
@@ -655,8 +655,8 @@
       "heightMm": 8,
       "verify": false,
       "stlFile": "TO-92.stl",
-      "stlBytes": 14084,
-      "triangles": 280
+      "stlBytes": 7284,
+      "triangles": 144
     },
     {
       "id": "TO-220-3",

@@ -49,12 +49,13 @@ export const runStage3 = (s2: Stage2Result): Stage3Result => {
   const breadboard = buildBreadboard(s2.rotorCount);
   const mapping: CatalogMapping[] = s2.bom.map((b) => {
     const part = s2.circuit.components.find((c) => c.partId === b.partId)!.part;
-    let has3d = false;
-    try {
-      has3d = part.package === 'external' || getPackage(part.package) !== null;
-    } catch {
-      has3d = false;
-    }
+    const has3d = ((): boolean => {
+      try {
+        return part.package === 'external' || getPackage(part.package) !== null;
+      } catch {
+        return false;
+      }
+    })();
     return {
       refs: b.refs.join(', '),
       qty: b.qty,

@@ -18,4 +18,4 @@ export const nowString = (): string => {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 };
 
-export const fmt = (v: number, d = 3): string => (Number.isFinite(v) ? v.toFixed(d) : String(v));
+export const fmt = (v: number, d = 3): string => (Number.isFinite(v) ? v.toFixed(d) : '—');

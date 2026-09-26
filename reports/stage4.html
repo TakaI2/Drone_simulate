@@ -1,0 +1,92 @@
+<!doctype html><html lang="ja" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>段階4 レポート: 機体総合設計</title><style>
+:root{--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--line:#e1e0d9;--card:#fcfcfb;--good:#0ca30c;--good-text:#006300;--critical:#d03b3b;--accent:#2a78d6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Yu Gothic UI",sans-serif;line-height:1.65;font-size:14px}
+header{background:#0d0d0d;color:#fff;padding:18px 32px}
+header h1{margin:0;font-size:20px}
+header p{margin:4px 0 0;color:#c3c2b7;font-size:13px}
+nav.stages{display:flex;gap:6px;padding:8px 32px;background:#1a1a19}
+nav.stages a{color:#c3c2b7;text-decoration:none;font-size:12px;padding:4px 10px;border-radius:6px}
+nav.stages a.cur{background:#383835;color:#fff}
+main{max-width:1180px;margin:0 auto;padding:20px 32px 60px}
+h2{font-size:17px;margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+h3{font-size:14px;margin:18px 0 6px;color:var(--ink2)}
+table{border-collapse:collapse;margin:8px 0 14px;font-size:12.5px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top;font-variant-numeric:tabular-nums}
+th{background:#f0efec;color:var(--ink2);font-weight:600}
+.pill{display:inline-block;padding:1px 9px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid currentColor;white-space:nowrap}
+.pill.pass{color:var(--good-text)}
+.pill.fail{color:var(--critical)}
+.summary{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:160px}
+.tile .v{font-size:26px;font-weight:700}
+.tile .l{font-size:12px;color:var(--ink2)}
+figure{margin:10px 0 18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px}
+figure img{width:100%;display:block;border-radius:6px}
+figcaption{font-size:12px;color:var(--ink2);padding:6px 4px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.concern li{margin:4px 0}
+code,pre{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+pre{background:#f0efec;padding:10px;border-radius:6px;overflow:auto}
+.note{color:var(--ink2);font-size:12.5px}
+.viz-root{max-width:760px}
+.svgbox{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;overflow:auto}
+
+.viz-root{color-scheme:light;--surface-1:#fcfcfb;--text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--series-1:#2a78d6;--series-2:#eb6834;--series-3:#1baf7a;--critical:#d03b3b}
+@media (prefers-color-scheme: dark){:root:where(:not([data-theme="light"])) .viz-root{color-scheme:dark;--surface-1:#1a1a19;--text-primary:#ffffff;--text-secondary:#c3c2b7;--text-muted:#898781;--grid:#2c2c2a;--axis:#383835;--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70}}
+:root[data-theme="dark"] .viz-root{color-scheme:dark;--surface-1:#1a1a19;--text-primary:#ffffff;--text-secondary:#c3c2b7;--text-muted:#898781;--grid:#2c2c2a;--axis:#383835;--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70}
+.viz-root{background:var(--surface-1);border-radius:8px;padding:8px 8px 4px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;position:relative}
+.viz-root svg{display:block;width:100%;height:auto}
+.viz-title{font-size:13px;font-weight:600;fill:var(--text-primary)}
+.viz-axis-label,.viz-tick{font-size:10px;fill:var(--text-muted);font-variant-numeric:tabular-nums}
+.viz-legend{font-size:11px;fill:var(--text-secondary)}
+.viz-direct{font-size:10px;fill:var(--text-secondary)}
+.viz-tip{position:absolute;pointer-events:none;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--axis);border-radius:6px;padding:4px 8px;font-size:11px;white-space:nowrap;display:none;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.viz-tip b{font-weight:600}
+</style></head><body>
+<header><h1>段階4 レポート: 機体総合設計</h1><p>全備重量 56.6 g / フレーム 7.7 g（PLA、充填率 80 % 相当） | 生成: 2026-09-26 09:28</p></header>
+<nav class="stages"><a href="index.html" class="">総合</a><a href="stage1.html" class="">1 シミュレーション</a><a href="stage2.html" class="">2 推進・電気</a><a href="stage3.html" class="">3 部品・基板</a><a href="stage4.html" class="cur">4 機体</a><a href="stage5.html" class="">5 統合</a></nav>
+<main>
+<div class="summary"><div class="tile"><div class="v">4 / 4</div><div class="l">ゴール合格数</div></div>
+<div class="tile"><div class="v"><span class="pill pass">✔ 合格</span></div><div class="l">段階判定</div></div></div>
+<h2>ゴール判定</h2><table><thead><tr><th>ID</th><th>ゴール</th><th>合格基準</th><th>結果</th><th>判定</th></tr></thead><tbody><tr><td>G4-1</td><td>重心バランス</td><td>重心と推力中心の水平ずれ &lt; 2 mm</td><td>0.001 mm（電池位置 x=-3.5 mm, y=0.0 mm で調整）</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td>G4-2</td><td>プロペラ干渉</td><td>プロペラ先端間 ≥ 5 mm かつ 直下構造物との垂直隙間 ≥ 5 mm</td><td>先端間 10.0 mm、垂直 5.0 mm（最も近い: モータ固定チューブ上端）</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td>G4-3</td><td>STL の健全性</td><td>閉じた多様体（境界辺・非多様体辺・向き不整合 0）</td><td>境界 0、非多様体 0、向き 0（manifold-3d: NoError）</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td>G4-4</td><td>全備重量</td><td>&lt; 100 g（クラスA）</td><td>56.6 g</td><td><span class="pill pass">✔ 合格</span></td></tr></tbody></table>
+<h2>設計内容</h2><ul>
+<li>腕長 53.0 mm（隣接プロペラ間隙 10 mm から段階2で決定）、腕断面 5×4 mm、モータ固定は圧入チューブ（内径 8.3 mm＋クランプ用スリット）。</li>
+<li>基板は M2 セルフタップで高さ 5 mm のスタンドオフに固定（裏面の THT パッドとの隙間確保）。無線モジュールのアンテナは基板後端から張り出し、下にフレーム材がない。</li>
+<li>電池は下面に 10 mm 幅ストラップで固定。<b>重心が推力中心に一致する電池位置を反復計算し、その位置に合わせてストラップ用スロットと軽量化穴を配置</b>（設計変数を配置に反映）。</li>
+<li>フロー＋ToF モジュールは機首の延長部の下面に M2 で固定（床面を直視）。</li>
+<li>フレームは manifold-3d（Apache-2.0）で結合・穴あけし、閉じた多様体として STL 出力。</li></ul>
+<h2>完成機体（3D）</h2><div class="grid2"><figure><img src="img/stage4-iso.png" alt="完成機体（斜め）：白＝3D プリントフレーム、緑＝基板、青＝電池、赤球＝重心"><figcaption>完成機体（斜め）：白＝3D プリントフレーム、緑＝基板、青＝電池、赤球＝重心</figcaption></figure><figure><img src="img/stage4-top.png" alt="上面：プロペラ回転面（水色）と基板の重なり、重心と推力軸"><figcaption>上面：プロペラ回転面（水色）と基板の重なり、重心と推力軸</figcaption></figure><figure><img src="img/stage4-side.png" alt="側面：プロペラと基板・部品の垂直隙間"><figcaption>側面：プロペラと基板・部品の垂直隙間</figcaption></figure><figure><img src="img/stage4-bottom.png" alt="下面：電池（ストラップ固定）とフロー＋ToF モジュール"><figcaption>下面：電池（ストラップ固定）とフロー＋ToF モジュール</figcaption></figure><figure><img src="img/stage4-frame.png" alt="造形するフレーム単体（STL）"><figcaption>造形するフレーム単体（STL）</figcaption></figure></div><p class="note">フレーム STL: <code>out/stage4/frame.stl</code>（85.9 × 85.9 × 10.0 mm、3038 三角形）</p>
+<h2>重量・重心・慣性</h2><table><thead><tr><th>部位</th><th>質量 [g]</th><th>重心位置 x, y, z [mm]</th></tr></thead><tbody><tr><td>フレーム（3D プリント）</td><td>7.73</td><td>3.7, -0.0, 2.3</td></tr><tr><td>モータ 1</td><td>5.00</td><td>37.5, -37.5, 4.0</td></tr><tr><td>プロペラ 1</td><td>0.50</td><td>37.5, -37.5, 16.0</td></tr><tr><td>モータ 2</td><td>5.00</td><td>37.5, 37.5, 4.0</td></tr><tr><td>プロペラ 2</td><td>0.50</td><td>37.5, 37.5, 16.0</td></tr><tr><td>モータ 3</td><td>5.00</td><td>-37.5, 37.5, 4.0</td></tr><tr><td>プロペラ 3</td><td>0.50</td><td>-37.5, 37.5, 16.0</td></tr><tr><td>モータ 4</td><td>5.00</td><td>-37.5, -37.5, 4.0</td></tr><tr><td>プロペラ 4</td><td>0.50</td><td>-37.5, -37.5, 16.0</td></tr><tr><td>基板（FR-4＋銅箔）</td><td>3.37</td><td>0.0, 0.0, 7.4</td></tr><tr><td>フロー＋ToF モジュール</td><td>2.00</td><td>31.0, 0.0, -2.0</td></tr><tr><td>配線・ねじ等</td><td>3.00</td><td>0.0, 0.0, 3.0</td></tr><tr><td>電池</td><td>15.00</td><td>-3.5, 0.0, -3.5</td></tr><tr><td>基板上の部品（42 点）</td><td>3.47</td><td>個別に位置を考慮</td></tr><tr><td><b>合計</b></td><td><b>56.57</b></td><td>重心 0.00, 0.00, 2.47</td></tr></tbody></table>
+<table><thead><tr><th>慣性テンソル（重心まわり）[kg m²]</th><th>x</th><th>y</th><th>z</th></tr></thead><tbody><tr><td>x</td><td>4.096e-5</td><td>-4.272e-9</td><td>2.739e-7</td></tr><tr><td>y</td><td>-4.272e-9</td><td>4.205e-5</td><td>2.546e-9</td></tr><tr><td>z</td><td>2.739e-7</td><td>2.546e-9</td><td>7.901e-5</td></tr></tbody></table>
+<p class="note">段階1の参照機（65 g、Ixx=Iyy=4.0e-5、Izz=7.0e-5 kg m²）との比較は段階5で行う。</p>
+<h2>重心合わせの反復（試行の繰り返し）</h2><table><thead><tr><th>反復</th><th>電池 x [mm]</th><th>電池 y [mm]</th><th>重心 x [mm]</th><th>重心 y [mm]</th><th>全備重量 [g]</th></tr></thead><tbody><tr><td>0</td><td>0.00</td><td>0.00</td><td>0.887</td><td>-0.004</td><td>56.55</td></tr><tr><td>1</td><td>-3.35</td><td>0.01</td><td>0.032</td><td>-0.000</td><td>56.57</td></tr><tr><td>2</td><td>-3.47</td><td>0.01</td><td>0.001</td><td>0.000</td><td>56.57</td></tr></tbody></table>
+<h2>検証一覧</h2><table><thead><tr><th>項目</th><th>値</th><th>基準</th><th>判定</th><th>備考</th></tr></thead><tbody><tr><td>重心と推力中心の水平ずれ</td><td>0.00 mm</td><td>< 2 mm</td><td><span class="pill pass">✔ 合格</span></td><td>電池位置 x=-3.5 mm, y=0.0 mm で調整</td></tr><tr><td>隣接プロペラ先端の隙間</td><td>10.00 mm</td><td>≥ 5 mm</td><td><span class="pill pass">✔ 合格</span></td><td></td></tr><tr><td>プロペラ下面と直下の構造物の垂直隙間</td><td>5.00 mm</td><td>≥ 5 mm</td><td><span class="pill pass">✔ 合格</span></td><td>最も近い: モータ固定チューブ上端</td></tr><tr><td>STL の閉じた多様体性（境界辺＋非多様体辺）</td><td>0.00 本</td><td>< 1 本</td><td><span class="pill pass">✔ 合格</span></td><td>manifold-3d のブーリアン演算で生成</td></tr><tr><td>全備重量</td><td>56.57 g</td><td>< 100 g</td><td><span class="pill pass">✔ 合格</span></td><td>100 g 未満＝模型航空機</td></tr><tr><td>腕の曲げ応力の安全率（最大推力）</td><td>20.64 倍</td><td>≥ 3 倍</td><td><span class="pill pass">✔ 合格</span></td><td>σ=1.21 MPa（PLA 許容 25 MPa）</td></tr><tr><td>造形サイズ（最大辺）</td><td>85.90 mm</td><td>< 180 mm</td><td><span class="pill pass">✔ 合格</span></td><td>一般的な 3D プリンタのベッド 180 mm</td></tr></tbody></table>
+<h2>造形の目安</h2><table><thead><tr><th>項目</th><th>推奨</th></tr></thead><tbody><tr><td>材料</td><td>PLA または PETG（墜落時の割れを嫌う場合は PETG / ナイロン系）</td></tr><tr><td>向き</td><td>底面（z=0）をベッドに置く。サポート不要（全形状が z=0 から上に立ち上がる）</td></tr><tr><td>設定</td><td>ノズル 0.4 mm、積層 0.2 mm、外周 2〜3 周、充填 30〜40 %</td></tr><tr><td>後加工</td><td>モータ圧入が固い場合はチューブ内径を 0.05 mm 刻みで調整（FRAME_DEFAULTS.tubeFit）</td></tr></tbody></table>
+<h2>懸念点・今後の課題</h2><ul class="concern"><li>強度は腕付け根の片持ち梁の曲げのみで評価（静的）。墜落時の衝撃、層間剥離、振動（共振）は評価していない。初期試作は PETG を推奨。</li><li>プロペラの一部が基板の角の上を通過する（垂直隙間 5.0 mm）。プロペラのたわみやモータの傾きで接触しないか実機で確認すること。</li><li>モータ配線（腕に沿わせる）とストラップ、ねじ等の小物は「配線・ねじ等 3 g」として中心付近に一括計上している。</li><li>慣性テンソルは部品を直方体・円柱・点で近似したもの。実機では振子法などで Izz を測定して段階5の値を上書きすると精度が上がる。</li><li>電池の位置は ±1 mm 程度ずれても重心ずれは約 0.3 mm。個体差で重心がずれた場合はストラップ上で電池を前後させて合わせる。</li></ul>
+<h2>参考にした OSS・資料</h2><table><thead><tr><th>名称</th><th>ライセンス</th><th>利用方法</th></tr></thead><tbody><tr><td><a href="https://github.com/elalish/manifold">manifold-3d</a></td><td>Apache-2.0</td><td>フレームの多様体ブーリアン演算（依存として取り込み）</td></tr><tr><td><a href="https://github.com/mrdoob/three.js">three.js</a></td><td>MIT</td><td>3D 描画（依存として取り込み）</td></tr></tbody></table>
+</main><script>
+(function(){
+  function attach(root){
+    if(root.__vizBound) return; root.__vizBound=true;
+    var data=JSON.parse(root.getAttribute('data-chart'));
+    var svg=root.querySelector('svg'), hit=root.querySelector('.viz-hit'), cross=root.querySelector('.viz-cross'), tip=root.querySelector('.viz-tip');
+    var dots=data.series.map(function(s){var c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('r','4');c.setAttribute('fill','var('+s.color+')');c.setAttribute('stroke','var(--surface-1)');c.setAttribute('stroke-width','2');c.setAttribute('visibility','hidden');svg.appendChild(c);return c;});
+    function nearest(pts,x){var lo=0,hi=pts.length-1;while(hi-lo>1){var mid=(lo+hi)>>1;if(pts[mid][0]<x)lo=mid;else hi=mid;}return Math.abs(pts[lo][0]-x)<Math.abs(pts[hi][0]-x)?pts[lo]:pts[hi];}
+    hit.addEventListener('mousemove',function(ev){
+      var r=svg.getBoundingClientRect(), k=data.W/r.width, px=(ev.clientX-r.left)*k;
+      var x=data.xMin+(px-data.m.l)/data.pw*(data.xMax-data.xMin);
+      var sx=function(v){return data.m.l+(v-data.xMin)/(data.xMax-data.xMin)*data.pw}, sy=function(v){return data.m.t+(1-(v-data.yMin)/(data.yMax-data.yMin))*data.ph};
+      cross.setAttribute('x1',px);cross.setAttribute('x2',px);cross.setAttribute('visibility','visible');
+      var html='<b>'+data.xLabel+': '+x.toFixed(2)+'</b>';
+      data.series.forEach(function(s,i){if(!s.points.length)return;var p=nearest(s.points,x);dots[i].setAttribute('cx',sx(p[0]));dots[i].setAttribute('cy',sy(p[1]));dots[i].setAttribute('visibility','visible');html+='<br><span style="color:var('+s.color+')">&#9679;</span> '+s.name+': '+p[1].toFixed(3);});
+      tip.innerHTML=html;tip.style.display='block';
+      var left=(ev.clientX-root.getBoundingClientRect().left)+12; if(left>root.clientWidth-160) left-=180; tip.style.left=left+'px';tip.style.top='36px';
+    });
+    hit.addEventListener('mouseleave',function(){cross.setAttribute('visibility','hidden');tip.style.display='none';dots.forEach(function(d){d.setAttribute('visibility','hidden')});});
+  }
+  window.__attachVizHover=function(scope){(scope||document).querySelectorAll('.viz-root[data-chart]').forEach(attach);};
+  window.__attachVizHover(document);
+})();
+</script></body></html>

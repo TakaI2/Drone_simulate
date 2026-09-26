@@ -59,7 +59,7 @@
       "drcViolations": 1,
       "tracks": 642,
       "vias": 160,
-      "timeMs": 4779,
+      "timeMs": 4467,
       "note": "SPI_MISO: 未接続: U3.1 / DRC unconnected 1"
     },
     {
@@ -74,7 +74,7 @@
       "drcViolations": 1,
       "tracks": 602,
       "vias": 161,
-      "timeMs": 4951,
+      "timeMs": 4822,
       "note": "I2C_SDA: 未接続: U4.4 / DRC unconnected 1"
     },
     {
@@ -87,7 +87,7 @@
       "drcViolations": 3,
       "tracks": 701,
       "vias": 155,
-      "timeMs": 7690,
+      "timeMs": 7406,
       "note": "SPI_MISO: 未接続: U3.1 / PWM2: 未接続: R7.1 / GND: 未接続: U4.5, U4.8, U4.9, J2.MP2 / GND: ベタに接続されない GND パッド U4.5"
     },
     {
@@ -103,7 +103,7 @@
       "drcViolations": 1,
       "tracks": 716,
       "vias": 159,
-      "timeMs": 7940,
+      "timeMs": 8018,
       "note": "GND: 未接続: U4.3, C5.2 / GND: ベタに接続されない GND パッド U4.3 / GND: ベタに接続されない GND パッド C5.2 / DRC unconnected 1"
     },
     {
@@ -116,7 +116,7 @@
       "drcViolations": 3,
       "tracks": 701,
       "vias": 155,
-      "timeMs": 7629,
+      "timeMs": 7291,
       "note": "SPI_MISO: 未接続: U3.1 / PWM2: 未接続: R7.1 / GND: 未接続: U4.5, U4.8, U4.9, J2.MP2 / GND: ベタに接続されない GND パッド U4.5"
     },
     {
@@ -132,7 +132,7 @@
       "drcViolations": 1,
       "tracks": 716,
       "vias": 159,
-      "timeMs": 7933,
+      "timeMs": 7920,
       "note": "GND: 未接続: U4.3, C5.2 / GND: ベタに接続されない GND パッド U4.3 / GND: ベタに接続されない GND パッド C5.2 / DRC unconnected 1"
     },
     {
@@ -145,7 +145,7 @@
       "drcViolations": 1,
       "tracks": 696,
       "vias": 182,
-      "timeMs": 5014,
+      "timeMs": 4950,
       "note": "PWM2: 未接続: R7.1 / DRC unconnected 1"
     },
     {
@@ -160,7 +160,7 @@
       "drcViolations": 1,
       "tracks": 671,
       "vias": 194,
-      "timeMs": 4998,
+      "timeMs": 5005,
       "note": "SPI_MOSI: 未接続: U3.14 / DRC unconnected 1"
     },
     {
@@ -173,7 +173,7 @@
       "drcViolations": 1,
       "tracks": 679,
       "vias": 165,
-      "timeMs": 5046,
+      "timeMs": 4985,
       "note": "PWM3: 未接続: R9.1 / DRC unconnected 1"
     },
     {
@@ -188,7 +188,7 @@
       "drcViolations": 0,
       "tracks": 685,
       "vias": 177,
-      "timeMs": 5030,
+      "timeMs": 5009,
       "note": "成功"
     }
   ],

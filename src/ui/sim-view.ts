@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { v3 } from '../core/math';
 import type { Vec3 } from '../core/math';
 import { COURSE_PRESETS, ENV_CALM } from '../core/presets';
-import type { CourseSpec, DroneParams, EnvironmentSpec, Obstacle } from '../core/types';
+import type { CourseSpec, DroneParams, Obstacle } from '../core/types';
 import { CHART_CSS, lineChartSvg } from '../report/chart';
 import { SCENARIOS, runScenario } from '../sim/scenarios';
 import { createSimulation } from '../sim/simulator';
@@ -53,7 +53,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
     estimator: 'filter' as 'filter' | 'truth',
     seed: 42,
     speed: 1,
-    visualScale: 3,
+    visualScale: Number(q.get('scale') ?? 3),
     follow: false,
     manual: false,
     running: false,
@@ -78,7 +78,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
   let rawPathLine: THREE.Line | null = null;
   const trail = createTrail(0x3987e5);
   vp.scene.add(trail.line);
-  const spMarker = new THREE.Mesh(new THREE.SphereGeometry(0.03, 12, 12), new THREE.MeshBasicMaterial({ color: 0xeda100 }));
+  const spMarker = new THREE.Mesh(new THREE.SphereGeometry(0.015, 12, 12), new THREE.MeshBasicMaterial({ color: 0xeda100 }));
   vp.scene.add(spMarker);
   let mesh: DroneMesh | null = null;
   let sim: Simulation | null = null;
@@ -330,6 +330,16 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
   const setCamera = (view: string): void => {
     const cx = (state.env.boundsMin.x + state.env.boundsMax.x) / 2;
     const cy = (state.env.boundsMin.y + state.env.boundsMax.y) / 2;
+    const atT = q.get('at');
+    if (view === 'follow' && sim) {
+      const S = sim.samples;
+      const t = atT ? parseFloat(atT) : S.length ? S[S.length - 1].t : 0;
+      const smp = S.find((x) => x.t >= t) ?? S[S.length - 1];
+      const p = smp ? smp.p : sim.state().p;
+      spMarker.visible = false;
+      vp.lookAt(new THREE.Vector3(p.x, p.y, p.z), new THREE.Vector3(p.x - 0.28, p.y - 0.36, p.z + 0.2));
+      return;
+    }
     if (view === 'top') vp.lookAt(new THREE.Vector3(cx, cy, 0), new THREE.Vector3(cx, cy - 0.01, 14));
     else if (view === 'close') vp.lookAt(new THREE.Vector3(0, 0, 1), new THREE.Vector3(-1.6, -2.2, 1.8));
     else vp.lookAt(new THREE.Vector3(cx, cy, 0.8), new THREE.Vector3(cx - 7, cy - 9, 7));
@@ -337,9 +347,33 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
 
   reset();
   setCamera(q.get('view') ?? 'iso');
+  /** Pose the vehicle at a logged time (for screenshots of the flight). */
+  const poseAt = (t: number): void => {
+    if (!sim || !mesh) return;
+    const S = sim.samples;
+    const smp = S.find((x) => x.t >= t) ?? S[S.length - 1];
+    if (!smp) return;
+    mesh.group.position.set(smp.p.x, smp.p.y, smp.p.z);
+    const qq = new THREE.Quaternion().setFromEuler(new THREE.Euler(smp.roll, smp.pitch, smp.yaw, 'ZYX'));
+    mesh.group.quaternion.copy(qq);
+    spMarker.position.set(smp.sp.x, smp.sp.y, smp.sp.z);
+    const p = droneParams();
+    overlay.textContent = [
+      `機体  ${p.name}`,
+      `t     ${smp.t.toFixed(2)} s（記録の再生） phase ${smp.phase}`,
+      `位置  ${smp.p.x.toFixed(2)} ${smp.p.y.toFixed(2)} ${smp.p.z.toFixed(2)} m`,
+      `速度  ${Math.hypot(smp.v.x, smp.v.y, smp.v.z).toFixed(2)} m/s   傾き ${((Math.hypot(smp.roll, smp.pitch) * 180) / Math.PI).toFixed(1)}°`,
+      `電池  ${smp.vbat.toFixed(2)} V  ${smp.current.toFixed(2)} A`,
+      `PWM   ${smp.u.map((u) => (u * 100).toFixed(0).padStart(3)).join(' ')} %`,
+    ].join('\n');
+    // give the props a visible angle (still image)
+    mesh.update(new Array<number>(8).fill(40), 0.02);
+  };
   const scenarioId = q.get('scenario');
   if (scenarioId) {
     showScenario(scenarioId);
+    const at = q.get('at');
+    if (at) poseAt(parseFloat(at));
     setCamera(q.get('view') ?? 'iso');
     markReady();
   } else if (q.get('autorun')) {

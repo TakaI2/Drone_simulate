@@ -8,7 +8,7 @@ export interface Reference {
 
 export const REFS: Record<string, Reference> = {
   three: { name: 'three.js', url: 'https://github.com/mrdoob/three.js', license: 'MIT', usage: '3D 描画（依存として取り込み）' },
-  csg: { name: 'three-bvh-csg / three-mesh-bvh', url: 'https://github.com/gkjohnson/three-bvh-csg', license: 'MIT', usage: 'フレームのブーリアン演算（依存として取り込み）' },
+  csg: { name: 'manifold-3d', url: 'https://github.com/elalish/manifold', license: 'Apache-2.0', usage: 'フレームの多様体ブーリアン演算（依存として取り込み）' },
   px4: { name: 'PX4-Autopilot', url: 'https://github.com/PX4/PX4-Autopilot', license: 'BSD-3-Clause', usage: 'カスケード制御・推力ベクトル→姿勢・ミキサ飽和処理の構成を参考（コード流用なし）' },
   jmavsim: { name: 'jMAVSim', url: 'https://github.com/PX4/jMAVSim', license: 'BSD-3-Clause', usage: '多ロータ物理モデルの構成を参考' },
   gymPybullet: { name: 'gym-pybullet-drones', url: 'https://github.com/utiasDSL/gym-pybullet-drones', license: 'MIT', usage: '推力 ∝ ω²・地面効果・抗力モデルの考え方を参考' },

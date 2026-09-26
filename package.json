@@ -15,9 +15,12 @@
     "stage2": "tsx scripts/stage2.ts",
     "stage3": "tsx scripts/stage3.ts",
     "stage4": "tsx scripts/stage4.ts",
-    "stage5": "tsx scripts/stage5.ts"
+    "stage5": "tsx scripts/stage5.ts",
+    "report": "tsx scripts/report-index.ts",
+    "all": "npm run stage1 && npm run stage2 && npm run stage3 && npm run stage4 && npm run stage5 && npm run report"
   },
   "dependencies": {
+    "manifold-3d": "^3.5.4",
     "three": "^0.186.1",
     "three-bvh-csg": "^0.0.18",
     "three-mesh-bvh": "^0.9.15"

@@ -1,0 +1,140 @@
+{
+  "goals": [
+    {
+      "id": "G2-1",
+      "title": "推力余裕",
+      "criteria": "TWR ≥ 2.0 かつ ホバリングスロットル ≤ 60 %",
+      "result": "TWR 2.04、スロットル 55.1 %",
+      "pass": true
+    },
+    {
+      "id": "G2-2",
+      "title": "飛行時間",
+      "criteria": "ホバリング飛行時間 ≥ 5 分",
+      "result": "12.2 分",
+      "pass": true
+    },
+    {
+      "id": "G2-3",
+      "title": "電気的検証",
+      "criteria": "全 22 項目に合格",
+      "result": "22 / 22 合格",
+      "pass": true
+    },
+    {
+      "id": "G2-4",
+      "title": "ネットリスト健全性",
+      "criteria": "1 ピンだけのネット 0、電源ピンの未接続 0",
+      "result": "1 ピンネット 0、電源未接続 0",
+      "pass": true
+    }
+  ],
+  "iterations": [
+    {
+      "iter": 0,
+      "electronicsMassG": 8,
+      "choice": "coreless-0820 / prop-65 / lipo-1s-600",
+      "auwG": 62.00747364279043,
+      "twr": 2.0033555393049545,
+      "flightTimeMin": 11.857473416130663
+    },
+    {
+      "iter": 1,
+      "electronicsMassG": 6.8394639999999995,
+      "choice": "coreless-0820 / prop-65 / lipo-1s-600",
+      "auwG": 60.84693764279043,
+      "twr": 2.0415656171532732,
+      "flightTimeMin": 12.226941027601441
+    }
+  ],
+  "checks": [
+    {
+      "label": "電流余裕 Id / Imax",
+      "pass": true
+    },
+    {
+      "label": "耐圧余裕 Vds / Vbat,max",
+      "pass": true
+    },
+    {
+      "label": "ゲート駆動 Vgs − Vgs(th)max",
+      "pass": true
+    },
+    {
+      "label": "温度上昇（全開時）",
+      "pass": true
+    },
+    {
+      "label": "GPIO ピーク電流 V/Rg",
+      "pass": true
+    },
+    {
+      "label": "スイッチング時間 Qg·Rg/V",
+      "pass": true
+    },
+    {
+      "label": "プルダウン電流",
+      "pass": true
+    },
+    {
+      "label": "平均電流余裕 IF(AV) / ((1−u)·Im)",
+      "pass": true
+    },
+    {
+      "label": "サージ耐量 IFSM / Imax",
+      "pass": true
+    },
+    {
+      "label": "逆耐圧 VRRM / Vbat,max",
+      "pass": true
+    },
+    {
+      "label": "電流余裕 Iout,max / Iピーク",
+      "pass": true
+    },
+    {
+      "label": "温度上昇（平均負荷・満充電）",
+      "pass": true
+    },
+    {
+      "label": "電池終止電圧でのマイコン電源",
+      "pass": true
+    },
+    {
+      "label": "入力電圧余裕 Vin,max(規格) / Vbat,max",
+      "pass": true
+    },
+    {
+      "label": "満充電時 ADC 入力",
+      "pass": true
+    },
+    {
+      "label": "分圧器の消費電流",
+      "pass": true
+    },
+    {
+      "label": "RC 時定数（ノイズ除去）",
+      "pass": true
+    },
+    {
+      "label": "立ち上がり時間 0.8473·Rp·Cb",
+      "pass": true
+    },
+    {
+      "label": "LED 電流 (3.3 − Vf)/R",
+      "pass": true
+    },
+    {
+      "label": "電池接続部の最大電流",
+      "pass": true
+    },
+    {
+      "label": "モータ配線に必要な幅",
+      "pass": true
+    },
+    {
+      "label": "接続先が 1 ピンしかないネット",
+      "pass": true
+    }
+  ]
+}

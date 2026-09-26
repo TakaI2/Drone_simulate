@@ -1,0 +1,365 @@
+{
+  "goals": [
+    {
+      "id": "G5-1",
+      "title": "実設計値での飛行",
+      "criteria": "段階2〜4 の設計値から導出したパラメータで G1-1〜G1-5 に合格",
+      "result": "G1-1 ✓、G1-2 ✓、G1-3 ✓、G1-4 ✓、G1-5 ✓",
+      "pass": true
+    },
+    {
+      "id": "G5-2",
+      "title": "完成機体の 3D 表示",
+      "criteria": "完成機体（フレーム＋基板＋部品＋モータ＋プロペラ＋電池）の 3D が UI に表示され、飛行シミュレーションできる",
+      "result": "統合タブで表示・飛行を確認（画面表示: 「機体  Class A 設計機（段階2〜4 の設計値から導出）」）",
+      "pass": true
+    }
+  ],
+  "designed": [
+    {
+      "id": "G1-1",
+      "pass": true,
+      "criteria": [
+        {
+          "label": "高度誤差 RMS",
+          "value": 0.005548345366460352,
+          "limit": 0.05,
+          "unit": "m",
+          "op": "lt",
+          "pass": true
+        },
+        {
+          "label": "水平誤差 最大",
+          "value": 0.034884399973193196,
+          "limit": 0.15,
+          "unit": "m",
+          "op": "lt",
+          "pass": true
+        },
+        {
+          "label": "墜落",
+          "value": 0,
+          "limit": 1,
+          "unit": "回",
+          "op": "lt",
+          "pass": true
+        },
+        {
+          "label": "ホバリング到達",
+          "value": 1,
+          "limit": 1,
+          "unit": "",
+          "op": "gte",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "id": "G1-2",
+      "pass": true,
+      "criteria": [
+        {
+          "label": "経由点の最大通過誤差",
+          "value": 0.015563320501888191,
+          "limit": 0.15,
+          "unit": "m",
+          "op": "lt",
+          "pass": true
+        },
+        {
+          "label": "着陸完了",
+          "value": 1,
+          "limit": 1,
+          "unit": "",
+          "op": "gte",
+          "pass": true
+        },
+        {
+          "label": "墜落",
+          "value": 0,
+          "limit": 1,
+          "unit": "回",
+          "op": "lt",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "id": "G1-3",
+      "pass": true,
+      "criteria": [
+        {
+          "label": "衝突",
+          "value": 0,
+          "limit": 1,
+          "unit": "回",
+          "op": "lt",
+          "pass": true
+        },
+        {
+          "label": "目標到達誤差（水平）",
+          "value": 0.022232601195565773,
+          "limit": 0.2,
+          "unit": "m",
+          "op": "lt",
+          "pass": true
+        },
+        {
+          "label": "最小クリアランス",
+          "value": 0.2253632805385565,
+          "limit": 0.05,
+          "unit": "m",
+          "op": "gte",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "id": "G1-4",
+      "pass": true,
+      "criteria": [
+        {
+          "label": "水平位置誤差 最大",
+          "value": 0.17142110117489326,
+          "limit": 0.5,
+          "unit": "m",
+          "op": "lt",
+          "pass": true
+        },
+        {
+          "label": "墜落",
+          "value": 0,
+          "limit": 1,
+          "unit": "回",
+          "op": "lt",
+          "pass": true
+        },
+        {
+          "label": "ホバリング到達",
+          "value": 1,
+          "limit": 1,
+          "unit": "",
+          "op": "gte",
+          "pass": true
+        }
+      ]
+    },
+    {
+      "id": "G1-5",
+      "pass": true,
+      "criteria": [
+        {
+          "label": "フェイルセーフ発動",
+          "value": 1,
+          "limit": 1,
+          "unit": "",
+          "op": "gte",
+          "pass": true
+        },
+        {
+          "label": "着陸完了",
+          "value": 1,
+          "limit": 1,
+          "unit": "",
+          "op": "gte",
+          "pass": true
+        },
+        {
+          "label": "墜落",
+          "value": 0,
+          "limit": 1,
+          "unit": "回",
+          "op": "lt",
+          "pass": true
+        }
+      ]
+    }
+  ],
+  "reference": [
+    {
+      "id": "G1-1",
+      "pass": true
+    },
+    {
+      "id": "G1-2",
+      "pass": true
+    },
+    {
+      "id": "G1-3",
+      "pass": true
+    },
+    {
+      "id": "G1-4",
+      "pass": true
+    },
+    {
+      "id": "G1-5",
+      "pass": true
+    }
+  ],
+  "sensitivity": [
+    {
+      "id": "nominal",
+      "pass": true,
+      "metrics": [
+        0.005548345366460352,
+        0.015563320501888191,
+        0.17142110117489326
+      ]
+    },
+    {
+      "id": "ct-20",
+      "pass": true,
+      "metrics": [
+        0.04226771686362791,
+        0.029796040327960106,
+        0.2114373402362849
+      ]
+    },
+    {
+      "id": "cp+20",
+      "pass": true,
+      "metrics": [
+        0.019541364184467547,
+        0.02350592673326515,
+        0.187106716503947
+      ]
+    },
+    {
+      "id": "tau2",
+      "pass": true,
+      "metrics": [
+        0.005450296181634576,
+        0.015695791772810542,
+        0.17096989068664073
+      ]
+    },
+    {
+      "id": "mass+10",
+      "pass": true,
+      "metrics": [
+        0.019809603879288828,
+        0.02475100788588291,
+        0.1734694356166967
+      ]
+    },
+    {
+      "id": "inertia1.5",
+      "pass": true,
+      "metrics": [
+        0.005544625514809155,
+        0.01562889819360595,
+        0.16900999988130766
+      ]
+    },
+    {
+      "id": "cg3",
+      "pass": true,
+      "metrics": [
+        0.0033888305125144933,
+        0.019953070359265274,
+        0.17244363159663476
+      ]
+    },
+    {
+      "id": "motor-10",
+      "pass": true,
+      "metrics": [
+        0.007665832027909497,
+        0.029834893404954706,
+        0.17354468839593543
+      ]
+    },
+    {
+      "id": "battery-aged",
+      "pass": true,
+      "metrics": [
+        0.005570168975121429,
+        0.015575837567052235,
+        0.17141947528210014
+      ]
+    }
+  ],
+  "worst": [
+    {
+      "id": "G1-1",
+      "pass": false
+    },
+    {
+      "id": "G1-2",
+      "pass": false
+    },
+    {
+      "id": "G1-4",
+      "pass": false
+    }
+  ],
+  "ctSweep": [
+    {
+      "f": 1,
+      "pass": true,
+      "crashed": false,
+      "reached": true,
+      "err": 0.17142110117489326,
+      "hoverU": 0.46976494329639473
+    },
+    {
+      "f": 0.9,
+      "pass": true,
+      "crashed": false,
+      "reached": true,
+      "err": 0.1894192358809079,
+      "hoverU": 0.5058140598922447
+    },
+    {
+      "f": 0.8,
+      "pass": true,
+      "crashed": false,
+      "reached": true,
+      "err": 0.2114373402362849,
+      "hoverU": 0.5512215651731529
+    },
+    {
+      "f": 0.75,
+      "pass": true,
+      "crashed": false,
+      "reached": true,
+      "err": 0.23402447293327208,
+      "hoverU": 0.5790150680364974
+    },
+    {
+      "f": 0.7,
+      "pass": true,
+      "crashed": false,
+      "reached": true,
+      "err": 0.3225478300083213,
+      "hoverU": 0.611374687011654
+    },
+    {
+      "f": 0.65,
+      "pass": false,
+      "crashed": false,
+      "reached": false,
+      "err": null,
+      "hoverU": null
+    },
+    {
+      "f": 0.6,
+      "pass": false,
+      "crashed": false,
+      "reached": false,
+      "err": null,
+      "hoverU": null
+    },
+    {
+      "f": 0.55,
+      "pass": false,
+      "crashed": false,
+      "reached": false,
+      "err": null,
+      "hoverU": null
+    }
+  ],
+  "ctLimit": 0.7,
+  "trajectoryRms": 0.00425085731302805
+}

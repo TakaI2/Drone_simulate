@@ -88,7 +88,7 @@ export const renderReport = (r: ReportPage): string => {
     : '';
   return `<!doctype html><html lang="ja" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(r.title)}</title><style>${PAGE_CSS}${CHART_CSS}</style></head><body>
-<header><h1>${esc(r.title)}</h1><p>${esc(r.subtitle)}　|　生成: ${esc(r.generatedAt)}</p></header>
+<header><h1>${esc(r.title)}</h1><p>${esc(r.subtitle)} | 生成: ${esc(r.generatedAt)}</p></header>
 <nav class="stages">${nav}</nav>
 <main>
 <div class="summary"><div class="tile"><div class="v">${passCount} / ${r.goals.length}</div><div class="l">ゴール合格数</div></div>

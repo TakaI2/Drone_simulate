@@ -20,7 +20,10 @@ import { createWind } from './wind';
 export type MissionPhase = 'arming' | 'takeoff' | 'mission' | 'hover' | 'land' | 'landed' | 'manual' | 'crashed';
 
 export interface SimConfig {
+  /** Vehicle model known to the controller (design values). */
   params: DroneParams;
+  /** True vehicle simulated by the physics (defaults to `params`); used for sim-to-real sensitivity. */
+  plant?: DroneParams;
   env: EnvironmentSpec;
   course: CourseSpec;
   seed: number;
@@ -87,8 +90,10 @@ export const createSimulation = (config: SimConfig): Simulation => {
   const { params, env, course } = config;
   const M = MISSION_DEFAULTS;
   const rng = createRng(config.seed);
-  const dyn = createDynamics(params, env);
-  const ctrl = createController(params, env, dyn.coeffs);
+  const plant = config.plant ?? params;
+  const dyn = createDynamics(plant, env);
+  const ctrlModel = config.plant ? createDynamics(params, env) : dyn;
+  const ctrl = createController(params, env, ctrlModel.coeffs);
   if (!ctrl.allocator.controllable) throw new Error('ロータ配置が制御不能です（配分行列のランク不足）');
   const wind = createWind(env.wind, rng);
   const sensors = createSensors(params.sensors, rng, config.idealSensors);
@@ -104,7 +109,7 @@ export const createSimulation = (config: SimConfig): Simulation => {
   const takeoffPoint = v3(course.start.x, course.start.y, course.cruiseAltitude);
   const goalAir = v3(course.goal.x, course.goal.y, course.cruiseAltitude);
   const events: SimEvent[] = [];
-  let rawPath: Vec3[] = [];
+  let rawPath: Vec3[];
   let path: Vec3[];
   if (course.planPath) {
     const grid = buildVoxelGrid(course.obstacles, {

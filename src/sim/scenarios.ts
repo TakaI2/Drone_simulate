@@ -69,7 +69,7 @@ export const SCENARIOS: ScenarioDef[] = [
       const win = hover.filter((s) => s.t >= t0);
       const rms = Math.sqrt(win.reduce((a, s) => a + (s.p.z - s.sp.z) ** 2, 0) / Math.max(1, win.length));
       const horiz = win.reduce((m, s) => Math.max(m, Math.hypot(s.p.x - s.sp.x, s.p.y - s.sp.y)), 0);
-      return [crit('高度誤差 RMS', rms, 0.05, 'm'), crit('水平誤差 最大', horiz, 0.15, 'm'), crit('墜落', sim.crashed() ? 1 : 0, 1, '回')];
+      return [crit('高度誤差 RMS', win.length ? rms : Infinity, 0.05, 'm'), crit('水平誤差 最大', win.length ? horiz : Infinity, 0.15, 'm'), crit('墜落', sim.crashed() ? 1 : 0, 1, '回'), crit('ホバリング到達', win.length > 0 ? 1 : 0, 1, '', 'gte')];
     },
   },
   {
@@ -117,7 +117,7 @@ export const SCENARIOS: ScenarioDef[] = [
       const t0 = hover.length ? hover[0].t + HOVER_SETTLE_TIME : 0;
       const win = hover.filter((s) => s.t >= t0);
       const maxH = win.reduce((m, s) => Math.max(m, Math.hypot(s.p.x - s.sp.x, s.p.y - s.sp.y)), 0);
-      return [crit('水平位置誤差 最大', maxH, 0.5, 'm'), crit('墜落', sim.crashed() ? 1 : 0, 1, '回')];
+      return [crit('水平位置誤差 最大', win.length ? maxH : Infinity, 0.5, 'm'), crit('墜落', sim.crashed() ? 1 : 0, 1, '回'), crit('ホバリング到達', win.length > 0 ? 1 : 0, 1, '', 'gte')];
     },
   },
   {
@@ -137,6 +137,8 @@ export const SCENARIOS: ScenarioDef[] = [
 ];
 
 export interface RunOptions {
+  /** True vehicle for sim-to-real studies (controller keeps using `params`). */
+  plant?: DroneParams;
   seed?: number;
   estimator?: SimConfig['estimator'];
   idealSensors?: boolean;
@@ -145,6 +147,7 @@ export interface RunOptions {
 export const runScenario = (def: ScenarioDef, params: DroneParams, o: RunOptions = {}): ScenarioResult => {
   const sim = createSimulation({
     params,
+    plant: o.plant,
     env: def.env(),
     course: def.course(),
     seed: o.seed ?? 42,

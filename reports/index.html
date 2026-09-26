@@ -1,0 +1,97 @@
+<!doctype html><html lang="ja" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drone Design Studio 総合レポート</title><style>
+:root{--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--line:#e1e0d9;--card:#fcfcfb;--good:#0ca30c;--good-text:#006300;--critical:#d03b3b;--accent:#2a78d6}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI","Yu Gothic UI",sans-serif;line-height:1.65;font-size:14px}
+header{background:#0d0d0d;color:#fff;padding:18px 32px}
+header h1{margin:0;font-size:20px}
+header p{margin:4px 0 0;color:#c3c2b7;font-size:13px}
+nav.stages{display:flex;gap:6px;padding:8px 32px;background:#1a1a19}
+nav.stages a{color:#c3c2b7;text-decoration:none;font-size:12px;padding:4px 10px;border-radius:6px}
+nav.stages a.cur{background:#383835;color:#fff}
+main{max-width:1180px;margin:0 auto;padding:20px 32px 60px}
+h2{font-size:17px;margin:28px 0 10px;padding-bottom:4px;border-bottom:1px solid var(--line)}
+h3{font-size:14px;margin:18px 0 6px;color:var(--ink2)}
+table{border-collapse:collapse;margin:8px 0 14px;font-size:12.5px;background:var(--card)}
+th,td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top;font-variant-numeric:tabular-nums}
+th{background:#f0efec;color:var(--ink2);font-weight:600}
+.pill{display:inline-block;padding:1px 9px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid currentColor;white-space:nowrap}
+.pill.pass{color:var(--good-text)}
+.pill.fail{color:var(--critical)}
+.summary{display:flex;gap:12px;flex-wrap:wrap;margin:12px 0}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;min-width:160px}
+.tile .v{font-size:26px;font-weight:700}
+.tile .l{font-size:12px;color:var(--ink2)}
+figure{margin:10px 0 18px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px}
+figure img{width:100%;display:block;border-radius:6px}
+figcaption{font-size:12px;color:var(--ink2);padding:6px 4px 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.concern li{margin:4px 0}
+code,pre{font-family:ui-monospace,Consolas,monospace;font-size:12px}
+pre{background:#f0efec;padding:10px;border-radius:6px;overflow:auto}
+.note{color:var(--ink2);font-size:12.5px}
+.viz-root{max-width:760px}
+.svgbox{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;overflow:auto}
+
+.viz-root{color-scheme:light;--surface-1:#fcfcfb;--text-primary:#0b0b0b;--text-secondary:#52514e;--text-muted:#898781;--grid:#e1e0d9;--axis:#c3c2b7;--series-1:#2a78d6;--series-2:#eb6834;--series-3:#1baf7a;--critical:#d03b3b}
+@media (prefers-color-scheme: dark){:root:where(:not([data-theme="light"])) .viz-root{color-scheme:dark;--surface-1:#1a1a19;--text-primary:#ffffff;--text-secondary:#c3c2b7;--text-muted:#898781;--grid:#2c2c2a;--axis:#383835;--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70}}
+:root[data-theme="dark"] .viz-root{color-scheme:dark;--surface-1:#1a1a19;--text-primary:#ffffff;--text-secondary:#c3c2b7;--text-muted:#898781;--grid:#2c2c2a;--axis:#383835;--series-1:#3987e5;--series-2:#d95926;--series-3:#199e70}
+.viz-root{background:var(--surface-1);border-radius:8px;padding:8px 8px 4px;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;position:relative}
+.viz-root svg{display:block;width:100%;height:auto}
+.viz-title{font-size:13px;font-weight:600;fill:var(--text-primary)}
+.viz-axis-label,.viz-tick{font-size:10px;fill:var(--text-muted);font-variant-numeric:tabular-nums}
+.viz-legend{font-size:11px;fill:var(--text-secondary)}
+.viz-direct{font-size:10px;fill:var(--text-secondary)}
+.viz-tip{position:absolute;pointer-events:none;background:var(--surface-1);color:var(--text-primary);border:1px solid var(--axis);border-radius:6px;padding:4px 8px;font-size:11px;white-space:nowrap;display:none;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.viz-tip b{font-weight:600}
+</style></head><body>
+<header><h1>Drone Design Studio 総合レポート</h1><p>飛行体のシミュレーションから電気・基板・機体設計までを一貫して行うツールと、その初号機（Class A マイクロ・クアッド） | 生成: 2026-09-26 09:29</p></header>
+<nav class="stages"><a href="index.html" class="cur">総合</a><a href="stage1.html" class="">1 シミュレーション</a><a href="stage2.html" class="">2 推進・電気</a><a href="stage3.html" class="">3 部品・基板</a><a href="stage4.html" class="">4 機体</a><a href="stage5.html" class="">5 統合</a></nav>
+<main>
+<div class="summary"><div class="tile"><div class="v">5 / 5</div><div class="l">ゴール合格数</div></div>
+<div class="tile"><div class="v"><span class="pill pass">✔ 合格</span></div><div class="l">段階判定</div></div></div>
+<h2>ゴール判定</h2><table><thead><tr><th>ID</th><th>ゴール</th><th>合格基準</th><th>結果</th><th>判定</th></tr></thead><tbody><tr><td>段階1</td><td>飛行空間とシミュレーション</td><td>G1-1、G1-2、G1-3、G1-4、G1-5</td><td>5 / 5 合格</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td>段階2</td><td>推進系サイジングと電気系統設計</td><td>G2-1、G2-2、G2-3、G2-4</td><td>4 / 4 合格</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td>段階3</td><td>部品選定・3D モデル・ブレッドボード・基板設計</td><td>G3-1、G3-2、G3-3、G3-4、G3-5、G3-6</td><td>6 / 6 合格</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td>段階4</td><td>機体総合設計</td><td>G4-1、G4-2、G4-3、G4-4</td><td>4 / 4 合格</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td>段階5</td><td>統合（Sim-to-Real）と完成機体</td><td>G5-1、G5-2</td><td>2 / 2 合格</td><td><span class="pill pass">✔ 合格</span></td></tr></tbody></table>
+<h2>完成機体</h2><div class="grid2"><figure><img src="img/stage5-fly-2.png" alt="完成機体（設計データから組み立てた 3D）が障害物コースを自律飛行"><figcaption>完成機体（設計データから組み立てた 3D）が障害物コースを自律飛行</figcaption></figure><figure><img src="img/stage4-iso.png" alt="完成機体（フレーム・基板・部品・モータ・プロペラ・電池）"><figcaption>完成機体（フレーム・基板・部品・モータ・プロペラ・電池）</figcaption></figure><figure><img src="img/stage3-pcb-3d.png" alt="自動配置・自動配線したフライトコントローラ基板（40×40 mm、2 層）"><figcaption>自動配置・自動配線したフライトコントローラ基板（40×40 mm、2 層）</figcaption></figure><figure><img src="img/stage1-G1-3-iso.png" alt="段階1：障害物コースの経路計画と飛行"><figcaption>段階1：障害物コースの経路計画と飛行</figcaption></figure></div>
+<h2>plan.txt からのブラッシュアップ（要点）</h2><ul>
+<li><b>段階の定義</b>：本文 1〜4 とゴール「1〜5」の不一致を解消し、段階5 を「設計値でシミュレーションを再検証し完成機体を表示する統合段階」とした。</li>
+<li><b>単一の設計データ</b>：段階1 は参照機で始め、段階2〜4 の結果（質量・慣性・推力係数）を段階5 でシミュレーションに戻す Sim-to-Real ループにした。</li>
+<li><b>制御の分担</b>：Raspberry Pi は非リアルタイムのため姿勢制御には使わず、マイコン（ESP32-S3）を FC、Pi はコンパニオン（Class B）とした。</li>
+<li><b>ESC</b>：ブラシレス ESC の自作は危険・高難度のため、初号機はブラシ付きコアレス＋MOSFET 直駆動（全ディスクリート）、Class B は市販 AM32 ESC とした。</li>
+<li><b>自律飛行の前提</b>：屋内は GPS が使えないため、オプティカルフロー＋ToF で自己位置推定する構成とし、シミュレータにもセンサ誤差を入れた。</li>
+<li><b>法規</b>：100 g 未満（模型航空機）を目標に重量を管理（完成機 56.6 g）、無線は技適取得済みモジュールに限定。</li>
+<li><b>部品・3D</b>：販売サイトのスクレイピングは規約上行わず検索リンクで対応、「全ディスクリートの 3D」は規格パッケージのパラメトリック生成器として実現。</li>
+<li><b>ライセンス</b>：本体は MIT/BSD/Apache 系の依存のみ。GPL（ArduPilot、Betaflight、ESP-Drone、AM32、Freerouting）は設計の参考に留め、コードは取り込んでいない（商用利用に制約なし）。</li></ul>
+<p class="note">詳細: <code>.tmp/requirements.md</code>（精査結果と要件）、<code>.tmp/design.md</code>（設計）、<code>.tmp/test_design.md</code>、<code>.tmp/tasks.md</code></p>
+<h2>全ゴール一覧</h2><table><thead><tr><th>段階</th><th>ID</th><th>ゴール</th><th>結果</th><th>判定</th></tr></thead><tbody><tr><td><a href="stage1.html">1</a></td><td>G1-1</td><td>ホバリング精度</td><td>高度誤差 RMS 0.005m、水平誤差 最大 0.035m、墜落 0.000回、ホバリング到達 1.000</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage1.html">1</a></td><td>G1-2</td><td>経由点飛行</td><td>経由点の最大通過誤差 0.016m、着陸完了 1.000、墜落 0.000回</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage1.html">1</a></td><td>G1-3</td><td>障害物コース自律飛行</td><td>衝突 0.000回、目標到達誤差（水平） 0.023m、最小クリアランス 0.225m</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage1.html">1</a></td><td>G1-4</td><td>耐風ホバリング</td><td>水平位置誤差 最大 0.186m、墜落 0.000回、ホバリング到達 1.000</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage1.html">1</a></td><td>G1-5</td><td>低電圧フェイルセーフ</td><td>フェイルセーフ発動 1.000、着陸完了 1.000、墜落 0.000回</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage2.html">2</a></td><td>G2-1</td><td>推力余裕</td><td>TWR 2.04、スロットル 55.1 %</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage2.html">2</a></td><td>G2-2</td><td>飛行時間</td><td>12.2 分</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage2.html">2</a></td><td>G2-3</td><td>電気的検証</td><td>22 / 22 合格</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage2.html">2</a></td><td>G2-4</td><td>ネットリスト健全性</td><td>1 ピンネット 0、電源未接続 0</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage3.html">3</a></td><td>G3-1</td><td>部品カタログ対応</td><td>22 品目中 寸法/重量 22、購入先 18/18</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage3.html">3</a></td><td>G3-2</td><td>3D モデル</td><td>使用 17 種すべて生成、アーカイブ 47 種</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage3.html">3</a></td><td>G3-3</td><td>全ネット配線</td><td>未配線 0（トラック 685 本、ビア 177 個）</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage3.html">3</a></td><td>G3-4</td><td>DRC</td><td>違反 0（検査ペア 109,613）</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage3.html">3</a></td><td>G3-5</td><td>製造データ</td><td>9 ファイル、構文エラー 0</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage3.html">3</a></td><td>G3-6</td><td>ブレッドボード配置</td><td>✓衝突 0、✓重複 0、✓範囲外 0、✓ネット 24 本すべて導通、✓誤接続 0</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage4.html">4</a></td><td>G4-1</td><td>重心バランス</td><td>0.001 mm（電池位置 x=-3.5 mm, y=0.0 mm で調整）</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage4.html">4</a></td><td>G4-2</td><td>プロペラ干渉</td><td>先端間 10.0 mm、垂直 5.0 mm（最も近い: モータ固定チューブ上端）</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage4.html">4</a></td><td>G4-3</td><td>STL の健全性</td><td>境界 0、非多様体 0、向き 0（manifold-3d: NoError）</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage4.html">4</a></td><td>G4-4</td><td>全備重量</td><td>56.6 g</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage5.html">5</a></td><td>G5-1</td><td>実設計値での飛行</td><td>G1-1 ✓、G1-2 ✓、G1-3 ✓、G1-4 ✓、G1-5 ✓</td><td><span class="pill pass">✔ 合格</span></td></tr><tr><td><a href="stage5.html">5</a></td><td>G5-2</td><td>完成機体の 3D 表示</td><td>統合タブで表示・飛行を確認（画面表示: 「機体  Class A 設計機（段階2〜4 の設計値から導出）」）</td><td><span class="pill pass">✔ 合格</span></td></tr></tbody></table>
+<h2>各段階のレポート</h2><ul><li><a href="stage1.html">段階1：飛行空間とシミュレーション</a>（5/5 合格）</li><li><a href="stage2.html">段階2：推進系サイジングと電気系統設計</a>（4/4 合格）</li><li><a href="stage3.html">段階3：部品選定・3D モデル・ブレッドボード・基板設計</a>（6/6 合格）</li><li><a href="stage4.html">段階4：機体総合設計</a>（4/4 合格）</li><li><a href="stage5.html">段階5：統合（Sim-to-Real）と完成機体</a>（2/2 合格）</li></ul>
+<h2>使い方</h2><pre>npm install
+npm run dev          # UI（http://localhost:5173）: 1 シミュレーション / 2 推進・電気 / 3 部品・基板 / 4 機体 / 5 統合
+npm test             # 単体テスト
+npm run all          # 段階1〜5 のゴール判定・成果物・レポートを一括生成（Chrome を使って撮影）</pre>
+<table><thead><tr><th>成果物</th><th>場所</th></tr></thead><tbody><tr><td>回路図・ネットリスト・BOM</td><td>out/stage2/（schematic.svg、netlist.net、bom.csv）</td></tr><tr><td>基板製造データ（Gerber・ドリル）</td><td>out/stage3/drone_fc_gerber.zip</td></tr><tr><td>部品実装データ（JLC 形式 BOM・CPL）</td><td>out/stage3/drone_fc_bom_jlc.csv、drone_fc_cpl.csv</td></tr><tr><td>KiCad 基板（手修正用）</td><td>out/stage3/drone_fc.kicad_pcb</td></tr><tr><td>部品 3D アーカイブ</td><td>out/parts3d/（STL 47 種＋catalog.json）</td></tr><tr><td>フレーム STL（3D プリント）</td><td>out/stage4/frame.stl</td></tr><tr><td>シミュレーション用パラメータ</td><td>out/stage5/drone_params.json</td></tr></tbody></table>
+<h2>懸念点・今後の課題</h2><ul class="concern"><li>全段階ともシミュレーションと計算上の検証であり、実機は未製作。推力台での係数測定（段階5 の手順）→ ブレッドボード試験 → 基板発注 → 組立 → 係留試験 → 屋内飛行の順で実機検証を進める必要がある。</li><li>LGA センサと無線モジュールのランドパターン、モータ・プロペラ係数は代表値・近似値。発注・製作前に必ずデータシートと実測で確認すること（各レポートの「要確認」）。</li><li>実機ファームウェアは本ツールの範囲外（要件と構成のみ段階5 に記載）。</li><li>感度解析の結果、推力係数が設計値から 30 % 以上ずれると積分補償が不足する。推力台での係数更新を前提とすること。</li></ul>
+<h2>参考にした OSS・資料</h2><table><thead><tr><th>名称</th><th>ライセンス</th><th>利用方法</th></tr></thead><tbody><tr><td><a href="https://github.com/mrdoob/three.js">three.js</a></td><td>MIT</td><td>3D 描画（依存として取り込み）</td></tr><tr><td><a href="https://github.com/elalish/manifold">manifold-3d</a></td><td>Apache-2.0</td><td>フレームの多様体ブーリアン演算（依存として取り込み）</td></tr><tr><td><a href="https://github.com/PX4/PX4-Autopilot">PX4-Autopilot</a></td><td>BSD-3-Clause</td><td>カスケード制御・推力ベクトル→姿勢・ミキサ飽和処理の構成を参考（コード流用なし）</td></tr><tr><td><a href="https://github.com/PX4/jMAVSim">jMAVSim</a></td><td>BSD-3-Clause</td><td>多ロータ物理モデルの構成を参考</td></tr><tr><td><a href="https://github.com/utiasDSL/gym-pybullet-drones">gym-pybullet-drones</a></td><td>MIT</td><td>推力 ∝ ω²・地面効果・抗力モデルの考え方を参考</td></tr><tr><td><a href="https://github.com/spencerfolk/rotorpy">RotorPy</a></td><td>MIT</td><td>ロータ抗力・風モデルの考え方を参考</td></tr><tr><td><a href="https://github.com/bitcraze/crazyflie-simulation">crazyflie-simulation</a></td><td>MIT</td><td>マイクロ機のパラメータ規模感を参考</td></tr><tr><td><a href="https://github.com/espressif/esp-drone">ESP-Drone</a></td><td>GPL-3.0</td><td>ESP32 マイクロ機の回路構成（MOSFET 直駆動）を参考。コード流用なし。派生ファームウェアは GPL</td></tr><tr><td><a href="https://github.com/bitcraze/crazyflie-firmware">Crazyflie firmware / Flow deck</a></td><td>GPL-3.0</td><td>オプティカルフロー＋ToF による屋内位置推定の構成を参考。コード流用なし</td></tr><tr><td><a href="https://github.com/ArduPilot/ardupilot">ArduPilot</a></td><td>GPL-3.0</td><td>フェイルセーフ（低電圧着陸）の定石を参考。コード流用なし</td></tr><tr><td><a href="https://github.com/betaflight/betaflight">Betaflight</a></td><td>GPL-3.0</td><td>角速度ループの D 項フィルタの定石を参考。コード流用なし</td></tr><tr><td><a href="https://github.com/am32-firmware/AM32">AM32 ESC firmware</a></td><td>GPL-3.0</td><td>Class B で市販 ESC に書き込むファームウェアとして推奨（本ツールには取り込まない）</td></tr><tr><td><a href="https://github.com/devbisme/skidl">SKiDL</a></td><td>MIT</td><td>コードで回路を記述しネットリストを生成する手法を参考</td></tr><tr><td><a href="https://github.com/freerouting/freerouting">Freerouting</a></td><td>GPL-3.0</td><td>取り込まない。外部ツールとして任意利用可能な旨を案内</td></tr><tr><td><a href="https://gitlab.com/kicad/libraries/kicad-packages3D">KiCad 3D models</a></td><td>CC-BY-SA 4.0（設計物例外あり）</td><td>同梱しない。高精度モデルが必要な場合の任意参照先</td></tr><tr><td><a href="https://www.ucamco.com/en/gerber">Ucamco Gerber Format Specification</a></td><td>公開仕様</td><td>Gerber RS-274X 出力の仕様</td></tr></tbody></table>
+</main><script>
+(function(){
+  function attach(root){
+    if(root.__vizBound) return; root.__vizBound=true;
+    var data=JSON.parse(root.getAttribute('data-chart'));
+    var svg=root.querySelector('svg'), hit=root.querySelector('.viz-hit'), cross=root.querySelector('.viz-cross'), tip=root.querySelector('.viz-tip');
+    var dots=data.series.map(function(s){var c=document.createElementNS('http://www.w3.org/2000/svg','circle');c.setAttribute('r','4');c.setAttribute('fill','var('+s.color+')');c.setAttribute('stroke','var(--surface-1)');c.setAttribute('stroke-width','2');c.setAttribute('visibility','hidden');svg.appendChild(c);return c;});
+    function nearest(pts,x){var lo=0,hi=pts.length-1;while(hi-lo>1){var mid=(lo+hi)>>1;if(pts[mid][0]<x)lo=mid;else hi=mid;}return Math.abs(pts[lo][0]-x)<Math.abs(pts[hi][0]-x)?pts[lo]:pts[hi];}
+    hit.addEventListener('mousemove',function(ev){
+      var r=svg.getBoundingClientRect(), k=data.W/r.width, px=(ev.clientX-r.left)*k;
+      var x=data.xMin+(px-data.m.l)/data.pw*(data.xMax-data.xMin);
+      var sx=function(v){return data.m.l+(v-data.xMin)/(data.xMax-data.xMin)*data.pw}, sy=function(v){return data.m.t+(1-(v-data.yMin)/(data.yMax-data.yMin))*data.ph};
+      cross.setAttribute('x1',px);cross.setAttribute('x2',px);cross.setAttribute('visibility','visible');
+      var html='<b>'+data.xLabel+': '+x.toFixed(2)+'</b>';
+      data.series.forEach(function(s,i){if(!s.points.length)return;var p=nearest(s.points,x);dots[i].setAttribute('cx',sx(p[0]));dots[i].setAttribute('cy',sy(p[1]));dots[i].setAttribute('visibility','visible');html+='<br><span style="color:var('+s.color+')">&#9679;</span> '+s.name+': '+p[1].toFixed(3);});
+      tip.innerHTML=html;tip.style.display='block';
+      var left=(ev.clientX-root.getBoundingClientRect().left)+12; if(left>root.clientWidth-160) left-=180; tip.style.left=left+'px';tip.style.top='36px';
+    });
+    hit.addEventListener('mouseleave',function(){cross.setAttribute('visibility','hidden');tip.style.display='none';dots.forEach(function(d){d.setAttribute('visibility','hidden')});});
+  }
+  window.__attachVizHover=function(scope){(scope||document).querySelectorAll('.viz-root[data-chart]').forEach(attach);};
+  window.__attachVizHover(document);
+})();
+</script></body></html>
