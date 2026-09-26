@@ -46,7 +46,7 @@
     (comp (ref "C11") (value "100 nF") (footprint "DroneDesign:C0603") (fields (field (name "MPN") "GRM188R71C104KA01D")))
     (comp (ref "R15") (value "1kΩ") (footprint "DroneDesign:R0603") (fields (field (name "MPN") "RC0603FR-071KL")))
     (comp (ref "D5") (value "APT1608EC") (footprint "DroneDesign:LED0603") (fields (field (name "MPN") "APT1608EC")))
-    (comp (ref "J7") (value "PH-1x6 2.54mm") (footprint "DroneDesign:PinHeader-1x6-2.54") (fields (field (name "MPN") "PH-1x6 2.54mm")))
+    (comp (ref "J7") (value "—") (footprint "DroneDesign:TestPad-1x6-1.27") (fields (field (name "MPN") "—")))
     (comp (ref "SW1") (value "TS-1187A-B-A-B") (footprint "DroneDesign:Tact-3x4-SMD") (fields (field (name "MPN") "TS-1187A-B-A-B")))
     (comp (ref "SW2") (value "TS-1187A-B-A-B") (footprint "DroneDesign:Tact-3x4-SMD") (fields (field (name "MPN") "TS-1187A-B-A-B")))
     (comp (ref "H1") (value "—") (footprint "DroneDesign:MountHole-M2") (fields (field (name "MPN") "—")))

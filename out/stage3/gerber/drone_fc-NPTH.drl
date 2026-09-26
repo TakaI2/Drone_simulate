@@ -1,0 +1,15 @@
+M48
+; Drone Design Studio NPTH drill file
+; #@! TF.FileFunction,NonPlated,1,2,NPTH
+FMAT,2
+METRIC
+T1C2.200
+%
+G90
+G05
+T1
+X37.600Y37.600
+X2.400Y37.600
+X2.400Y2.400
+X37.600Y2.400
+M30

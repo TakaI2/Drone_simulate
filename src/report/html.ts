@@ -36,7 +36,7 @@ export const table = (head: string[], rows: Array<Array<string | number>>): stri
     .join('')}</tbody></table>`;
 
 export const figure = (src: string, caption: string): string =>
-  `<figure><img src="${src}" alt="${esc(caption)}" loading="lazy"><figcaption>${esc(caption)}</figcaption></figure>`;
+  `<figure><img src="${src}" alt="${esc(caption)}"><figcaption>${esc(caption)}</figcaption></figure>`;
 
 const PAGE_CSS = `
 :root{--page:#f9f9f7;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--line:#e1e0d9;--card:#fcfcfb;--good:#0ca30c;--good-text:#006300;--critical:#d03b3b;--accent:#2a78d6}

@@ -21,6 +21,8 @@ export interface Component {
   group?: string;
   /** Pins that dissipate heat (get thermal copper + vias on the PCB). */
   thermalPins?: string[];
+  /** Placement hint: keep close to this component (decoupling, local support parts). */
+  near?: string;
 }
 
 export interface Net {
@@ -87,17 +89,17 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
 
   // ---------------- power ----------------
   add('J', 'BatteryPad', 'power', [{ num: '1', name: 'BAT+', net: 'VBAT' }, { num: '2', name: 'BAT-', net: 'GND' }]);
-  add('C', 'C1206-47u', 'power', two('VBAT', 'GND'));
-  add('C', 'C1206-47u', 'power', two('VBAT', 'GND'));
+  add('C', 'C1206-47u', 'power', two('VBAT', 'GND'), { near: 'J1' });
+  add('C', 'C1206-47u', 'power', two('VBAT', 'GND'), { near: 'J1' });
   add('U', 'XC6220B331MR', 'power', [
     { num: '1', name: 'VIN', net: 'VBAT' },
     { num: '2', name: 'VSS', net: 'GND' },
     { num: '3', name: 'CE', net: 'VBAT' },
     { num: '4', name: 'NC', net: null },
     { num: '5', name: 'VOUT', net: '3V3' },
-  ], { thermalPins: ['2'] });
-  add('C', 'C0603-1u', 'power', two('VBAT', 'GND'));
-  add('C', 'C0805-10u', 'power', two('3V3', 'GND'));
+  ], { thermalPins: ['2'], near: 'J1' });
+  add('C', 'C0603-1u', 'power', two('VBAT', 'GND'), { near: 'U1' });
+  add('C', 'C0805-10u', 'power', two('3V3', 'GND'), { near: 'U1' });
 
   // ---------------- MCU ----------------
   const motorNet = (i: number): string => `PWM${i + 1}`;
@@ -108,11 +110,11 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
   };
   for (let i = 0; i < o.rotorCount; i++) gpioNet[MOTOR_GPIOS[i]] = motorNet(i);
   add('U', 'ESP32-S3-WROOM-1-N8', 'mcu', WROOM1_PINS.map(([num, name]) => ({ num, name, net: gpioNet[name] ?? null })));
-  add('C', 'C0805-10u', 'mcu', two('3V3', 'GND'));
-  add('C', 'C0603-100n', 'mcu', two('3V3', 'GND'));
-  add('R', 'R0603-10kΩ', 'mcu', two('3V3', 'EN'));
-  add('C', 'C0603-1u', 'mcu', two('EN', 'GND'));
-  add('R', 'R0603-10kΩ', 'mcu', two('3V3', 'BOOT'));
+  add('C', 'C0805-10u', 'mcu', two('3V3', 'GND'), { near: 'U2' });
+  add('C', 'C0603-100n', 'mcu', two('3V3', 'GND'), { near: 'U2' });
+  add('R', 'R0603-10kΩ', 'mcu', two('3V3', 'EN'), { near: 'U2' });
+  add('C', 'C0603-1u', 'mcu', two('EN', 'GND'), { near: 'U2' });
+  add('R', 'R0603-10kΩ', 'mcu', two('3V3', 'BOOT'), { near: 'U2' });
 
   // ---------------- sensors ----------------
   add('U', 'ICM-42688-P', 'sensors', [
@@ -131,8 +133,8 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
     { num: '13', name: 'AP_SCLK', net: 'SPI_SCK' },
     { num: '14', name: 'AP_SDI', net: 'SPI_MOSI' },
   ]);
-  add('C', 'C0603-100n', 'sensors', two('3V3', 'GND'));
-  add('C', 'C0603-100n', 'sensors', two('3V3', 'GND'));
+  add('C', 'C0603-100n', 'sensors', two('3V3', 'GND'), { near: 'U3' });
+  add('C', 'C0603-100n', 'sensors', two('3V3', 'GND'), { near: 'U3' });
   add('U', 'BMP390', 'sensors', [
     { num: '1', name: 'VDDIO', net: '3V3' },
     { num: '2', name: 'SCK', net: 'I2C_SCL' },
@@ -145,9 +147,9 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
     { num: '9', name: 'VSS', net: 'GND' },
     { num: '10', name: 'VDD', net: '3V3' },
   ]);
-  add('C', 'C0603-100n', 'sensors', two('3V3', 'GND'));
-  add('R', 'R0603-4.7kΩ', 'sensors', two('3V3', 'I2C_SDA'));
-  add('R', 'R0603-4.7kΩ', 'sensors', two('3V3', 'I2C_SCL'));
+  add('C', 'C0603-100n', 'sensors', two('3V3', 'GND'), { near: 'U4' });
+  add('R', 'R0603-4.7kΩ', 'sensors', two('3V3', 'I2C_SDA'), { near: 'U4' });
+  add('R', 'R0603-4.7kΩ', 'sensors', two('3V3', 'I2C_SCL'), { near: 'U4' });
   add('J', 'JST-SM08B-SRSS-TB', 'sensors', [
     { num: '1', name: '3V3', net: '3V3' },
     { num: '2', name: 'GND', net: 'GND' },
@@ -164,17 +166,19 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
   // ---------------- motor drivers ----------------
   for (let i = 0; i < o.rotorCount; i++) {
     const g = `M${i + 1}`;
-    add('R', 'R0603-47Ω', 'motors', two(motorNet(i), `GATE${i + 1}`), { group: g });
-    add('R', 'R0603-10kΩ', 'motors', two(`GATE${i + 1}`, 'GND'), { group: g });
+    const qRef = `Q${(counters.Q ?? 0) + 1}`;
+    const padRef = `J${(counters.J ?? 0) + 1}`;
+    add('R', 'R0603-47Ω', 'motors', two(motorNet(i), `GATE${i + 1}`), { group: g, near: qRef });
+    add('R', 'R0603-10kΩ', 'motors', two(`GATE${i + 1}`, 'GND'), { group: g, near: qRef });
     add('Q', 'AO3400A', 'motors', [
       { num: '1', name: 'G', net: `GATE${i + 1}` },
       { num: '2', name: 'S', net: 'GND' },
       { num: '3', name: 'D', net: `MOT${i + 1}-` },
-    ], { group: g, thermalPins: ['3'] });
+    ], { group: g, thermalPins: ['3'], near: padRef });
     add('D', 'B5819W', 'motors', [
       { num: '1', name: 'K', net: 'VBAT' },
       { num: '2', name: 'A', net: `MOT${i + 1}-` },
-    ], { group: g });
+    ], { group: g, near: padRef });
     add('J', 'MotorPad', 'motors', [
       { num: '1', name: 'M+', net: 'VBAT' },
       { num: '2', name: 'M-', net: `MOT${i + 1}-` },
@@ -185,7 +189,7 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
   add('R', 'R0603-100kΩ', 'monitor', two('VBAT', 'VBAT_SENSE'));
   add('R', 'R0603-100kΩ', 'monitor', two('VBAT_SENSE', 'GND'));
   add('C', 'C0603-100n', 'monitor', two('VBAT_SENSE', 'GND'));
-  add('R', 'R0603-1kΩ', 'monitor', two('LED', 'LED_A'));
+  add('R', 'R0603-1kΩ', 'monitor', two('LED', 'LED_A'), { near: 'U2' });
   add('D', 'LED0603-R', 'monitor', [
     { num: '1', name: 'K', net: 'GND' },
     { num: '2', name: 'A', net: 'LED_A' },

@@ -1,0 +1,758 @@
+{
+  "generated": "2026-09-26 09:08",
+  "units": "mm",
+  "entries": [
+    {
+      "id": "R0402",
+      "family": "chip",
+      "description": "チップ抵抗 0402（メートル 1005）",
+      "standard": "EIA 0402 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        2.06,
+        1.14
+      ],
+      "heightMm": 0.35,
+      "verify": false,
+      "stlFile": "R0402.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "R0603",
+      "family": "chip",
+      "description": "チップ抵抗 0603（メートル 1608）",
+      "standard": "EIA 0603 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        2.95,
+        1.45
+      ],
+      "heightMm": 0.45,
+      "verify": false,
+      "stlFile": "R0603.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "R0805",
+      "family": "chip",
+      "description": "チップ抵抗 0805（メートル 2013）",
+      "standard": "EIA 0805 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        3.35,
+        1.9
+      ],
+      "heightMm": 0.6,
+      "verify": false,
+      "stlFile": "R0805.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "R1206",
+      "family": "chip",
+      "description": "チップ抵抗 1206（メートル 3216）",
+      "standard": "EIA 1206 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        4.55,
+        2.25
+      ],
+      "heightMm": 0.6,
+      "verify": false,
+      "stlFile": "R1206.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "C0402",
+      "family": "chip",
+      "description": "積層セラミックコンデンサ 0402（メートル 1005）",
+      "standard": "EIA 0402 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        2.06,
+        1.14
+      ],
+      "heightMm": 0.5,
+      "verify": false,
+      "stlFile": "C0402.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "C0603",
+      "family": "chip",
+      "description": "積層セラミックコンデンサ 0603（メートル 1608）",
+      "standard": "EIA 0603 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        2.95,
+        1.45
+      ],
+      "heightMm": 0.8,
+      "verify": false,
+      "stlFile": "C0603.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "C0805",
+      "family": "chip",
+      "description": "積層セラミックコンデンサ 0805（メートル 2013）",
+      "standard": "EIA 0805 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        3.35,
+        1.9
+      ],
+      "heightMm": 1.25,
+      "verify": false,
+      "stlFile": "C0805.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "C1206",
+      "family": "chip",
+      "description": "積層セラミックコンデンサ 1206（メートル 3216）",
+      "standard": "EIA 1206 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        4.55,
+        2.25
+      ],
+      "heightMm": 1.6,
+      "verify": false,
+      "stlFile": "C1206.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "C1210",
+      "family": "chip",
+      "description": "積層セラミックコンデンサ 1210（メートル 3225）",
+      "standard": "EIA 1210 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        4.55,
+        3.15
+      ],
+      "heightMm": 2.5,
+      "verify": false,
+      "stlFile": "C1210.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "L0603",
+      "family": "chip",
+      "description": "チップインダクタ 0603（メートル 1608）",
+      "standard": "EIA 0603 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        2.95,
+        1.45
+      ],
+      "heightMm": 0.8,
+      "verify": false,
+      "stlFile": "L0603.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "L0805",
+      "family": "chip",
+      "description": "チップインダクタ 0805（メートル 2013）",
+      "standard": "EIA 0805 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        3.35,
+        1.9
+      ],
+      "heightMm": 1.25,
+      "verify": false,
+      "stlFile": "L0805.stl",
+      "stlBytes": 3084,
+      "triangles": 60
+    },
+    {
+      "id": "LED0603",
+      "family": "chip",
+      "description": "チップ LED 0603（メートル 1608）",
+      "standard": "EIA 0603 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        2.95,
+        1.45
+      ],
+      "heightMm": 0.85,
+      "verify": false,
+      "stlFile": "LED0603.stl",
+      "stlBytes": 3684,
+      "triangles": 72
+    },
+    {
+      "id": "LED0805",
+      "family": "chip",
+      "description": "チップ LED 0805（メートル 2013）",
+      "standard": "EIA 0805 / IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        3.35,
+        1.9
+      ],
+      "heightMm": 0.9,
+      "verify": false,
+      "stlFile": "LED0805.stl",
+      "stlBytes": 3684,
+      "triangles": 72
+    },
+    {
+      "id": "SOT-23",
+      "family": "sot",
+      "description": "SOT-23 小型トランジスタ/IC パッケージ",
+      "standard": "JEDEC TO-236 / MO-178, IPC-7351 nominal",
+      "pads": 3,
+      "courtyardMm": [
+        4.1,
+        3.4
+      ],
+      "heightMm": 1.1,
+      "verify": false,
+      "stlFile": "SOT-23.stl",
+      "stlBytes": 4284,
+      "triangles": 84
+    },
+    {
+      "id": "SOT-23-5",
+      "family": "sot",
+      "description": "SOT-23-5 小型トランジスタ/IC パッケージ",
+      "standard": "JEDEC TO-236 / MO-178, IPC-7351 nominal",
+      "pads": 5,
+      "courtyardMm": [
+        4.1,
+        3.4
+      ],
+      "heightMm": 1.1,
+      "verify": false,
+      "stlFile": "SOT-23-5.stl",
+      "stlBytes": 6684,
+      "triangles": 132
+    },
+    {
+      "id": "SOT-23-6",
+      "family": "sot",
+      "description": "SOT-23-6 小型トランジスタ/IC パッケージ",
+      "standard": "JEDEC TO-236 / MO-178, IPC-7351 nominal",
+      "pads": 6,
+      "courtyardMm": [
+        4.1,
+        3.4
+      ],
+      "heightMm": 1.1,
+      "verify": false,
+      "stlFile": "SOT-23-6.stl",
+      "stlBytes": 7884,
+      "triangles": 156
+    },
+    {
+      "id": "SOD-123",
+      "family": "diode",
+      "description": "SOD-123 小型ダイオード（1 番ピン＝カソード）",
+      "standard": "JEDEC SOD-123, IPC-7351 nominal",
+      "pads": 2,
+      "courtyardMm": [
+        4.68,
+        2.1
+      ],
+      "heightMm": 1.17,
+      "verify": false,
+      "stlFile": "SOD-123.stl",
+      "stlBytes": 3684,
+      "triangles": 72
+    },
+    {
+      "id": "SOT-223",
+      "family": "sot",
+      "description": "SOT-223 電源用（LDO・MOSFET 等、タブ付き）",
+      "standard": "JEDEC TO-261, IPC-7351 nominal",
+      "pads": 4,
+      "courtyardMm": [
+        7,
+        8.8
+      ],
+      "heightMm": 1.7,
+      "verify": false,
+      "stlFile": "SOT-223.stl",
+      "stlBytes": 3684,
+      "triangles": 72
+    },
+    {
+      "id": "SOIC-8",
+      "family": "soic",
+      "description": "SOIC-8 表面実装 IC",
+      "standard": "JEDEC MS-012, IPC-7351 nominal",
+      "pads": 8,
+      "courtyardMm": [
+        7.45,
+        5.31
+      ],
+      "heightMm": 1.57,
+      "verify": false,
+      "stlFile": "SOIC-8.stl",
+      "stlBytes": 15084,
+      "triangles": 300
+    },
+    {
+      "id": "SOIC-14",
+      "family": "soic",
+      "description": "SOIC-14 表面実装 IC",
+      "standard": "JEDEC MS-012, IPC-7351 nominal",
+      "pads": 14,
+      "courtyardMm": [
+        7.45,
+        9.12
+      ],
+      "heightMm": 1.57,
+      "verify": false,
+      "stlFile": "SOIC-14.stl",
+      "stlBytes": 22284,
+      "triangles": 444
+    },
+    {
+      "id": "QFN-32-5x5",
+      "family": "qfn",
+      "description": "QFN-32 5×5 mm（中央に放熱パッド）",
+      "standard": "JEDEC MO-220, IPC-7351 nominal",
+      "pads": 33,
+      "courtyardMm": [
+        5.7,
+        5.7
+      ],
+      "heightMm": 0.92,
+      "verify": false,
+      "stlFile": "QFN-32-5x5.stl",
+      "stlBytes": 25284,
+      "triangles": 504
+    },
+    {
+      "id": "LGA-14-2.5x3",
+      "family": "lga",
+      "description": "LGA-14 2.5×3.0 mm（6 軸 IMU 系）",
+      "standard": "メーカー推奨ランドパターン（近似）",
+      "pads": 14,
+      "courtyardMm": [
+        5.65,
+        6.15
+      ],
+      "heightMm": 0.93,
+      "verify": true,
+      "stlFile": "LGA-14-2.5x3.stl",
+      "stlBytes": 13884,
+      "triangles": 276
+    },
+    {
+      "id": "LGA-10-2x2",
+      "family": "lga",
+      "description": "LGA-10 2.0×2.0 mm（気圧センサ系）",
+      "standard": "メーカー推奨ランドパターン（近似）",
+      "pads": 10,
+      "courtyardMm": [
+        5.15,
+        5.15
+      ],
+      "heightMm": 0.77,
+      "verify": true,
+      "stlFile": "LGA-10-2x2.stl",
+      "stlBytes": 11484,
+      "triangles": 228
+    },
+    {
+      "id": "ESP32-S3-WROOM-1",
+      "family": "module",
+      "description": "ESP32-S3-WROOM-1 無線マイコンモジュール（18×25.5 mm、上端がアンテナ）",
+      "standard": "Espressif ESP32-S3-WROOM-1 データシート推奨ランド（近似）",
+      "pads": 41,
+      "courtyardMm": [
+        18.8,
+        26.3
+      ],
+      "heightMm": 3.2,
+      "verify": true,
+      "stlFile": "ESP32-S3-WROOM-1.stl",
+      "stlBytes": 26484,
+      "triangles": 528
+    },
+    {
+      "id": "PinHeader-1x6-2.54",
+      "family": "header",
+      "description": "ピンヘッダ 1×6 2.54 mm",
+      "standard": "2.54 mm (0.1 in) ピッチ汎用",
+      "pads": 6,
+      "courtyardMm": [
+        15.74,
+        3.04
+      ],
+      "heightMm": 8.5,
+      "verify": false,
+      "stlFile": "PinHeader-1x6-2.54.stl",
+      "stlBytes": 24884,
+      "triangles": 496
+    },
+    {
+      "id": "TestPad-1x6-1.27",
+      "family": "pad",
+      "description": "テストパッド 1×6（1.27 mm ピッチ、ポゴピン治具用）",
+      "standard": "SMD 円形パッド φ0.9 mm",
+      "pads": 6,
+      "courtyardMm": [
+        7.75,
+        1.4
+      ],
+      "heightMm": 0,
+      "verify": false,
+      "stlFile": "TestPad-1x6-1.27.stl",
+      "stlBytes": 20684,
+      "triangles": 412
+    },
+    {
+      "id": "PinHeader-2x5-2.54",
+      "family": "header",
+      "description": "ピンヘッダ 2×5 2.54 mm",
+      "standard": "2.54 mm (0.1 in) ピッチ汎用",
+      "pads": 10,
+      "courtyardMm": [
+        13.2,
+        5.58
+      ],
+      "heightMm": 8.5,
+      "verify": false,
+      "stlFile": "PinHeader-2x5-2.54.stl",
+      "stlBytes": 43284,
+      "triangles": 864
+    },
+    {
+      "id": "JST-SH-8-SMD",
+      "family": "connector",
+      "description": "JST SH 8 ピン 1.0 mm トップ（SMD）",
+      "standard": "JST SM**B-SRSS-TB 推奨ランド（近似）",
+      "pads": 10,
+      "courtyardMm": [
+        11.5,
+        6.55
+      ],
+      "heightMm": 3,
+      "verify": true,
+      "stlFile": "JST-SH-8-SMD.stl",
+      "stlBytes": 7284,
+      "triangles": 144
+    },
+    {
+      "id": "JST-SH-4-SMD",
+      "family": "connector",
+      "description": "JST SH 4 ピン 1.0 mm トップ（SMD）",
+      "standard": "JST SM**B-SRSS-TB 推奨ランド（近似）",
+      "pads": 6,
+      "courtyardMm": [
+        7.5,
+        6.55
+      ],
+      "heightMm": 3,
+      "verify": true,
+      "stlFile": "JST-SH-4-SMD.stl",
+      "stlBytes": 4884,
+      "triangles": 96
+    },
+    {
+      "id": "JST-PH-2-THT",
+      "family": "connector",
+      "description": "JST PH 2 ピン 2.0 mm トップ（THT）",
+      "standard": "JST B*B-PH-K-S",
+      "pads": 2,
+      "courtyardMm": [
+        6.4,
+        6.8
+      ],
+      "heightMm": 6,
+      "verify": false,
+      "stlFile": "JST-PH-2-THT.stl",
+      "stlBytes": 1884,
+      "triangles": 36
+    },
+    {
+      "id": "Tact-3x4-SMD",
+      "family": "switch",
+      "description": "タクトスイッチ 3×4 mm（SMD、2 端子）",
+      "standard": "TS-1187A 系（近似）",
+      "pads": 2,
+      "courtyardMm": [
+        5.7,
+        3.5
+      ],
+      "heightMm": 2.3,
+      "verify": true,
+      "stlFile": "Tact-3x4-SMD.stl",
+      "stlBytes": 6684,
+      "triangles": 132
+    },
+    {
+      "id": "MotorPad-2",
+      "family": "pad",
+      "description": "モータ配線用スルーホール 2 極（φ1.0 mm）",
+      "standard": "配線直付け用スルーホール",
+      "pads": 2,
+      "courtyardMm": [
+        4.84,
+        2.3
+      ],
+      "heightMm": 0,
+      "verify": false,
+      "stlFile": "MotorPad-2.stl",
+      "stlBytes": 4684,
+      "triangles": 92
+    },
+    {
+      "id": "BatteryPad-2",
+      "family": "pad",
+      "description": "電池リード直付けパッド 2 極（φ1.3 mm、20 AWG）",
+      "standard": "配線直付け用スルーホール",
+      "pads": 2,
+      "courtyardMm": [
+        6.6,
+        3.1
+      ],
+      "heightMm": 0,
+      "verify": false,
+      "stlFile": "BatteryPad-2.stl",
+      "stlBytes": 4684,
+      "triangles": 92
+    },
+    {
+      "id": "MountHole-M2",
+      "family": "mechanical",
+      "description": "取付穴 φ2.2 mm（ノンプレーテッド）",
+      "standard": "ISO 273 medium（M2 → 2.2 mm）",
+      "pads": 1,
+      "courtyardMm": [
+        4.2,
+        4.2
+      ],
+      "heightMm": 0,
+      "verify": false,
+      "stlFile": "MountHole-M2.stl",
+      "stlBytes": 84,
+      "triangles": 0
+    },
+    {
+      "id": "MountHole-M3",
+      "family": "mechanical",
+      "description": "取付穴 φ3.2 mm（ノンプレーテッド）",
+      "standard": "ISO 273 medium（M2 → 2.2 mm）",
+      "pads": 1,
+      "courtyardMm": [
+        5.2,
+        5.2
+      ],
+      "heightMm": 0,
+      "verify": false,
+      "stlFile": "MountHole-M3.stl",
+      "stlBytes": 84,
+      "triangles": 0
+    },
+    {
+      "id": "Axial-R-10.16",
+      "family": "tht-discrete",
+      "description": "アキシャル抵抗（1/4 W、本体 6.3×φ2.5 mm、足ピッチ 10.16 mm）",
+      "standard": "IEC 60062 カラーコード / 0.4 in ピッチ",
+      "pads": 2,
+      "courtyardMm": [
+        12.26,
+        3.04
+      ],
+      "heightMm": 3.02,
+      "verify": false,
+      "stlFile": "Axial-R-10.16.stl",
+      "stlBytes": 36884,
+      "triangles": 736
+    },
+    {
+      "id": "DO-41",
+      "family": "tht-discrete",
+      "description": "DO-41 アキシャルダイオード（1N4001/1N5819 等）",
+      "standard": "JEDEC DO-41",
+      "pads": 2,
+      "courtyardMm": [
+        12.26,
+        3.24
+      ],
+      "heightMm": 3.22,
+      "verify": false,
+      "stlFile": "DO-41.stl",
+      "stlBytes": 22484,
+      "triangles": 448
+    },
+    {
+      "id": "CP-Radial-D5-H11",
+      "family": "tht-discrete",
+      "description": "アルミ電解コンデンサ φ5×11 mm（リード間 2 mm）",
+      "standard": "EIAJ ラジアルリード",
+      "pads": 2,
+      "courtyardMm": [
+        5.5,
+        5.5
+      ],
+      "heightMm": 11.32,
+      "verify": false,
+      "stlFile": "CP-Radial-D5-H11.stl",
+      "stlBytes": 14884,
+      "triangles": 296
+    },
+    {
+      "id": "CP-Radial-D8-H12",
+      "family": "tht-discrete",
+      "description": "アルミ電解コンデンサ φ8×12 mm（リード間 3.5 mm）",
+      "standard": "EIAJ ラジアルリード",
+      "pads": 2,
+      "courtyardMm": [
+        8.5,
+        8.5
+      ],
+      "heightMm": 12.32,
+      "verify": false,
+      "stlFile": "CP-Radial-D8-H12.stl",
+      "stlBytes": 14884,
+      "triangles": 296
+    },
+    {
+      "id": "C-Disc-D5",
+      "family": "tht-discrete",
+      "description": "セラミックコンデンサ（円板型 φ5 mm）",
+      "standard": "ラジアルリード 0.2 in",
+      "pads": 2,
+      "courtyardMm": [
+        7.18,
+        3
+      ],
+      "heightMm": 7,
+      "verify": false,
+      "stlFile": "C-Disc-D5.stl",
+      "stlBytes": 12884,
+      "triangles": 256
+    },
+    {
+      "id": "TO-92",
+      "family": "tht-discrete",
+      "description": "TO-92 小信号トランジスタ（2SC1815、2N7000 等）",
+      "standard": "JEDEC TO-92",
+      "pads": 3,
+      "courtyardMm": [
+        5.3,
+        6.1
+      ],
+      "heightMm": 8,
+      "verify": false,
+      "stlFile": "TO-92.stl",
+      "stlBytes": 14084,
+      "triangles": 280
+    },
+    {
+      "id": "TO-220-3",
+      "family": "tht-discrete",
+      "description": "TO-220 パワー素子（縦置き、MOSFET・レギュレータ等）",
+      "standard": "JEDEC TO-220AB",
+      "pads": 3,
+      "courtyardMm": [
+        10.5,
+        5
+      ],
+      "heightMm": 18.4,
+      "verify": false,
+      "stlFile": "TO-220-3.stl",
+      "stlBytes": 9884,
+      "triangles": 196
+    },
+    {
+      "id": "DIP-8",
+      "family": "dip",
+      "description": "DIP-8（0.3 in 幅）",
+      "standard": "JEDEC MS-001",
+      "pads": 8,
+      "courtyardMm": [
+        9.72,
+        10.36
+      ],
+      "heightMm": 3.95,
+      "verify": false,
+      "stlFile": "DIP-8.stl",
+      "stlBytes": 5484,
+      "triangles": 108
+    },
+    {
+      "id": "DIP-16",
+      "family": "dip",
+      "description": "DIP-16（0.3 in 幅）",
+      "standard": "JEDEC MS-001",
+      "pads": 16,
+      "courtyardMm": [
+        9.72,
+        20.52
+      ],
+      "heightMm": 3.95,
+      "verify": false,
+      "stlFile": "DIP-16.stl",
+      "stlBytes": 10284,
+      "triangles": 204
+    },
+    {
+      "id": "LED-5mm",
+      "family": "tht-discrete",
+      "description": "砲弾型 LED φ5 mm",
+      "standard": "T-1¾",
+      "pads": 2,
+      "courtyardMm": [
+        6.3,
+        6.3
+      ],
+      "heightMm": 8,
+      "verify": false,
+      "stlFile": "LED-5mm.stl",
+      "stlBytes": 14284,
+      "triangles": 284
+    },
+    {
+      "id": "L-Power-4x4",
+      "family": "chip",
+      "description": "SMD パワーインダクタ 4×4 mm（DC/DC 用）",
+      "standard": "メーカー標準サイズ（近似）",
+      "pads": 2,
+      "courtyardMm": [
+        4.7,
+        4.5
+      ],
+      "heightMm": 2,
+      "verify": false,
+      "stlFile": "L-Power-4x4.stl",
+      "stlBytes": 1884,
+      "triangles": 36
+    },
+    {
+      "id": "HC-49S",
+      "family": "tht-discrete",
+      "description": "水晶振動子 HC-49/S",
+      "standard": "HC-49/US",
+      "pads": 2,
+      "courtyardMm": [
+        11.5,
+        5.1
+      ],
+      "heightMm": 3.5,
+      "verify": false,
+      "stlFile": "HC-49S.stl",
+      "stlBytes": 8684,
+      "triangles": 172
+    }
+  ]
+}

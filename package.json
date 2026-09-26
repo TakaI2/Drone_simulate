@@ -27,6 +27,8 @@
     "@types/node": "^26.6.3",
     "@types/three": "^0.186.0",
     "eslint": "^10.11.0",
+    "gerber-parser": "^4.2.7",
+    "pcb-stackup": "^4.2.8",
     "playwright-core": "^1.63.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",

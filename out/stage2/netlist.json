@@ -1229,8 +1229,8 @@
     {
       "ref": "J7",
       "part": "PinHeader-1x6",
-      "mpn": "PH-1x6 2.54mm",
-      "package": "PinHeader-1x6-2.54",
+      "mpn": "—",
+      "package": "TestPad-1x6-1.27",
       "block": "connectors",
       "pins": [
         {
