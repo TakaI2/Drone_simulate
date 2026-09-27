@@ -154,3 +154,43 @@ describe('T-I integration', () => {
     expect(p.gearHeight).toBeCloseTo(0.01, 9);
   });
 });
+
+import { generateFlowBoard } from '../src/electrical/flowboard';
+import { createRng } from '../src/core/rng';
+import { createSensors } from '../src/sim/sensors';
+import { SENSORS_GNSS_M10, PRESET_MICRO_QUAD } from '../src/core/presets';
+import { createDynamics } from '../src/sim/dynamics';
+import { ENV_CALM as ENV_CALM_B } from '../src/core/presets';
+import { v3 as v3b } from '../src/core/math';
+
+describe('T-V variant B', () => {
+  it('T-V1 sensor sub-board netlist: every connected pin is on a net with >= 2 pins', () => {
+    const c = generateFlowBoard();
+    const pinCount = new Map(c.nets.map((n) => [n.name, n.pins.length]));
+    for (const comp of c.components) for (const p of comp.pins) if (p.net) expect(pinCount.get(p.net), `${comp.ref}.${p.num}`).toBeGreaterThanOrEqual(2);
+    expect(c.nets.find((n) => n.name === '1V8')).toBeDefined();
+  });
+  it('T-V2 GNSS port is optional and leaves variant A unchanged', () => {
+    const a = generateCircuit({ rotorCount: 4 });
+    const b = generateCircuit({ rotorCount: 4, gnssConnector: true });
+    expect(a.components.map((c) => c.ref)).toEqual(b.components.map((c) => c.ref).filter((r) => r !== 'J8'));
+    expect(b.nets.find((n) => n.name === 'GNSS_TX')?.pins).toHaveLength(2);
+    expect(a.nets.find((n) => n.name === 'GNSS_TX')).toBeUndefined();
+  });
+  it('T-V3 GNSS Gauss-Markov error has the configured spread', () => {
+    const dyn = createDynamics(PRESET_MICRO_QUAD(), ENV_CALM_B());
+    const s = { ...dyn.initialState(v3b(0, 0, 0)) };
+    const sens = createSensors({ ...SENSORS_GNSS_M10, posStd: 0 }, createRng(7));
+    const all: number[] = [];
+    for (let i = 0; i < 600_000; i++) {
+      const r = sens.read(s, 9.81, 0.01);
+      if (r.pos) all.push(r.pos.x);
+    }
+    const xs = all.filter((_, i) => i % 10 === 0);
+    expect(xs.length).toBeGreaterThan(1000);
+    const mean = xs.reduce((a, b) => a + b, 0) / xs.length;
+    const sd = Math.sqrt(xs.reduce((a, b) => a + (b - mean) ** 2, 0) / xs.length);
+    expect(sd).toBeGreaterThan(0.5);
+    expect(sd).toBeLessThan(1.6);
+  });
+});

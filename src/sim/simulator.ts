@@ -136,7 +136,7 @@ export const createSimulation = (config: SimConfig): Simulation => {
     cruiseSpeed: course.cruiseSpeed,
     accel: M.followerAccel,
     cornerSpeedFactor: M.cornerSpeedFactor,
-    maxTrackingError: M.maxTrackingError,
+    maxTrackingError: course.maxTrackingError ?? M.maxTrackingError,
   });
 
   // ---------- mission state ----------

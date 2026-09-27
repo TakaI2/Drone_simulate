@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { buildAssembly } from '../airframe/assembly3d';
-import { DRONE_PRESETS } from '../core/presets';
+import { DRONE_PRESETS, GNSS_MODULE, SENSORS_GNSS_M10 } from '../core/presets';
 import type { DroneParams } from '../core/types';
 import { runStage2 } from '../integration/stage2';
 import { deriveDroneParams } from '../integration/stage5';
@@ -16,7 +16,7 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
   let cancelled = false;
   const note = el('div', { class: 'doc', text: '完成機体を読み込み中…' });
   root.append(note);
-  loadAirframeAssets().then((assets) => {
+  loadAirframeAssets(query.get('variant')).then((assets) => {
     if (cancelled) return;
     note.remove();
     if (!assets) {
@@ -32,7 +32,7 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
     }
     const derived: DroneParams = deriveDroneParams(s2.sizing, assets.info, overrides);
     const meshFactory = (key: string): DroneMesh | null => {
-      if (key !== 'designed') return null;
+      if (key !== 'designed' && key !== 'designed-gnss') return null;
       const a = buildAssembly(assets.geo.clone(), assets.pcb, assets.info, { showPropDisks: false });
       // simulator body origin = CG, units m
       const inner = a.group;
@@ -47,8 +47,11 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
       };
       return { group: outer, update };
     };
+    const isB = query.get('variant') === 'B';
+    const withGnss: DroneParams = { ...deriveDroneParams(s2.sizing, assets.info, { ...overrides, massG: (overrides.massG ?? assets.info.massG) + GNSS_MODULE.massG }), sensors: SENSORS_GNSS_M10, name: '改良版 B＋GNSS モジュール（屋外）' };
     const drones: Record<string, { label: string; build: () => DroneParams }> = {
-      designed: { label: '★ 完成機体（段階2〜4 の設計）', build: () => derived },
+      designed: { label: isB ? '★ 改良版 B（センサ子基板）' : '★ 完成機体（段階2〜4 の設計）', build: () => (isB ? { ...derived, name: '改良版 B（センサ子基板・GNSS 端子付き）' } : derived) },
+      ...(isB ? { 'designed-gnss': { label: '★ 改良版 B＋GNSS（屋外）', build: () => withGnss } } : {}),
       ...Object.fromEntries(Object.entries(DRONE_PRESETS).map(([k, b]) => [k, { label: `参照: ${k}`, build: b }])),
     };
     dispose = mountSimView(root, { query, drones, meshFactory, initialDrone: 'designed' });

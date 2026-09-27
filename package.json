@@ -16,6 +16,7 @@
     "stage3": "tsx scripts/stage3.ts",
     "stage4": "tsx scripts/stage4.ts",
     "stage5": "tsx scripts/stage5.ts",
+    "variantB": "tsx scripts/variant-b.ts",
     "report": "tsx scripts/report-index.ts",
     "all": "npm run stage1 && npm run stage2 && npm run stage3 && npm run stage4 && npm run stage5 && npm run report"
   },

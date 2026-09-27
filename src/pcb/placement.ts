@@ -11,6 +11,14 @@ export interface PlacementOptions {
   rotorAngles: number[];
   /** Mounting-hole inset from the board corner [mm]. */
   holeInset?: number;
+  /** Explicit mounting-hole positions (board coords); default = four corners. */
+  holePositions?: Array<{ x: number; y: number }>;
+  /** 'largest-first' places big parts before passives (small boards); default keeps the original order. */
+  order?: 'default' | 'largest-first';
+  /** Fixed placements (e.g. a connector at the cable-exit edge). */
+  anchors?: Array<{ ref: string; x: number; y: number; rot: number }>;
+  /** Grow fan-out parts' courtyards to cover their escape tracks and ground vias (exact extent). */
+  fanoutAwareCourtyard?: boolean;
 }
 
 export interface PlacementResult {
@@ -67,6 +75,22 @@ export const placeComponents = (circuit: Circuit, o: PlacementOptions): Placemen
   const boardRect: Rect = { x: -board.w / 2 + PLACE.edgeMargin, y: -board.h / 2 + PLACE.edgeMargin, w: board.w - 2 * PLACE.edgeMargin, h: board.h - 2 * PLACE.edgeMargin };
   const pkgOf = (c: Component): PackageDef => {
     const pkg = getPackage(c.part.package);
+    if (o.fanoutAwareCourtyard && pkg.fanout) {
+      // farthest fan-out end: pad edge + straight + diagonal spread + ground via + clearance
+      let w = pkg.courtyard.w, h = pkg.courtyard.h;
+      for (const p of pkg.pads) {
+        const along = Math.abs(p.w > p.h ? p.y : p.x);
+        const reach = FANOUT.straight + Math.max(FANOUT.minDiagonal, along * (FANOUT.spread - 1)) + rules.viaDiameter + rules.clearance;
+        if (p.w > p.h) {
+          w = Math.max(w, Math.abs(p.x) + p.w / 2 + reach);
+          h = Math.max(h, along * FANOUT.spread + rules.viaDiameter);
+        } else {
+          h = Math.max(h, Math.abs(p.y) + p.h / 2 + reach);
+          w = Math.max(w, along * FANOUT.spread + rules.viaDiameter);
+        }
+      }
+      return { ...pkg, courtyard: { w, h } };
+    }
     return c.thermalPins && c.part.category === 'mosfet' ? withThermalCourtyard(pkg) : pkg;
   };
   const fits = (pl: Placement, checkBoard = true): boolean => {
@@ -94,8 +118,14 @@ export const placeComponents = (circuit: Circuit, o: PlacementOptions): Placemen
   const holePos = [[1, 1], [-1, 1], [-1, -1], [1, -1]];
   holes.forEach((c, i) => {
     const [sx, sy] = holePos[i % 4];
-    commit({ ref: c.ref, pkg: pkgOf(c), x: sx * (board.w / 2 - inset), y: sy * (board.h / 2 - inset), rot: 0 });
+    const given = o.holePositions?.[i];
+    commit({ ref: c.ref, pkg: pkgOf(c), x: given ? given.x : sx * (board.w / 2 - inset), y: given ? given.y : sy * (board.h / 2 - inset), rot: 0 });
   });
+
+  for (const a of o.anchors ?? []) {
+    const c = byRef.get(a.ref);
+    if (c && !placed.has(a.ref)) commit({ ref: a.ref, pkg: pkgOf(c), x: a.x, y: a.y, rot: a.rot });
+  }
 
   const mcu = circuit.components.find((c) => c.part.category === 'mcu');
   if (mcu) {
@@ -147,7 +177,13 @@ export const placeComponents = (circuit: Circuit, o: PlacementOptions): Placemen
     if (c.near) return 4;
     return 5;
   };
-  const rest = circuit.components.filter((c) => !placed.has(c.ref)).sort((a, b) => priority(a) - priority(b));
+  const area = (c: Component): number => {
+    const k = pkgOf(c).courtyard;
+    return k.w * k.h;
+  };
+  const rest = circuit.components
+    .filter((c) => !placed.has(c.ref))
+    .sort((a, b) => (o.order === 'largest-first' ? area(b) - area(a) : 0) || priority(a) - priority(b));
   for (const c of rest) {
     const pkg = pkgOf(c);
     // attraction targets

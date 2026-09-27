@@ -59,10 +59,26 @@ const show = (id: string, push = true): void => {
   dispose = tab.mount(app, query);
 };
 
+const variantSel = el('select', { title: '設計の版' });
+for (const [v, label] of [['A', '版 A（元設計）'], ['B', '版 B（センサ子基板＋GNSS 端子）']]) {
+  const o = el('option', { value: v, text: label });
+  if ((new URLSearchParams(location.search).get('variant') ?? 'A') === v) o.selected = true;
+  variantSel.append(o);
+}
+variantSel.addEventListener('change', () => {
+  const q = new URLSearchParams(location.search);
+  if (variantSel.value === 'B') q.set('variant', 'B');
+  else q.delete('variant');
+  history.replaceState(null, '', `?${q.toString()}`);
+  show(q.get('tab') ?? 'sim', false);
+});
+variantSel.style.cssText = 'margin-left:auto;background:#232321;color:#fff;border:1px solid #383835;border-radius:4px;padding:3px 6px;font-size:12px';
+
 for (const t of TABS) {
   const b = el('button', { text: t.label });
   b.dataset.tab = t.id;
   b.addEventListener('click', () => show(t.id));
   nav.append(b);
 }
+document.getElementById('app-header')?.append(variantSel);
 show(new URLSearchParams(location.search).get('tab') ?? 'sim', false);

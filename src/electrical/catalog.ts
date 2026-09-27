@@ -6,7 +6,7 @@
 
 export type PartCategory =
   | 'mcu' | 'imu' | 'baro' | 'ldo' | 'mosfet' | 'diode' | 'resistor' | 'capacitor' | 'led'
-  | 'connector' | 'switch' | 'module' | 'pad' | 'mechanical';
+  | 'connector' | 'switch' | 'module' | 'pad' | 'mechanical' | 'sensor';
 
 export interface Alternative {
   mpn: string;
@@ -270,6 +270,57 @@ export const PARTS: PartRecord[] = [
     massG: 0,
     dims: [4.0, 4.0, 0],
     alternatives: [],
+  },
+  {
+    id: 'JST-SM06B-SRSS-TB',
+    category: 'connector',
+    name: 'GNSS＋コンパス用 JST SH 6 ピン（SMD）',
+    mpn: 'SM06B-SRSS-TB(LF)(SN)',
+    manufacturer: 'J.S.T. Mfg.',
+    package: 'JST-SH-6-SMD',
+    specs: { ピッチ: '1.0 mm', 定格電流: '1 A' },
+    massG: 0.08,
+    dims: [8.0, 4.25, 2.9],
+    alternatives: [{ mpn: 'SH 互換 1.0 mm 6P', manufacturer: '各社', note: '互換品' }],
+  },
+  {
+    id: 'PMW3901MB-TXQT',
+    category: 'sensor',
+    name: 'オプティカルフローセンサ（別途レンズが必要）',
+    mpn: 'PMW3901MB-TXQT',
+    manufacturer: 'PixArt Imaging',
+    package: 'PMW3901MB',
+    specs: { VDD: '1.8–2.1 V', VDDIO: '1.8–3.6 V', インタフェース: 'SPI（最大 2 MHz）', 動作距離: '80 mm〜∞（レンズ込み）' },
+    massG: 0.15,
+    dims: [6.0, 6.0, 2.3],
+    alternatives: [{ mpn: 'PAA3905E1', manufacturer: 'PixArt Imaging', note: '後継。暗所性能が高い。ランドとレンズが異なる' }],
+    verify: 'ランドパターン・ピン番号（近似）、レンズ（LM19-LSI 相当）の取付寸法',
+  },
+  {
+    id: 'VL53L1X',
+    category: 'sensor',
+    name: 'ToF 距離センサ（〜4 m）',
+    mpn: 'VL53L1CXV0FY/1',
+    manufacturer: 'STMicroelectronics',
+    package: 'VL53L1X-LGA12',
+    specs: { 電源: '2.6–3.5 V', インタフェース: 'I²C（400 kHz）', 測距: '最大 4 m', 視野角: '27°' },
+    massG: 0.03,
+    dims: [4.9, 2.5, 1.56],
+    alternatives: [{ mpn: 'VL53L4CD', manufacturer: 'STMicroelectronics', note: '近距離（〜1.3 m）向け。ピン配置は同系統' }],
+    verify: 'ランドパターン・ピン番号（近似）、カバーガラスの有無',
+  },
+  {
+    id: 'XC6206P182MR',
+    category: 'ldo',
+    name: '1.8 V LDO レギュレータ 200 mA',
+    mpn: 'XC6206P182MR-G',
+    manufacturer: 'Torex',
+    package: 'SOT-23',
+    specs: { 出力: '1.8 V', 最大出力電流: 0.2, 最大入力: '6.0 V' },
+    massG: 0.008,
+    dims: [2.9, 1.6, 1.1],
+    alternatives: [{ mpn: 'AP2112K-1.8', manufacturer: 'Diodes Inc.', note: 'SOT-23-5、ピン配置が異なる' }, { mpn: 'ME6211C18M5G', manufacturer: 'Microne', note: 'SOT-23-5' }],
+    verify: 'SOT-23 のピン配置（VSS/VOUT/VIN）',
   },
   {
     id: 'FlowToF-Module',

@@ -1,6 +1,6 @@
 import type { Vec3 } from '../core/math';
 import { vDist } from '../core/math';
-import { COURSE_HOVER, COURSE_OBSTACLES, COURSE_SQUARE, ENV_CALM, ENV_WINDY } from '../core/presets';
+import { COURSE_HOVER, COURSE_OBSTACLES, COURSE_OUTDOOR_HOVER, COURSE_OUTDOOR_SQUARE, COURSE_SQUARE, ENV_CALM, ENV_OUTDOOR, ENV_WINDY } from '../core/presets';
 import type { CourseSpec, DroneParams, EnvironmentSpec } from '../core/types';
 import { createSimulation } from './simulator';
 import type { SimConfig, SimSample, Simulation } from './simulator';
@@ -132,6 +132,57 @@ export const SCENARIOS: ScenarioDef[] = [
       const failsafe = sim.events.some((e) => e.kind === 'failsafe');
       const landed = sim.samples.some((s) => s.phase === 'landed');
       return [crit('フェイルセーフ発動', failsafe ? 1 : 0, 1, '', 'gte'), crit('着陸完了', landed ? 1 : 0, 1, '', 'gte'), crit('墜落', sim.crashed() ? 1 : 0, 1, '回')];
+    },
+  },
+];
+
+/**
+ * Outdoor GNSS scenarios (variant B with a GNSS + compass module attached).
+ * Limits reflect consumer GNSS (~1 m CEP): the vehicle can only be as accurate as its position fix.
+ */
+export const OUTDOOR_LIMITS = { hoverHoriz: 3.0, hoverAltRms: 1.0, waypoint: 3.0, landing: 3.0 } as const;
+
+export const OUTDOOR_SCENARIOS: ScenarioDef[] = [
+  {
+    id: 'GB-5a',
+    title: '屋外ホバリング（GNSS・風 3 m/s＋突風）',
+    description: '高度 5 m で 30 秒ホバリング。位置は GNSS（ゆっくり変動する約 1 m の誤差）、高度は気圧計',
+    course: COURSE_OUTDOOR_HOVER,
+    env: ENV_OUTDOOR,
+    maxTime: 60,
+    evaluate: (sim) => {
+      const hover = inPhase(sim.samples, 'hover');
+      const t0 = hover.length ? hover[0].t + HOVER_SETTLE_TIME : 0;
+      const win = hover.filter((s) => s.t >= t0);
+      const maxH = win.reduce((m, s) => Math.max(m, Math.hypot(s.p.x - s.sp.x, s.p.y - s.sp.y)), 0);
+      const altRms = Math.sqrt(win.reduce((a, s) => a + (s.p.z - s.sp.z) ** 2, 0) / Math.max(1, win.length));
+      return [
+        crit('水平位置誤差 最大', win.length ? maxH : Infinity, OUTDOOR_LIMITS.hoverHoriz, 'm'),
+        crit('高度誤差 RMS', win.length ? altRms : Infinity, OUTDOOR_LIMITS.hoverAltRms, 'm'),
+        crit('墜落', sim.crashed() ? 1 : 0, 1, '回'),
+        crit('ホバリング到達', win.length > 0 ? 1 : 0, 1, '', 'gte'),
+      ];
+    },
+  },
+  {
+    id: 'GB-5b',
+    title: '屋外 20 m 四方の経由点飛行（GNSS）',
+    description: '高度 5 m、1.5 m/s で 20 m 四方を周回し出発点に着陸（風 3 m/s＋突風）',
+    course: COURSE_OUTDOOR_SQUARE,
+    env: ENV_OUTDOOR,
+    maxTime: 150,
+    evaluate: (sim) => {
+      const wps = sim.config.course.waypoints;
+      const worst = wps.reduce((m, w) => Math.max(m, minDistanceToPoint(sim.samples, w)), 0);
+      const landed = sim.samples.some((s) => s.phase === 'landed');
+      const last = sim.samples[sim.samples.length - 1];
+      const landErr = Math.hypot(last.p.x - sim.config.course.goal.x, last.p.y - sim.config.course.goal.y);
+      return [
+        crit('経由点の最大通過誤差', worst, OUTDOOR_LIMITS.waypoint, 'm'),
+        crit('着陸位置誤差', landErr, OUTDOOR_LIMITS.landing, 'm'),
+        crit('着陸完了', landed ? 1 : 0, 1, '', 'gte'),
+        crit('墜落', sim.crashed() ? 1 : 0, 1, '回'),
+      ];
     },
   },
 ];

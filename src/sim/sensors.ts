@@ -25,6 +25,15 @@ export const createSensors = (spec: SensorSpec, rng: Rng, ideal = false): Sensor
   const gyroBias = v3();
   const accelBias = v3(spec.accelBias * rng.gauss(), spec.accelBias * rng.gauss(), spec.accelBias * rng.gauss());
   const drift = { x: 0, y: 0 };
+  // Gauss-Markov errors start from their stationary distribution (no RNG draws when unused, so
+  // existing scenarios keep their exact random sequence)
+  const draw = (std: number | undefined): number => (std ? std * rng.gauss() : 0);
+  const gm = { x: draw(spec.posBiasStd), y: draw(spec.posBiasStd), z: draw(spec.altBiasStd) };
+  const gmStep = (v: number, std: number | undefined, tau: number | undefined, dt: number): number => {
+    if (!std || !tau) return 0;
+    const a = Math.exp(-dt / tau);
+    return a * v + std * Math.sqrt(1 - a * a) * rng.gauss();
+  };
   let posTimer = 0;
   let altTimer = 0;
   const n = (std: number): number => (ideal ? 0 : std * rng.gauss());
@@ -38,6 +47,9 @@ export const createSensors = (spec: SensorSpec, rng: Rng, ideal = false): Sensor
       const dw = spec.posDriftWalk * Math.sqrt(dt);
       drift.x += dw * rng.gauss();
       drift.y += dw * rng.gauss();
+      gm.x = gmStep(gm.x, spec.posBiasStd, spec.posBiasTau, dt);
+      gm.y = gmStep(gm.y, spec.posBiasStd, spec.posBiasTau, dt);
+      gm.z = gmStep(gm.z, spec.altBiasStd, spec.altBiasTau, dt);
     }
     const gyro = ideal ? { ...s.w } : vAdd(s.w, v3(n(spec.gyroStd) + gyroBias.x, n(spec.gyroStd) + gyroBias.y, n(spec.gyroStd) + gyroBias.z));
     const f = qRotateInv(s.q, v3(s.accel.x, s.accel.y, s.accel.z + gravity));
@@ -49,13 +61,13 @@ export const createSensors = (spec: SensorSpec, rng: Rng, ideal = false): Sensor
     let yaw: number | null = null;
     if (posTimer >= 1 / spec.posRateHz - 1e-9) {
       posTimer = 0;
-      pos = { x: s.p.x + n(spec.posStd) + (ideal ? 0 : drift.x), y: s.p.y + n(spec.posStd) + (ideal ? 0 : drift.y) };
+      pos = { x: s.p.x + n(spec.posStd) + (ideal ? 0 : drift.x + gm.x), y: s.p.y + n(spec.posStd) + (ideal ? 0 : drift.y + gm.y) };
       yaw = wrapPi(qToEuler(s.q).yaw + n(spec.yawStd));
     }
     let alt: number | null = null;
     if (altTimer >= 1 / spec.altRateHz - 1e-9) {
       altTimer = 0;
-      alt = s.p.z + n(spec.altStd);
+      alt = s.p.z + n(spec.altStd) + (ideal ? 0 : gm.z);
     }
     return { gyro, accel, pos, alt, yaw, vbat: s.batteryVoltage + n(spec.voltStd) };
   };

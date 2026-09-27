@@ -30,6 +30,8 @@ const TUNING = {
   processAccelScale: 3,
   /** Accel-bias random walk assumed by the filter [m/s^2/sqrt(s)]. */
   biasWalk: 0.02,
+  /** Tilt correction from the horizontal accel-bias estimate [1/s] (aided INS). */
+  tiltFromBiasGain: 0.5,
 } as const;
 
 /**
@@ -66,7 +68,10 @@ const createAxisKf = (p0: number, sigmaA: number, sigmaBias: number, rMeas: numb
     for (let i = 0; i < 3; i++) for (let j = 0; j < 3; j++) N[i * 3 + j] = P[i * 3 + j] - K[i] * row0[j];
     P = N;
   };
-  return { predict, update, get: () => ({ p: x[0], v: x[1], b: x[2] }) };
+  const shiftBias = (d: number): void => {
+    x[2] += d;
+  };
+  return { predict, update, shiftBias, get: () => ({ p: x[0], v: x[1], b: x[2] }) };
 };
 
 export const createEstimator = (
@@ -106,11 +111,23 @@ export const createEstimator = (
       corr = vAdd(corr, qRotateInv(q, v3(0, 0, rate)));
     }
     const wCorr = vSub(r.gyro, bias);
+    {
+      // Aided INS tilt correction. A tilt error makes the rotated specific force show a fictitious
+      // horizontal acceleration g*delta, which the position filter learns as accelerometer bias b.
+      // Rotate the estimate by -k (z x b)/g (world frame) and hand the corrected part back to the filter.
+      // (A gravity-only reference is unusable on multirotors: rotor drag puts horizontal force on the IMU.)
+      const bx = kx.get().b, by = ky.get().b;
+      const k = TUNING.tiltFromBiasGain;
+      corr = vAdd(corr, qRotateInv(q, v3((k * by) / gravity, (-k * bx) / gravity, 0)));
+      kx.shiftBias(-k * bx * dt);
+      ky.shiftBias(-k * by * dt);
+    }
     q = qIntegrate(q, vAdd(wCorr, corr), dt);
 
     // --- translation: per-axis KF driven by world acceleration ---
     const aWorld = vSub(qRotate(q, fMeas), v3(0, 0, gravity));
     const al = Math.min(1, dt / TUNING.accelLpfTau);
+    // accel-compensated reference for the Mahony term (tilt itself is corrected by the aided-INS term above)
     accWorldLpf = vAdd(accWorldLpf, vScale(vSub(aWorld, accWorldLpf), al));
     kx.predict(aWorld.x, dt);
     ky.predict(aWorld.y, dt);

@@ -15,6 +15,14 @@ interface PcbJson {
   drc: { counts: Record<string, number> };
 }
 
+const DOWNLOADS_B: Array<[string, string]> = [
+  ['メイン基板 B Gerber（ZIP）', '/out/variantB/main_gerber.zip'],
+  ['センサ子基板 Gerber（ZIP）', '/out/variantB/flow_gerber.zip'],
+  ['メイン基板 B KiCad', '/out/variantB/main.kicad_pcb'],
+  ['センサ子基板 KiCad', '/out/variantB/flow.kicad_pcb'],
+  ['センサ子基板 回路図', '/out/variantB/flow_schematic.svg'],
+];
+
 const DOWNLOADS: Array<[string, string]> = [
   ['Gerber 一式（ZIP）', '/out/stage3/drone_fc_gerber.zip'],
   ['KiCad 基板', '/out/stage3/drone_fc.kicad_pcb'],
@@ -46,7 +54,9 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
   const side = el('div', { class: 'side' });
   const mainBox = el('div', { class: 'main-col' });
   root.append(el('div', { class: 'layout' }, [side, mainBox]));
-  const state = { view: query.get('view') ?? '2d', F: true, B: true, pour: true, pkg: query.get('pkg') ?? 'ESP32-S3-WROOM-1' };
+  const isB = query.get('variant') === 'B';
+  const state = { view: query.get('view') ?? '2d', F: true, B: true, pour: true, pkg: query.get('pkg') ?? 'ESP32-S3-WROOM-1', board: query.get('board') ?? 'main' };
+  const pcbUrl = (): string => (isB ? (state.board === 'flow' ? '/out/variantB/flow_pcb.json' : '/out/variantB/pcb.json') : '/out/stage3/pcb.json');
   let vp: Viewport | null = null;
   let data: PcbJson | null = null;
   const info = el('div', { class: 'hint' });
@@ -128,6 +138,9 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
       { value: 'lib', label: '部品 3D ライブラリ' },
       { value: 'bb', label: 'ブレッドボード配置' },
     ], state.view, (v) => { state.view = v; render(); }),
+    ...(isB
+      ? [selectField('基板', [{ value: 'main', label: 'メイン基板（GNSS 端子付き）' }, { value: 'flow', label: 'センサ子基板（フロー＋ToF）' }], state.board, (v) => { state.board = v; load(); })]
+      : []),
     heading('2D の層'),
     checkField('上面 F.Cu', state.F, (v) => { state.F = v; render(); }),
     checkField('下面 B.Cu', state.B, (v) => { state.B = v; render(); }),
@@ -135,11 +148,12 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
     heading('基板情報'),
     info,
     heading('製造データ'),
-    ...DOWNLOADS.map(([t, href]) => el('div', {}, [el('a', { href, text: t, download: '' })])),
+    ...(isB ? DOWNLOADS_B : DOWNLOADS).map(([t, href]) => el('div', {}, [el('a', { href, text: t, download: '' })])),
     el('p', { class: 'hint', text: '基板は npm run stage3 で自動配置・自動配線されます（配置 → ファンアウト → 2 層 A* → GND ベタ → DRC → Gerber）。' }),
   );
 
-  fetch('/out/stage3/pcb.json')
+  const load = (): Promise<void> =>
+    fetch(pcbUrl())
     .then((r) => (r.ok ? (r.json() as Promise<PcbJson>) : null))
     .then((j) => {
       data = j;
@@ -154,5 +168,6 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
       render();
       markReady();
     });
+  void load();
   return () => clear();
 };

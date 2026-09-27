@@ -4,7 +4,7 @@ import type { Vec3 } from '../core/math';
 import { COURSE_PRESETS, ENV_CALM } from '../core/presets';
 import type { CourseSpec, DroneParams, Obstacle } from '../core/types';
 import { CHART_CSS, lineChartSvg } from '../report/chart';
-import { SCENARIOS, runScenario } from '../sim/scenarios';
+import { OUTDOOR_SCENARIOS, SCENARIOS, runScenario } from '../sim/scenarios';
 import { createSimulation } from '../sim/simulator';
 import type { Simulation } from '../sim/simulator';
 import { buildDroneMesh } from './drone-mesh';
@@ -282,7 +282,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
 
   /** Run a goal scenario to completion and display the full trajectory. */
   const showScenario = (id: string): void => {
-    const def = SCENARIOS.find((d) => d.id === id);
+    const def = [...SCENARIOS, ...OUTDOOR_SCENARIOS].find((d) => d.id === id);
     if (!def) return;
     state.env = def.env();
     state.course = def.course();
@@ -340,9 +340,11 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
       vp.lookAt(new THREE.Vector3(p.x, p.y, p.z), new THREE.Vector3(p.x - 0.28, p.y - 0.36, p.z + 0.2));
       return;
     }
-    if (view === 'top') vp.lookAt(new THREE.Vector3(cx, cy, 0), new THREE.Vector3(cx, cy - 0.01, 14));
+    // camera distance follows the flying field size (indoor room = 12 m -> factor 1)
+    const k = Math.max(1, Math.max(state.env.boundsMax.x - state.env.boundsMin.x, state.env.boundsMax.y - state.env.boundsMin.y) / 12);
+    if (view === 'top') vp.lookAt(new THREE.Vector3(cx, cy, 0), new THREE.Vector3(cx, cy - 0.01, 14 * k));
     else if (view === 'close') vp.lookAt(new THREE.Vector3(0, 0, 1), new THREE.Vector3(-1.6, -2.2, 1.8));
-    else vp.lookAt(new THREE.Vector3(cx, cy, 0.8), new THREE.Vector3(cx - 7, cy - 9, 7));
+    else vp.lookAt(new THREE.Vector3(cx, cy, 0.8), new THREE.Vector3(cx - 7 * k, cy - 9 * k, 7 * k));
   };
 
   reset();

@@ -53,7 +53,27 @@ export interface Circuit {
 
 export interface CircuitOptions {
   rotorCount: number;
+  /** Variant B: JST-SH 6 for an external GNSS + compass module (UART1 + shared I2C). */
+  gnssConnector?: boolean;
 }
+
+/** GNSS UART pins (free on ESP32-S3-WROOM-1-N8, not strapping, not used by PSRAM on N8). */
+export const GNSS_GPIO = { tx: 'IO47', rx: 'IO48' } as const;
+
+const classOfNet = (name: string): NetClass =>
+  name === 'GND' ? 'gnd' : name === 'VBAT' || name === '3V3' || name === '1V8' ? 'power' : name.startsWith('MOT') ? 'motor' : 'signal';
+
+/** Collect nets from component pins. */
+export const buildNets = (components: Component[]): Net[] => {
+  const netMap = new Map<string, Net>();
+  for (const c of components)
+    for (const p of c.pins) {
+      if (!p.net) continue;
+      if (!netMap.has(p.net)) netMap.set(p.net, { name: p.net, cls: classOfNet(p.net), pins: [] });
+      netMap.get(p.net)!.pins.push({ ref: c.ref, pin: p.num });
+    }
+  return [...netMap.values()];
+};
 
 /** ESP32-S3-WROOM-1 module pin map (datasheet pin number -> name). */
 export const WROOM1_PINS: Array<[string, string]> = [
@@ -109,6 +129,10 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
     IO8: 'I2C_SDA', IO21: 'I2C_SCL', IO1: 'VBAT_SENSE', IO2: 'LED', EPAD: 'GND',
   };
   for (let i = 0; i < o.rotorCount; i++) gpioNet[MOTOR_GPIOS[i]] = motorNet(i);
+  if (o.gnssConnector) {
+    gpioNet[GNSS_GPIO.tx] = 'GNSS_TX';
+    gpioNet[GNSS_GPIO.rx] = 'GNSS_RX';
+  }
   add('U', 'ESP32-S3-WROOM-1-N8', 'mcu', WROOM1_PINS.map(([num, name]) => ({ num, name, net: gpioNet[name] ?? null })));
   add('C', 'C0805-10u', 'mcu', two('3V3', 'GND'), { near: 'U2' });
   add('C', 'C0603-100n', 'mcu', two('3V3', 'GND'), { near: 'U2' });
@@ -212,20 +236,25 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
     { num: '1', name: '1', net: 'BOOT' },
     { num: '2', name: '2', net: 'GND' },
   ]);
+  if (o.gnssConnector) {
+    // pinout follows the common flight-controller GPS port order (3V3/GND/TX/RX/SDA/SCL)
+    add('J', 'JST-SM06B-SRSS-TB', 'connectors', [
+      { num: '1', name: '3V3', net: '3V3' },
+      { num: '2', name: 'GND', net: 'GND' },
+      { num: '3', name: 'TX', net: 'GNSS_TX' },
+      { num: '4', name: 'RX', net: 'GNSS_RX' },
+      { num: '5', name: 'SDA', net: 'I2C_SDA' },
+      { num: '6', name: 'SCL', net: 'I2C_SCL' },
+      { num: 'MP1', name: 'MP', net: 'GND' },
+      { num: 'MP2', name: 'MP', net: 'GND' },
+    ]);
+  }
 
   // ---------------- mechanical ----------------
   for (let i = 0; i < 4; i++) add('H', 'MountHole-M2', 'mechanical', []);
 
   // ---------------- nets ----------------
-  const netMap = new Map<string, Net>();
-  const classOf = (name: string): NetClass =>
-    name === 'GND' ? 'gnd' : name === 'VBAT' || name === '3V3' ? 'power' : name.startsWith('MOT') ? 'motor' : 'signal';
-  for (const c of components)
-    for (const p of c.pins) {
-      if (!p.net) continue;
-      if (!netMap.has(p.net)) netMap.set(p.net, { name: p.net, cls: classOf(p.net), pins: [] });
-      netMap.get(p.net)!.pins.push({ ref: c.ref, pin: p.num });
-    }
+  const nets = buildNets(components);
 
   const gpio = [
     ...Array.from({ length: o.rotorCount }, (_, i) => ({ signal: `モータ ${i + 1} PWM`, gpio: MOTOR_GPIOS[i], note: 'LEDC 20 kHz 推奨（可聴域外）' })),
@@ -240,7 +269,9 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
     { signal: '電池電圧', gpio: 'IO1', note: 'ADC1_CH0（Wi-Fi 使用中も読める ADC1 を使用）' },
     { signal: '状態 LED', gpio: 'IO2', note: '' },
     { signal: 'UART0 TX/RX', gpio: 'IO43 / IO44', note: '書込み・ログ' },
+    ...(o.gnssConnector ? [{ signal: 'GNSS UART1 TX / RX', gpio: `${GNSS_GPIO.tx} / ${GNSS_GPIO.rx}`, note: 'J8（GNSS＋コンパス）。コンパスは I²C 共用' }] : []),
   ];
 
-  return { name: `Class A フライトコントローラ（${o.rotorCount} ロータ）`, components, nets: [...netMap.values()], gpio };
+  const name = `Class A フライトコントローラ（${o.rotorCount} ロータ${o.gnssConnector ? '、GNSS 端子付き' : ''}）`;
+  return { name, components, nets, gpio };
 };

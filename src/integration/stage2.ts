@@ -60,6 +60,8 @@ export interface Stage2Result {
 
 export interface Stage2Options {
   rotorCount: number;
+  /** Variant B: add the GNSS connector to the main board. */
+  gnssConnector?: boolean;
   /** Force a propulsion combination instead of the search result. */
   override?: { motorId: string; propId: string; batteryId: string };
   boardW?: number;
@@ -74,7 +76,7 @@ export const runStage2 = (o: Stage2Options): Stage2Result => {
   const iterations: Stage2Iteration[] = [];
   let search = searchPropulsion(o.rotorCount, mass);
   let sizing: SizingResult | null = null;
-  let circuit = generateCircuit({ rotorCount: o.rotorCount });
+  let circuit = generateCircuit({ rotorCount: o.rotorCount, gnssConnector: o.gnssConnector });
   let bom = buildBom(circuit);
   for (let it = 0; it < (o.maxIterations ?? 6); it++) {
     search = searchPropulsion(o.rotorCount, mass);
@@ -82,7 +84,7 @@ export const runStage2 = (o: Stage2Options): Stage2Result => {
       ? sizePropulsion({ rotorCount: o.rotorCount, motor: findMotor(o.override.motorId), prop: findProp(o.override.propId), battery: findBattery(o.override.batteryId), electronicsMass: mass })
       : search.best;
     if (!sizing) throw new Error('条件を満たす推進系の組合せがありません');
-    circuit = generateCircuit({ rotorCount: o.rotorCount });
+    circuit = generateCircuit({ rotorCount: o.rotorCount, gnssConnector: o.gnssConnector });
     bom = buildBom(circuit);
     const newMassG = electronicsMassG(bom, boardW, boardH);
     iterations.push({

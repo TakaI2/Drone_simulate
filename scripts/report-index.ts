@@ -32,6 +32,9 @@ const main = (): void => {
     pass: s.goals.length > 0 && s.goals.every((g) => g.pass),
   }));
   const allGoals = all.flatMap((s) => s.goals.map((g) => ({ ...g, stage: s.n })));
+  const fB = 'out/variantB/results.json';
+  const goalsB: GoalRow[] = existsSync(fB) ? ((JSON.parse(readFileSync(fB, 'utf-8')) as { goals?: GoalRow[] }).goals ?? []) : [];
+  if (goalsB.length) goals.push({ id: '改良版 B', title: 'センサ子基板＋GNSS 端子', criteria: goalsB.map((g) => g.id).join('、'), result: `${goalsB.filter((g) => g.pass).length} / ${goalsB.length} 合格`, pass: goalsB.every((g) => g.pass) });
   const html = renderReport({
     stage: 0,
     title: 'Drone Design Studio 総合レポート',
@@ -62,7 +65,7 @@ const main = (): void => {
       },
       {
         title: '各段階のレポート',
-        html: `<ul>${all.map((s) => `<li><a href="stage${s.n}.html">段階${s.n}：${esc(s.title)}</a>（${s.goals.filter((g) => g.pass).length}/${s.goals.length} 合格）</li>`).join('')}</ul>`,
+        html: `<ul>${all.map((s) => `<li><a href="stage${s.n}.html">段階${s.n}：${esc(s.title)}</a>（${s.goals.filter((g) => g.pass).length}/${s.goals.length} 合格）</li>`).join('')}${goalsB.length ? `<li><a href="variantB.html">改良版 B：センサ子基板＋GNSS 端子</a>（${goalsB.filter((g) => g.pass).length}/${goalsB.length} 合格）</li>` : ''}</ul>`,
       },
       {
         title: '使い方',

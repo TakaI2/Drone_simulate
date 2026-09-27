@@ -47,6 +47,24 @@ export const SENSORS_GNSS: SensorSpec = {
   altRateHz: 25,
 };
 
+/**
+ * Consumer GNSS (u-blox M10 class) + magnetometer + barometer, typical open-sky values:
+ * ~1 m CEP slowly wandering position error, baro drift of a few decimetres.
+ */
+export const SENSORS_GNSS_M10: SensorSpec = {
+  ...SENSORS_MICRO,
+  posStd: 0.3,
+  posRateHz: 10,
+  posDriftWalk: 0,
+  posBiasStd: 1.0,
+  posBiasTau: 60,
+  altStd: 0.15,
+  altRateHz: 25,
+  altBiasStd: 0.3,
+  altBiasTau: 120,
+  yawStd: 0.05,
+};
+
 export const GAINS_DEFAULT: ControllerGains = {
   posP: v3(1.2, 1.2, 1.5),
   velP: v3(2.8, 2.8, 5),
@@ -274,3 +292,42 @@ export const MISSION_DEFAULTS = {
   crashTiltRad: (60 * Math.PI) / 180,
   logRateHz: 50,
 } as const;
+
+/** Open field for GNSS flight tests (80 m x 80 m, 30 m ceiling). */
+export const ENV_OUTDOOR = (): EnvironmentSpec => ({
+  ...ENV_CALM(),
+  wind: { mean: v3(3, 0, 0), gustStd: 1, gustTau: 3 },
+  boundsMin: v3(-40, -40, 0),
+  boundsMax: v3(40, 40, 30),
+});
+
+export const COURSE_OUTDOOR_HOVER = (): CourseSpec => ({
+  name: '屋外ホバリング 5 m（GNSS）',
+  start: v3(0, 0, 0),
+  goal: v3(0, 0, 0),
+  waypoints: [],
+  cruiseAltitude: 5,
+  cruiseSpeed: 1.5,
+  planPath: false,
+  obstacles: [],
+  hoverTime: 30,
+  land: true,
+  maxTrackingError: 2.5,
+});
+
+export const COURSE_OUTDOOR_SQUARE = (): CourseSpec => ({
+  name: '屋外 20 m 四方（GNSS）',
+  start: v3(0, 0, 0),
+  goal: v3(0, 0, 0),
+  waypoints: [v3(10, -10, 5), v3(10, 10, 5), v3(-10, 10, 5), v3(-10, -10, 5), v3(10, -10, 5)],
+  cruiseAltitude: 5,
+  cruiseSpeed: 1.5,
+  planPath: false,
+  obstacles: [],
+  hoverTime: 3,
+  land: true,
+  maxTrackingError: 2.5,
+});
+
+/** GNSS + compass module for the outdoor study (external, plugged into the variant-B GNSS port). */
+export const GNSS_MODULE = { name: 'GNSS＋コンパス モジュール（u-blox M10 系）', massG: 5.0, size: [20, 20, 6] as [number, number, number] } as const;

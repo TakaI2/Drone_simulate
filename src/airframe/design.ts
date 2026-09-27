@@ -41,7 +41,18 @@ export interface AirframeInput {
   prop: { diameter: number; massG: number; blades: number };
   battery: { size: [number, number, number]; massG: number };
   pcb: { w: number; h: number; thickness: number; holes: Array<{ x: number; y: number }>; boardMassG: number; parts: Array<{ ref: string; x: number; y: number; massG: number; height: number }>; antennaOverhang: number };
-  flow: { size: [number, number, number]; massG: number };
+  flow: {
+    size: [number, number, number];
+    massG: number;
+    name?: string;
+    /** Mounting holes relative to the flow unit centre (default: two holes on the y axis). */
+    holes?: Array<{ x: number; y: number }>;
+    /** Cut a cable pass-through slot at the nose root (variant B). */
+    cableSlot?: boolean;
+    /** Nose length/width override (variant B sub-board is larger than the breakout). */
+    noseLength?: number;
+    noseWidth?: number;
+  };
   miscMassG: number;
   /** Max static thrust per rotor [N] (arm stress check). */
   maxThrustN: number;
@@ -93,6 +104,9 @@ export interface AirframeDesign {
   manifoldStatus: string;
 }
 
+/** Cable pass-through at the nose root (variant B) [mm]. */
+export const FRAME_CABLE_SLOT = { w: 3, l: 8, fromPlateEdge: 1 } as const;
+
 const deg = (r: number): number => (r * 180) / Math.PI;
 
 export const rotorAngle = (n: number, i: number): number => -Math.PI / 2 + Math.PI / n + (2 * Math.PI * i) / n;
@@ -122,8 +136,10 @@ const buildFrame = (wasm: ManifoldToplevel, inp: AirframeInput, bx: number): { m
   const rr = F.plateCornerRadius;
   let solid: Manifold = CrossSection.square([plateW - 2 * rr, plateH - 2 * rr], true).offset(rr, 'Round').extrude(F.plateThickness);
   // nose for the optical-flow module
-  const noseX0 = plateW / 2 - rr, noseX1 = plateW / 2 + F.noseLength;
-  const nose = CrossSection.square([noseX1 - noseX0 - 2 * 2, F.noseWidth - 2 * 2], true).offset(2, 'Round').extrude(F.plateThickness).translate([(noseX0 + noseX1) / 2, 0, 0]);
+  const noseLen = inp.flow.noseLength ?? F.noseLength;
+  const noseWid = inp.flow.noseWidth ?? F.noseWidth;
+  const noseX0 = plateW / 2 - rr, noseX1 = plateW / 2 + noseLen;
+  const nose = CrossSection.square([noseX1 - noseX0 - 2 * 2, noseWid - 2 * 2], true).offset(2, 'Round').extrude(F.plateThickness).translate([(noseX0 + noseX1) / 2, 0, 0]);
   solid = solid.add(nose);
   const parts: Manifold[] = [];
   for (let i = 0; i < n; i++) {
@@ -154,8 +170,14 @@ const buildFrame = (wasm: ManifoldToplevel, inp: AirframeInput, bx: number): { m
   const lh = F.lighteningHole;
   cuts.push(CrossSection.square([lh - 4, lh - 4], true).offset(2, 'Round').extrude(F.plateThickness + 2).translate([bx, 0, -1]));
   // flow module screws (M2 clearance) on the nose
-  const fx = plateW / 2 + F.noseLength / 2;
-  for (const s of [-1, 1]) cuts.push(Manifold.cylinder(F.plateThickness + 2, F.clearanceHoleRadius, F.clearanceHoleRadius, 24).translate([fx, s * (inp.flow.size[1] / 2 - 2), -1]));
+  const fx = plateW / 2 + noseLen / 2;
+  const flowHoles = inp.flow.holes ?? [{ x: 0, y: inp.flow.size[1] / 2 - 2 }, { x: 0, y: -(inp.flow.size[1] / 2 - 2) }];
+  for (const h of flowHoles) cuts.push(Manifold.cylinder(F.plateThickness + 2, F.clearanceHoleRadius, F.clearanceHoleRadius, 24).translate([fx + h.x, h.y, -1]));
+  if (inp.flow.cableSlot) {
+    // cable from the sub-board (under the nose) up to J2 on the main board
+    const s = FRAME_CABLE_SLOT;
+    cuts.push(CrossSection.square([s.w - 1, s.l - 1], true).offset(0.5, 'Round').extrude(F.plateThickness + 2).translate([plateW / 2 + s.w / 2 + s.fromPlateEdge, 0, -1]));
+  }
   const result = solid.subtract(Manifold.union(cuts));
   return { manifold: result, plate: { minX: -plateW / 2, maxX: noseX1, w: plateW } };
 };
@@ -215,8 +237,8 @@ export const designAirframe = (wasm: ManifoldToplevel, inp: AirframeInput): Airf
       if (p.massG <= 0) continue;
       items.push({ name: `部品 ${p.ref}`, massG: p.massG, shape: 'point', center: [p.x, p.y, pcbZ + inp.pcb.thickness + p.height / 2], size: [0, 0, 0], topZ: pcbZ + inp.pcb.thickness + p.height, radius: 1 });
     }
-    const fx = inp.pcb.w / 2 + F.noseLength / 2;
-    items.push({ name: 'フロー＋ToF モジュール', massG: inp.flow.massG, shape: 'box', center: [fx, 0, -inp.flow.size[2] / 2], size: inp.flow.size, topZ: 0, radius: 10 });
+    const fx = inp.pcb.w / 2 + (inp.flow.noseLength ?? F.noseLength) / 2;
+    items.push({ name: inp.flow.name ?? 'フロー＋ToF モジュール', massG: inp.flow.massG, shape: 'box', center: [fx, 0, -inp.flow.size[2] / 2], size: inp.flow.size, topZ: 0, radius: 10 });
     items.push({ name: '配線・ねじ等', massG: inp.miscMassG, shape: 'point', center: [0, 0, F.plateThickness + 1], size: [0, 0, 0], topZ: 0, radius: 0 });
     return items;
   };

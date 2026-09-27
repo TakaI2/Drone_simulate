@@ -17,12 +17,24 @@ export interface AirframeJson extends AssemblyInfo, AirframeLike {
   checks: Check[];
 }
 
-export const loadAirframeAssets = async (): Promise<{ geo: THREE.BufferGeometry; info: AirframeJson; pcb: PcbDesign | null } | null> => {
-  const [stl, js, pcb] = await Promise.all([fetch('/out/stage4/frame.stl'), fetch('/out/stage4/airframe.json'), fetch('/out/stage3/pcb.json')]);
+/** Output locations of the two design variants (A = original, B = sensor sub-board + GNSS port). */
+export const variantPaths = (variant: string | null): { frame: string; airframe: string; pcb: string; flowPcb: string | null } =>
+  variant === 'B'
+    ? { frame: '/out/variantB/frame.stl', airframe: '/out/variantB/airframe.json', pcb: '/out/variantB/pcb.json', flowPcb: '/out/variantB/flow_pcb.json' }
+    : { frame: '/out/stage4/frame.stl', airframe: '/out/stage4/airframe.json', pcb: '/out/stage3/pcb.json', flowPcb: null };
+
+export const loadAirframeAssets = async (variant: string | null = null): Promise<{ geo: THREE.BufferGeometry; info: AirframeJson; pcb: PcbDesign | null } | null> => {
+  const paths = variantPaths(variant);
+  const [stl, js, pcb, flow] = await Promise.all([fetch(paths.frame), fetch(paths.airframe), fetch(paths.pcb), paths.flowPcb ? fetch(paths.flowPcb) : Promise.resolve(null)]);
   if (!stl.ok || !js.ok) return null;
   const geo = new STLLoader().parse(await stl.arrayBuffer());
   const info = (await js.json()) as AirframeJson;
   const pcbJson = pcb.ok ? ((await pcb.json()) as { design: PcbDesign }) : null;
+  if (flow && flow.ok) {
+    const fj = (await flow.json()) as { design: PcbDesign; lens: { ref: string; diameter: number; height: number } };
+    info.flowBoard = fj.design;
+    info.flowLens = fj.lens;
+  }
   return { geo, info, pcb: pcbJson?.design ?? null };
 };
 
@@ -68,12 +80,12 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
     checkField('重心（赤）と推力軸', state.cg, (v) => { state.cg = v; rebuild(); }),
     checkField('フレームのみ（造形物）', state.frameOnly, (v) => { state.frameOnly = v; rebuild(); }),
     heading('ダウンロード'),
-    el('div', {}, [el('a', { href: '/out/stage4/frame.stl', text: 'フレーム STL（3D プリント用）', download: '' })]),
+    el('div', {}, [el('a', { href: variantPaths(query.get('variant')).frame, text: 'フレーム STL（3D プリント用）', download: '' })]),
     heading('設計結果'),
     info,
   );
 
-  loadAirframeAssets()
+  loadAirframeAssets(query.get('variant'))
     .then((a) => {
       assets = a;
       if (!a) {

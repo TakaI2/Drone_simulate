@@ -93,6 +93,12 @@ export interface SensorSpec {
   yawStd: number;
   /** Battery voltage ADC noise [V]. */
   voltStd: number;
+  /** Slowly varying (Gauss-Markov) horizontal position error, e.g. GNSS [m] / correlation time [s]. */
+  posBiasStd?: number;
+  posBiasTau?: number;
+  /** Gauss-Markov altitude error (barometric drift) [m] / [s]. */
+  altBiasStd?: number;
+  altBiasTau?: number;
 }
 
 /** Controller gains in bandwidth form (independent of mass/inertia). */
@@ -177,4 +183,6 @@ export interface CourseSpec {
   /** Hover duration at the end of the mission [s]. */
   hoverTime: number;
   land: boolean;
+  /** Tracking error at which the path carrot stops advancing [m] (default: mission setting). */
+  maxTrackingError?: number;
 }

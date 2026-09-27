@@ -42,6 +42,13 @@ export interface PcbPipelineOptions {
   rules?: DesignRules;
   /** Candidate board sizes tried in order [mm]. */
   boardSizes?: number[];
+  /** Rectangular outlines [w, h] tried in order (overrides boardSizes). */
+  boardDims?: Array<[number, number]>;
+  /** Mounting holes as a function of the outline (default: four corners). */
+  holePositions?: (w: number, h: number) => Array<{ x: number; y: number }>;
+  placementOrder?: 'default' | 'largest-first';
+  anchors?: (w: number, h: number) => Array<{ ref: string; x: number; y: number; rot: number }>;
+  fanoutAwareCourtyard?: boolean;
   cornerRadius?: number;
   maxRerouteAttempts?: number;
   name?: string;
@@ -51,16 +58,17 @@ const GND_STRATEGIES: GndStrategy[] = ['tree-first', 'split', 'first'];
 
 export const designPcb = (circuit: Circuit, o: PcbPipelineOptions): PcbPipelineResult => {
   const rules = o.rules ?? DEFAULT_RULES;
-  const sizes = o.boardSizes ?? [38, 40, 42, 44];
+  const sizes: Array<[number, number]> = o.boardDims ?? (o.boardSizes ?? [38, 40, 42, 44]).map((s): [number, number] => [s, s]);
   const attempts: PcbAttempt[] = [];
   let best: PcbPipelineResult | null = null;
   let n = 0;
-  for (const size of sizes) {
-    const board: Board = { w: size, h: size, cornerRadius: o.cornerRadius ?? 2 };
+  for (const [bw, bh] of sizes) {
+    const board: Board = { w: bw, h: bh, cornerRadius: o.cornerRadius ?? 2 };
+    const label = `${bw}×${bh}`;
     const t0 = Date.now();
-    const pl = placeComponents(circuit, { board, rules, rotorAngles: o.rotorAngles });
+    const pl = placeComponents(circuit, { board, rules, rotorAngles: o.rotorAngles, holePositions: o.holePositions?.(bw, bh), order: o.placementOrder, anchors: o.anchors?.(bw, bh), fanoutAwareCourtyard: o.fanoutAwareCourtyard });
     if (pl.failures.length) {
-      attempts.push({ attempt: ++n, board: `${size}×${size}`, gnd: 'split', priority: [], placementFailures: pl.failures.length, unrouted: 0, drcViolations: 0, tracks: 0, vias: 0, timeMs: Date.now() - t0, note: `配置失敗: ${pl.failures.join(' / ')}` });
+      attempts.push({ attempt: ++n, board: label, gnd: 'split', priority: [], placementFailures: pl.failures.length, unrouted: 0, drcViolations: 0, tracks: 0, vias: 0, timeMs: Date.now() - t0, note: `配置失敗: ${pl.failures.join(' / ')}` });
       continue;
     }
     for (const gnd of GND_STRATEGIES) {
@@ -115,7 +123,7 @@ export const designPcb = (circuit: Circuit, o: PcbPipelineOptions): PcbPipelineR
       };
       attempts.push({
         attempt: ++n,
-        board: `${size}×${size}`,
+        board: label,
         gnd,
         priority: [...priority],
         placementFailures: 0,

@@ -11,6 +11,10 @@ export interface AssemblyInfo {
   rotors: Array<{ x: number; y: number; hubZ: number; spin: 1 | -1 }>;
   pcbZ: number;
   cg: [number, number, number];
+  /** Variant B: designed sensor sub-board mounted component-side down under the nose. */
+  flowBoard?: PcbDesign | null;
+  /** Lens barrel on the flow sensor (variant B). */
+  flowLens?: { ref: string; diameter: number; height: number };
 }
 
 export interface AssemblyOptions {
@@ -62,10 +66,27 @@ export const buildAssembly = (frameGeo: THREE.BufferGeometry, pcb: PcbDesign | n
   bat.rotation.z = Math.PI / 2; // length along y
   bat.position.set(a.battery.x, a.battery.y, -bh);
   g.add(bat);
-  const flow = flowModuleMesh();
-  flow.position.set(a.input.pcb.w / 2 + F.noseLength / 2, 0, -1.2);
-  flow.rotation.z = 0;
-  g.add(flow);
+  const fx = a.input.pcb.w / 2 + (a.input.flow.noseLength ?? F.noseLength) / 2;
+  if (a.flowBoard) {
+    // component side faces the floor: flip about x, back side against the plate bottom
+    const sub = buildBoard3d(a.flowBoard, { tracks: false });
+    if (a.flowLens) {
+      const pl = a.flowBoard.placements.find((p) => p.ref === a.flowLens?.ref);
+      if (pl) {
+        const lens = new THREE.Mesh(new THREE.CylinderGeometry(a.flowLens.diameter / 2, a.flowLens.diameter / 2, a.flowLens.height, 24).rotateX(Math.PI / 2), mat(0x222222));
+        lens.position.set(pl.x, pl.y, a.flowBoard.rules.boardThickness + pl.pkg.height + a.flowLens.height / 2);
+        sub.add(lens);
+      }
+    }
+    sub.rotation.x = Math.PI;
+    sub.position.set(fx, 0, 0);
+    sub.name = 'flow-board';
+    g.add(sub);
+  } else {
+    const flow = flowModuleMesh();
+    flow.position.set(fx, 0, -1.2);
+    g.add(flow);
+  }
   if (o.showCg) {
     const cg = new THREE.Mesh(new THREE.SphereGeometry(1.6, 16, 16), mat(0xe34948));
     cg.position.set(a.cg[0], a.cg[1], a.cg[2]);

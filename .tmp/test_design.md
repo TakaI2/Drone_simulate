@@ -45,3 +45,12 @@
 
 - `npm run typecheck`（tsc --noEmit）
 - `npm run lint`（ESLint。`no-explicit-any` をエラーにする）
+
+## 改良版 B
+
+| ID | 内容 | 期待値 |
+|---|---|---|
+| T-V1 | 子基板回路のネットリスト | 全ピンが 2 ピン以上のネットに属する（NC 除く） |
+| T-V2 | GNSS コネクタ有無 | 版 A の回路は不変、版 B は J8 と GNSS_TX/RX が増える |
+| T-V3 | GNSS バイアス誤差 | 長時間平均で σ に近い標準偏差、τ で相関 |
+| 統合 | `npm run variantB` | GB-1〜GB-5 の判定と比較レポート |

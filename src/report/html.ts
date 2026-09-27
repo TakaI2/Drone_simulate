@@ -73,12 +73,13 @@ pre{background:#f0efec;padding:10px;border-radius:6px;overflow:auto}
 .svgbox{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;overflow:auto}
 `;
 
-const STAGE_NAMES = ['総合', '1 シミュレーション', '2 推進・電気', '3 部品・基板', '4 機体', '5 統合'];
+const STAGE_NAMES = ['総合', '1 シミュレーション', '2 推進・電気', '3 部品・基板', '4 機体', '5 統合', 'B 改良版'];
+const STAGE_FILES = ['index.html', 'stage1.html', 'stage2.html', 'stage3.html', 'stage4.html', 'stage5.html', 'variantB.html'];
 
 export const renderReport = (r: ReportPage): string => {
   const passCount = r.goals.filter((g) => g.pass).length;
   const allPass = passCount === r.goals.length;
-  const nav = STAGE_NAMES.map((n, i) => `<a href="${i === 0 ? 'index.html' : `stage${i}.html`}" class="${i === r.stage ? 'cur' : ''}">${n}</a>`).join('');
+  const nav = STAGE_NAMES.map((n, i) => `<a href="${STAGE_FILES[i]}" class="${i === r.stage ? 'cur' : ''}">${n}</a>`).join('');
   const goals = table(
     ['ID', 'ゴール', '合格基準', '結果', '判定'],
     r.goals.map((g) => [esc(g.id), esc(g.title), esc(g.criteria), esc(g.result), statusPill(g.pass)]),

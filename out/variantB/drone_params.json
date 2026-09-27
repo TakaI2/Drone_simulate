@@ -1,0 +1,241 @@
+{
+  "name": "改良版 B（センサ子基板・GNSS 端子付き）",
+  "mass": 0.057548176570123545,
+  "inertia": [
+    0.000041127380356352555,
+    1.1342801992841318e-8,
+    2.1081125965109825e-7,
+    1.1342801992841318e-8,
+    0.00004479211593620565,
+    1.8161831788145926e-8,
+    2.1081125965109825e-7,
+    1.8161831788145926e-8,
+    0.00008184150864608173
+  ],
+  "rotors": [
+    {
+      "position": {
+        "x": 0.037498877973820996,
+        "y": -0.0375,
+        "z": 0.013600031992303299
+      },
+      "spin": 1,
+      "motor": {
+        "id": "coreless-0820",
+        "name": "Coreless 8520 (8.5x20mm) brushed",
+        "kind": "brushed",
+        "kv": 12000,
+        "resistance": 0.65,
+        "noLoadCurrent": 0.1,
+        "timeConstant": 0.04,
+        "maxCurrent": 2.8,
+        "mass": 0.005,
+        "diameter": 0.0085,
+        "length": 0.02,
+        "shaftDiameter": 0.001
+      },
+      "prop": {
+        "id": "prop-65",
+        "name": "65mm 2-blade",
+        "diameter": 0.065,
+        "pitch": 0.03,
+        "blades": 2,
+        "ct": 0.1,
+        "cp": 0.05,
+        "mass": 0.0005,
+        "bore": 0.001
+      }
+    },
+    {
+      "position": {
+        "x": 0.037498877973820996,
+        "y": 0.0375,
+        "z": 0.013600031992303299
+      },
+      "spin": -1,
+      "motor": {
+        "id": "coreless-0820",
+        "name": "Coreless 8520 (8.5x20mm) brushed",
+        "kind": "brushed",
+        "kv": 12000,
+        "resistance": 0.65,
+        "noLoadCurrent": 0.1,
+        "timeConstant": 0.04,
+        "maxCurrent": 2.8,
+        "mass": 0.005,
+        "diameter": 0.0085,
+        "length": 0.02,
+        "shaftDiameter": 0.001
+      },
+      "prop": {
+        "id": "prop-65",
+        "name": "65mm 2-blade",
+        "diameter": 0.065,
+        "pitch": 0.03,
+        "blades": 2,
+        "ct": 0.1,
+        "cp": 0.05,
+        "mass": 0.0005,
+        "bore": 0.001
+      }
+    },
+    {
+      "position": {
+        "x": -0.03750112202617901,
+        "y": 0.037500000000000006,
+        "z": 0.013600031992303299
+      },
+      "spin": 1,
+      "motor": {
+        "id": "coreless-0820",
+        "name": "Coreless 8520 (8.5x20mm) brushed",
+        "kind": "brushed",
+        "kv": 12000,
+        "resistance": 0.65,
+        "noLoadCurrent": 0.1,
+        "timeConstant": 0.04,
+        "maxCurrent": 2.8,
+        "mass": 0.005,
+        "diameter": 0.0085,
+        "length": 0.02,
+        "shaftDiameter": 0.001
+      },
+      "prop": {
+        "id": "prop-65",
+        "name": "65mm 2-blade",
+        "diameter": 0.065,
+        "pitch": 0.03,
+        "blades": 2,
+        "ct": 0.1,
+        "cp": 0.05,
+        "mass": 0.0005,
+        "bore": 0.001
+      }
+    },
+    {
+      "position": {
+        "x": -0.037501122026179015,
+        "y": -0.0375,
+        "z": 0.013600031992303299
+      },
+      "spin": -1,
+      "motor": {
+        "id": "coreless-0820",
+        "name": "Coreless 8520 (8.5x20mm) brushed",
+        "kind": "brushed",
+        "kv": 12000,
+        "resistance": 0.65,
+        "noLoadCurrent": 0.1,
+        "timeConstant": 0.04,
+        "maxCurrent": 2.8,
+        "mass": 0.005,
+        "diameter": 0.0085,
+        "length": 0.02,
+        "shaftDiameter": 0.001
+      },
+      "prop": {
+        "id": "prop-65",
+        "name": "65mm 2-blade",
+        "diameter": 0.065,
+        "pitch": 0.03,
+        "blades": 2,
+        "ct": 0.1,
+        "cp": 0.05,
+        "mass": 0.0005,
+        "bore": 0.001
+      }
+    }
+  ],
+  "battery": {
+    "id": "lipo-1s-600",
+    "name": "LiPo 1S 600mAh",
+    "cells": 1,
+    "capacityAh": 0.6,
+    "internalResistance": 0.07,
+    "mass": 0.015,
+    "cellVoltageMin": 3.3,
+    "cellVoltageNominal": 3.7,
+    "cellVoltageMax": 4.2,
+    "maxDischargeC": 25,
+    "size": {
+      "x": 0.05,
+      "y": 0.025,
+      "z": 0.007
+    },
+    "connector": "JST-PH 2.0"
+  },
+  "dragArea": 0.0014784,
+  "rotorDrag": 0.01150963531402471,
+  "collisionRadius": 0.08553300858899107,
+  "gearHeight": 0.0093999680076967,
+  "sensors": {
+    "gyroStd": 0.01,
+    "gyroBiasWalk": 0.0005,
+    "accelStd": 0.15,
+    "accelBias": 0.05,
+    "posStd": 0.02,
+    "posRateHz": 50,
+    "posDriftWalk": 0.003,
+    "altStd": 0.01,
+    "altRateHz": 50,
+    "yawStd": 0.02,
+    "voltStd": 0.01
+  },
+  "gains": {
+    "posP": {
+      "x": 1.2,
+      "y": 1.2,
+      "z": 1.5
+    },
+    "velP": {
+      "x": 2.8,
+      "y": 2.8,
+      "z": 5
+    },
+    "velI": {
+      "x": 0.8,
+      "y": 0.8,
+      "z": 2
+    },
+    "velD": {
+      "x": 0.05,
+      "y": 0.05,
+      "z": 0.05
+    },
+    "attP": {
+      "x": 7,
+      "y": 7,
+      "z": 3
+    },
+    "rateP": {
+      "x": 16,
+      "y": 16,
+      "z": 8
+    },
+    "rateI": {
+      "x": 10,
+      "y": 10,
+      "z": 3
+    },
+    "rateD": {
+      "x": 0.25,
+      "y": 0.25,
+      "z": 0
+    },
+    "rateDCutoffHz": 30,
+    "maxTiltRad": 0.6108652381980153,
+    "maxHorizSpeed": 1.5,
+    "maxVertSpeed": 1,
+    "maxHorizAccel": 4,
+    "maxRate": {
+      "x": 4,
+      "y": 4,
+      "z": 2
+    },
+    "velIntLimit": 3,
+    "rateIntLimit": 30
+  },
+  "landCellVoltage": 3.3,
+  "physicsRateHz": 1000,
+  "controlRateHz": 500
+}
