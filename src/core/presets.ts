@@ -289,6 +289,8 @@ export const MISSION_DEFAULTS = {
   cornerSpeedFactor: 0.35,
   maxTrackingError: 0.35,
   crashImpactSpeed: 2.0,
+  /** Distance to the home point (estimate) at which RTH switches to landing [m]. */
+  rthArriveTolerance: 1.0,
   crashTiltRad: (60 * Math.PI) / 180,
   logRateHz: 50,
 } as const;
@@ -331,3 +333,73 @@ export const COURSE_OUTDOOR_SQUARE = (): CourseSpec => ({
 
 /** GNSS + compass module for the outdoor study (external, plugged into the variant-B GNSS port). */
 export const GNSS_MODULE = { name: 'GNSS＋コンパス モジュール（u-blox M10 系）', massG: 5.0, size: [20, 20, 6] as [number, number, number] } as const;
+
+// ------------------------------------------------------------------ variant C (outdoor vehicle)
+
+/** Outdoor controller limits: faster cruise, 45° tilt, acceleration and integrator authority against wind drag. */
+export const GAINS_OUTDOOR: ControllerGains = {
+  ...GAINS_DEFAULT,
+  maxHorizSpeed: 5,
+  maxVertSpeed: 1.5,
+  maxTiltRad: (45 * Math.PI) / 180,
+  /** Horizontal acceleration limit up to the tilt limit (g·tan 45°) so wind drag can be countered. */
+  maxHorizAccel: 9,
+  velIntLimit: 8,
+};
+
+/** Build constants of the variant C vehicle (stack, frame overrides, board outline). */
+export const OUTDOOR_BUILD = {
+  /** FC board outlines tried in order [mm]. */
+  boardSizes: [38, 40],
+  maxRerouteAttempts: 4,
+  /** 4-in-1 ESC: 20 x 20 mm M2 posts, board raised on 3 mm posts. */
+  escHoleSpacing: 20,
+  escPostHeight: 3,
+  /** Frame overrides: thicker arms for brushless thrust/crashes, FC above the ESC, prop adapter height. */
+  frame: { armWidth: 7, armHeight: 5, standoffHeight: 9, shaftAboveMotor: 3, noseLength: 24, noseWidth: 22 },
+  /** Failsafe landing threshold per cell for 2S+ packs [V]. */
+  landCellVoltage: 3.4,
+} as const;
+
+export const ENV_OUTDOOR_C = (meanWind = 5, gustStd = 1.5): EnvironmentSpec => ({
+  ...ENV_CALM(),
+  wind: { mean: v3(meanWind, 0, 0), gustStd, gustTau: 3 },
+  boundsMin: v3(-80, -80, 0),
+  boundsMax: v3(80, 80, 40),
+});
+
+export const COURSE_OUTDOOR_C_HOVER = (): CourseSpec => ({
+  ...COURSE_OUTDOOR_HOVER(),
+  name: '屋外ホバリング 5 m（GNSS・版 C）',
+});
+
+export const COURSE_OUTDOOR_WIDE = (): CourseSpec => ({
+  name: '屋外 40 m 四方・高度 10 m（GNSS）',
+  start: v3(0, 0, 0),
+  goal: v3(0, 0, 0),
+  waypoints: [v3(20, -20, 10), v3(20, 20, 10), v3(-20, 20, 10), v3(-20, -20, 10), v3(20, -20, 10)],
+  cruiseAltitude: 10,
+  cruiseSpeed: 4,
+  planPath: false,
+  obstacles: [],
+  hoverTime: 3,
+  land: true,
+  maxTrackingError: 3,
+});
+
+export const COURSE_OUTDOOR_RTH = (): CourseSpec => ({
+  name: '通信断からの自動帰還（RTH）',
+  start: v3(0, 0, 0),
+  goal: v3(30, 30, 0),
+  waypoints: [v3(30, 0, 10), v3(30, 30, 10)],
+  cruiseAltitude: 10,
+  cruiseSpeed: 4,
+  planPath: false,
+  obstacles: [],
+  hoverTime: 20,
+  land: true,
+  maxTrackingError: 3,
+  linkLossAt: 32,
+  failsafeAction: 'rth',
+  rthAltitude: 12,
+});

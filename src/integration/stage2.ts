@@ -1,11 +1,11 @@
 import { computeElectrical } from '../electrical/calc';
 import type { ElectricalCalc } from '../electrical/calc';
 import { generateCircuit } from '../electrical/circuit';
-import type { Circuit } from '../electrical/circuit';
+import type { Circuit, CircuitOptions } from '../electrical/circuit';
 import { buildBom } from '../electrical/export';
 import type { BomLine } from '../electrical/export';
 import { searchPropulsion, sizePropulsion } from '../sizing/propulsion';
-import type { SearchResult, SizingResult } from '../sizing/propulsion';
+import type { SearchOptions, SearchResult, SizingResult } from '../sizing/propulsion';
 import { findBattery, findMotor, findProp } from '../core/propulsion-catalog';
 
 /** Board assumptions before the PCB is laid out (refined in stage 3). */
@@ -67,6 +67,12 @@ export interface Stage2Options {
   boardW?: number;
   boardH?: number;
   maxIterations?: number;
+  /** Variant C: candidate catalog, rules and mass model for the search. */
+  search?: SearchOptions;
+  /** Variant C: supply / motor-drive options of the circuit. */
+  circuit?: Pick<CircuitOptions, 'power' | 'motorDrive'>;
+  /** Electrical checks (default: variant A calculation). */
+  electrical?: (circuit: Circuit, sizing: SizingResult) => ElectricalCalc;
 }
 
 export const runStage2 = (o: Stage2Options): Stage2Result => {
@@ -74,17 +80,18 @@ export const runStage2 = (o: Stage2Options): Stage2Result => {
   const boardH = o.boardH ?? BOARD_DEFAULTS.height;
   let mass = BOARD_DEFAULTS.initialElectronicsMass;
   const iterations: Stage2Iteration[] = [];
-  let search = searchPropulsion(o.rotorCount, mass);
+  const circuitOptions: CircuitOptions = { rotorCount: o.rotorCount, gnssConnector: o.gnssConnector, ...o.circuit };
+  let search = searchPropulsion(o.rotorCount, mass, o.search);
   let sizing: SizingResult | null = null;
-  let circuit = generateCircuit({ rotorCount: o.rotorCount, gnssConnector: o.gnssConnector });
+  let circuit = generateCircuit(circuitOptions);
   let bom = buildBom(circuit);
   for (let it = 0; it < (o.maxIterations ?? 6); it++) {
-    search = searchPropulsion(o.rotorCount, mass);
+    search = searchPropulsion(o.rotorCount, mass, o.search);
     sizing = o.override
-      ? sizePropulsion({ rotorCount: o.rotorCount, motor: findMotor(o.override.motorId), prop: findProp(o.override.propId), battery: findBattery(o.override.batteryId), electronicsMass: mass })
+      ? sizePropulsion({ rotorCount: o.rotorCount, motor: findMotor(o.override.motorId), prop: findProp(o.override.propId), battery: findBattery(o.override.batteryId), electronicsMass: mass, rules: o.search?.rules, massModel: o.search?.massModel })
       : search.best;
     if (!sizing) throw new Error('条件を満たす推進系の組合せがありません');
-    circuit = generateCircuit({ rotorCount: o.rotorCount, gnssConnector: o.gnssConnector });
+    circuit = generateCircuit(circuitOptions);
     bom = buildBom(circuit);
     const newMassG = electronicsMassG(bom, boardW, boardH);
     iterations.push({
@@ -100,6 +107,6 @@ export const runStage2 = (o: Stage2Options): Stage2Result => {
     if (converged) break;
   }
   const finalSizing = sizing as SizingResult;
-  const calc = computeElectrical(circuit, finalSizing);
+  const calc = (o.electrical ?? computeElectrical)(circuit, finalSizing);
   return { rotorCount: o.rotorCount, search, sizing: finalSizing, circuit, calc, bom, electronicsMassG: mass * 1000, iterations };
 };

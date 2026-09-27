@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-26 09:27",
+  "generated": "2026-09-27 18:54",
   "units": "mm",
   "entries": [
     {
@@ -465,6 +465,54 @@
       "stlFile": "JST-SH-4-SMD.stl",
       "stlBytes": 4884,
       "triangles": 96
+    },
+    {
+      "id": "JST-SH-6-SMD",
+      "family": "connector",
+      "description": "JST SH 6 ピン 1.0 mm トップ（SMD）",
+      "standard": "JST SM**B-SRSS-TB 推奨ランド（近似）",
+      "pads": 8,
+      "courtyardMm": [
+        9.5,
+        6.55
+      ],
+      "heightMm": 3,
+      "verify": true,
+      "stlFile": "JST-SH-6-SMD.stl",
+      "stlBytes": 6084,
+      "triangles": 120
+    },
+    {
+      "id": "PMW3901MB",
+      "family": "lga",
+      "description": "PMW3901MB 系オプティカルフローセンサ 6×6 mm（近似ランド）",
+      "standard": "メーカー推奨ランドパターン（近似）",
+      "pads": 20,
+      "courtyardMm": [
+        9.15,
+        9.15
+      ],
+      "heightMm": 2.32,
+      "verify": true,
+      "stlFile": "PMW3901MB.stl",
+      "stlBytes": 17484,
+      "triangles": 348
+    },
+    {
+      "id": "VL53L1X-LGA12",
+      "family": "lga",
+      "description": "VL53L1X ToF センサ LGA-12 4.9×2.5 mm（近似ランド）",
+      "standard": "メーカー推奨ランドパターン（近似）",
+      "pads": 12,
+      "courtyardMm": [
+        7.9,
+        5.65
+      ],
+      "heightMm": 1.58,
+      "verify": true,
+      "stlFile": "VL53L1X-LGA12.stl",
+      "stlBytes": 12684,
+      "triangles": 252
     },
     {
       "id": "JST-PH-2-THT",

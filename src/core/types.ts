@@ -22,6 +22,8 @@ export interface MotorSpec {
   length: number;
   /** Shaft diameter [m]. */
   shaftDiameter: number;
+  /** Square mounting-hole pattern (M2, hole-to-hole) for bolt-on brushless motors [m]. */
+  mountSpacing?: number;
   /** Market availability (multi-vendor generic part = common). */
   availability?: Availability;
 }
@@ -185,4 +187,10 @@ export interface CourseSpec {
   land: boolean;
   /** Tracking error at which the path carrot stops advancing [m] (default: mission setting). */
   maxTrackingError?: number;
+  /** Simulated loss of the control/telemetry link at this time [s] (failsafe test). */
+  linkLossAt?: number;
+  /** Failsafe action on link loss / low battery (default: land in place). */
+  failsafeAction?: 'land' | 'rth';
+  /** Return-to-home altitude [m] (default: cruise altitude). */
+  rthAltitude?: number;
 }

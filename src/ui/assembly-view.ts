@@ -5,6 +5,7 @@ import type { DroneParams } from '../core/types';
 import { runStage2 } from '../integration/stage2';
 import { deriveDroneParams } from '../integration/stage5';
 import type { MeasuredOverrides } from '../integration/stage5';
+import { OUTDOOR_C_SCENARIOS } from '../sim/scenarios';
 import { loadAirframeAssets } from './airframe-view';
 import type { DroneMesh } from './drone-mesh';
 import { mountSimView } from './sim-view';
@@ -16,7 +17,9 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
   let cancelled = false;
   const note = el('div', { class: 'doc', text: '完成機体を読み込み中…' });
   root.append(note);
-  loadAirframeAssets(query.get('variant')).then((assets) => {
+  const variant = query.get('variant');
+  const paramsC = variant === 'C' ? fetch('/out/variantC/drone_params.json').then((r) => (r.ok ? (r.json() as Promise<DroneParams>) : null)) : Promise.resolve(null);
+  Promise.all([loadAirframeAssets(variant), paramsC]).then(([assets, pC]) => {
     if (cancelled) return;
     note.remove();
     if (!assets) {
@@ -47,7 +50,16 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
       };
       return { group: outer, update };
     };
-    const isB = query.get('variant') === 'B';
+    const isB = variant === 'B';
+    if (variant === 'C' && pC) {
+      // variant C: the parameters come from `npm run variantC` (outdoor sizing loop, GNSS sensors, outdoor gains)
+      const drones: Record<string, { label: string; build: () => DroneParams }> = {
+        designed: { label: '★ 版 C 屋外機（ブラシレス 2S・GNSS）', build: () => pC },
+        ...Object.fromEntries(Object.entries(DRONE_PRESETS).map(([k, b]) => [k, { label: `参照: ${k}`, build: b }])),
+      };
+      dispose = mountSimView(root, { query, drones, meshFactory, initialDrone: 'designed', scenarios: OUTDOOR_C_SCENARIOS });
+      return;
+    }
     const withGnss: DroneParams = { ...deriveDroneParams(s2.sizing, assets.info, { ...overrides, massG: (overrides.massG ?? assets.info.massG) + GNSS_MODULE.massG }), sensors: SENSORS_GNSS_M10, name: '改良版 B＋GNSS モジュール（屋外）' };
     const drones: Record<string, { label: string; build: () => DroneParams }> = {
       designed: { label: isB ? '★ 改良版 B（センサ子基板）' : '★ 完成機体（段階2〜4 の設計）', build: () => (isB ? { ...derived, name: '改良版 B（センサ子基板・GNSS 端子付き）' } : derived) },

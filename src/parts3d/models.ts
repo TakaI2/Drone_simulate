@@ -127,3 +127,31 @@ export const flowModuleMesh = (): THREE.Group => {
   g.add(primMesh({ kind: 'box', c: [5, 0, -0.8], s: [4.9, 2.5, 1.6], color: 0x111111 }));
   return g;
 };
+
+/** 4-in-1 ESC board (MOSFETs both sides, motor pads at the corners), bottom at z = 0. */
+export const escBoardMesh = (w: number, h: number, height: number): THREE.Group => {
+  const g = new THREE.Group();
+  const t = 1.0;
+  const zb = height / 2 - t / 2;
+  g.add(primMesh({ kind: 'box', c: [0, 0, zb + t / 2], s: [w, h, t], color: 0x1a237e }));
+  for (const sx of [-1, 1])
+    for (const sy of [-1, 1]) {
+      g.add(primMesh({ kind: 'box', c: [sx * w * 0.22, sy * h * 0.22, zb + t + 0.5], s: [3.3, 3.3, 1.0], color: 0x222222 }));
+      g.add(primMesh({ kind: 'box', c: [sx * w * 0.22, sy * h * 0.22, zb - 0.5], s: [3.3, 3.3, 1.0], color: 0x222222 }));
+      g.add(primMesh({ kind: 'box', c: [sx * (w / 2 - 1.5), sy * (h / 2 - 5), zb + t + 0.05], s: [2.2, 3.0, 0.1], color: 0xc9a227, metal: true }));
+    }
+  g.add(primMesh({ kind: 'box', c: [0, 0, zb + t + 0.5], s: [5, 5, 1.0], color: 0x222222 }));
+  g.add(primMesh({ kind: 'box', c: [0, -h / 2 - 3, zb + t / 2], s: [6, 6, 3], color: 0xf2c200 }));
+  return g;
+};
+
+/** GNSS + compass module (ceramic patch on a small PCB), bottom at z = 0. */
+export const gnssModuleMesh = (w: number, h: number, height: number): THREE.Group => {
+  const g = new THREE.Group();
+  g.add(primMesh({ kind: 'box', c: [0, 0, 0.5], s: [w, h, 1.0], color: 0x0d47a1 }));
+  const patch = Math.min(w, h) * 0.9;
+  const ph = Math.max(1, height - 1.5);
+  g.add(primMesh({ kind: 'box', c: [0, 0, 1 + ph / 2], s: [patch, patch, ph], color: 0xe8dcc0 }));
+  g.add(primMesh({ kind: 'box', c: [0, 0, 1 + ph + 0.05], s: [patch * 0.7, patch * 0.7, 0.1], color: 0xc9a227, metal: true }));
+  return g;
+};

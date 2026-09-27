@@ -7,7 +7,7 @@ import { generateGerbers } from '../pcb/gerber';
 import type { GerberSet } from '../pcb/gerber';
 import { exportKicadPcb } from '../pcb/kicad';
 import { designPcb } from '../pcb/pipeline';
-import type { PcbPipelineResult } from '../pcb/pipeline';
+import type { PcbPipelineOptions, PcbPipelineResult } from '../pcb/pipeline';
 import { pcbMassG } from './stage2';
 import type { Stage2Result } from './stage2';
 
@@ -41,10 +41,17 @@ export interface Stage3Result {
 /** Rotor arm directions from the stage-2 layout (same convention as the simulator). */
 export const rotorAnglesOf = (n: number): number[] => Array.from({ length: n }, (_, i) => -Math.PI / 2 + Math.PI / n + (2 * Math.PI * i) / n);
 
-export const runStage3 = (s2: Stage2Result): Stage3Result => {
-  const pcb = designPcb(s2.circuit, { rotorAngles: rotorAnglesOf(s2.rotorCount), name: s2.circuit.name });
+export interface Stage3Options {
+  /** Extra PCB pipeline options (variant C: outlines, anchors). */
+  pcb?: Partial<PcbPipelineOptions>;
+  /** Silkscreen label. */
+  label?: string;
+}
+
+export const runStage3 = (s2: Stage2Result, o: Stage3Options = {}): Stage3Result => {
+  const pcb = designPcb(s2.circuit, { rotorAngles: rotorAnglesOf(s2.rotorCount), name: s2.circuit.name, ...o.pcb });
   const values = Object.fromEntries(s2.circuit.components.map((c) => [c.ref, c.value]));
-  const gerbers = generateGerbers(pcb.design, values, ['DDS-A FC V0.1']);
+  const gerbers = generateGerbers(pcb.design, values, [o.label ?? 'DDS-A FC V0.1']);
   const kicad = exportKicadPcb(pcb.design, s2.circuit);
   const breadboard = buildBreadboard(s2.rotorCount);
   const mapping: CatalogMapping[] = s2.bom.map((b) => {

@@ -35,6 +35,9 @@ const main = (): void => {
   const fB = 'out/variantB/results.json';
   const goalsB: GoalRow[] = existsSync(fB) ? ((JSON.parse(readFileSync(fB, 'utf-8')) as { goals?: GoalRow[] }).goals ?? []) : [];
   if (goalsB.length) goals.push({ id: '改良版 B', title: 'センサ子基板＋GNSS 端子', criteria: goalsB.map((g) => g.id).join('、'), result: `${goalsB.filter((g) => g.pass).length} / ${goalsB.length} 合格`, pass: goalsB.every((g) => g.pass) });
+  const fC = 'out/variantC/results.json';
+  const goalsC: GoalRow[] = existsSync(fC) ? ((JSON.parse(readFileSync(fC, 'utf-8')) as { goals?: GoalRow[] }).goals ?? []) : [];
+  if (goalsC.length) goals.push({ id: '改良版 C', title: '屋外飛行機（ブラシレス 2S・GNSS・自動帰還）', criteria: goalsC.map((g) => g.id).join('、'), result: `${goalsC.filter((g) => g.pass).length} / ${goalsC.length} 合格`, pass: goalsC.every((g) => g.pass) });
   const html = renderReport({
     stage: 0,
     title: 'Drone Design Studio 総合レポート',
@@ -44,7 +47,7 @@ const main = (): void => {
     sections: [
       {
         title: '完成機体',
-        html: `<div class="grid2">${figure('img/stage5-fly-2.png', '完成機体（設計データから組み立てた 3D）が障害物コースを自律飛行')}${figure('img/stage4-iso.png', '完成機体（フレーム・基板・部品・モータ・プロペラ・電池）')}${figure('img/stage3-pcb-3d.png', '自動配置・自動配線したフライトコントローラ基板（40×40 mm、2 層）')}${figure('img/stage1-G1-3-iso.png', '段階1：障害物コースの経路計画と飛行')}</div>`,
+        html: `<div class="grid2">${figure('img/stage5-fly-2.png', '完成機体（設計データから組み立てた 3D）が障害物コースを自律飛行')}${figure('img/stage4-iso.png', '完成機体（フレーム・基板・部品・モータ・プロペラ・電池）')}${figure('img/stage3-pcb-3d.png', '自動配置・自動配線したフライトコントローラ基板（40×40 mm、2 層）')}${figure('img/stage1-G1-3-iso.png', '段階1：障害物コースの経路計画と飛行')}${existsSync('reports/img/variantC-iso.png') ? figure('img/variantC-iso.png', '改良版 C：屋外飛行機（ブラシレス 2S・GNSS・自動帰還、100 g 未満）') : ''}</div>`,
       },
       {
         title: 'plan.txt からのブラッシュアップ（要点）',
@@ -65,14 +68,16 @@ const main = (): void => {
       },
       {
         title: '各段階のレポート',
-        html: `<ul>${all.map((s) => `<li><a href="stage${s.n}.html">段階${s.n}：${esc(s.title)}</a>（${s.goals.filter((g) => g.pass).length}/${s.goals.length} 合格）</li>`).join('')}${goalsB.length ? `<li><a href="variantB.html">改良版 B：センサ子基板＋GNSS 端子</a>（${goalsB.filter((g) => g.pass).length}/${goalsB.length} 合格）</li>` : ''}</ul>`,
+        html: `<ul>${all.map((s) => `<li><a href="stage${s.n}.html">段階${s.n}：${esc(s.title)}</a>（${s.goals.filter((g) => g.pass).length}/${s.goals.length} 合格）</li>`).join('')}${goalsB.length ? `<li><a href="variantB.html">改良版 B：センサ子基板＋GNSS 端子</a>（${goalsB.filter((g) => g.pass).length}/${goalsB.length} 合格）</li>` : ''}${goalsC.length ? `<li><a href="variantC.html">改良版 C：屋外飛行機</a>（${goalsC.filter((g) => g.pass).length}/${goalsC.length} 合格）</li>` : ''}</ul>`,
       },
       {
         title: '使い方',
         html: `<pre>npm install
 npm run dev          # UI（http://localhost:5173）: 1 シミュレーション / 2 推進・電気 / 3 部品・基板 / 4 機体 / 5 統合
 npm test             # 単体テスト
-npm run all          # 段階1〜5 のゴール判定・成果物・レポートを一括生成（Chrome を使って撮影）</pre>
+npm run all          # 段階1〜5 のゴール判定・成果物・レポートを一括生成（Chrome を使って撮影）
+npm run variantB     # 改良版 B（センサ子基板＋GNSS 端子）
+npm run variantC     # 改良版 C（屋外飛行機）</pre>
 ${table(['成果物', '場所'], [
   ['回路図・ネットリスト・BOM', 'out/stage2/（schematic.svg、netlist.net、bom.csv）'],
   ['基板製造データ（Gerber・ドリル）', 'out/stage3/drone_fc_gerber.zip'],
@@ -81,6 +86,8 @@ ${table(['成果物', '場所'], [
   ['部品 3D アーカイブ', 'out/parts3d/（STL 47 種＋catalog.json）'],
   ['フレーム STL（3D プリント）', 'out/stage4/frame.stl'],
   ['シミュレーション用パラメータ', 'out/stage5/drone_params.json'],
+  ['改良版 B（子基板・メイン基板 B・フレーム B）', 'out/variantB/'],
+  ['改良版 C（屋外機の基板・フレーム・パラメータ）', 'out/variantC/'],
 ])}`,
       },
     ],

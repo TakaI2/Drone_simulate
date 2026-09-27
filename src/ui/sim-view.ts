@@ -4,7 +4,8 @@ import type { Vec3 } from '../core/math';
 import { COURSE_PRESETS, ENV_CALM } from '../core/presets';
 import type { CourseSpec, DroneParams, Obstacle } from '../core/types';
 import { CHART_CSS, lineChartSvg } from '../report/chart';
-import { OUTDOOR_SCENARIOS, SCENARIOS, runScenario } from '../sim/scenarios';
+import { OUTDOOR_C_SCENARIOS, OUTDOOR_SCENARIOS, SCENARIOS, runScenario } from '../sim/scenarios';
+import type { ScenarioDef } from '../sim/scenarios';
 import { createSimulation } from '../sim/simulator';
 import type { Simulation } from '../sim/simulator';
 import { buildDroneMesh } from './drone-mesh';
@@ -19,6 +20,8 @@ export interface SimViewOptions {
   /** Optional detailed mesh factory (e.g. assembled design from stage 5). */
   meshFactory?: (droneKey: string, p: DroneParams) => DroneMesh | null;
   initialDrone?: string;
+  /** Extra goal scenarios listed in the side panel (variant C outdoor scenarios). */
+  scenarios?: ScenarioDef[];
 }
 
 const isVec = (x: Vec3 | null | undefined): x is Vec3 =>
@@ -274,7 +277,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
   );
   const scenarioBox = el('div');
   side.append(scenarioBox);
-  for (const def of SCENARIOS) {
+  for (const def of [...SCENARIOS, ...(o.scenarios ?? [])]) {
     const b = button(`${def.id} ${def.title}`, () => showScenario(def.id));
     scenarioBox.append(el('div', { class: 'btn-row' }, [b]));
   }
@@ -282,7 +285,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
 
   /** Run a goal scenario to completion and display the full trajectory. */
   const showScenario = (id: string): void => {
-    const def = [...SCENARIOS, ...OUTDOOR_SCENARIOS].find((d) => d.id === id);
+    const def = [...SCENARIOS, ...OUTDOOR_SCENARIOS, ...OUTDOOR_C_SCENARIOS].find((d) => d.id === id);
     if (!def) return;
     state.env = def.env();
     state.course = def.course();

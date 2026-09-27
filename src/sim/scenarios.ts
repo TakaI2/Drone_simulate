@@ -1,6 +1,6 @@
 import type { Vec3 } from '../core/math';
 import { vDist } from '../core/math';
-import { COURSE_HOVER, COURSE_OBSTACLES, COURSE_OUTDOOR_HOVER, COURSE_OUTDOOR_SQUARE, COURSE_SQUARE, ENV_CALM, ENV_OUTDOOR, ENV_WINDY } from '../core/presets';
+import { COURSE_HOVER, COURSE_OBSTACLES, COURSE_OUTDOOR_C_HOVER, COURSE_OUTDOOR_HOVER, COURSE_OUTDOOR_RTH, COURSE_OUTDOOR_SQUARE, COURSE_OUTDOOR_WIDE, COURSE_SQUARE, ENV_CALM, ENV_OUTDOOR, ENV_OUTDOOR_C, ENV_WINDY } from '../core/presets';
 import type { CourseSpec, DroneParams, EnvironmentSpec } from '../core/types';
 import { createSimulation } from './simulator';
 import type { SimConfig, SimSample, Simulation } from './simulator';
@@ -150,19 +150,7 @@ export const OUTDOOR_SCENARIOS: ScenarioDef[] = [
     course: COURSE_OUTDOOR_HOVER,
     env: ENV_OUTDOOR,
     maxTime: 60,
-    evaluate: (sim) => {
-      const hover = inPhase(sim.samples, 'hover');
-      const t0 = hover.length ? hover[0].t + HOVER_SETTLE_TIME : 0;
-      const win = hover.filter((s) => s.t >= t0);
-      const maxH = win.reduce((m, s) => Math.max(m, Math.hypot(s.p.x - s.sp.x, s.p.y - s.sp.y)), 0);
-      const altRms = Math.sqrt(win.reduce((a, s) => a + (s.p.z - s.sp.z) ** 2, 0) / Math.max(1, win.length));
-      return [
-        crit('水平位置誤差 最大', win.length ? maxH : Infinity, OUTDOOR_LIMITS.hoverHoriz, 'm'),
-        crit('高度誤差 RMS', win.length ? altRms : Infinity, OUTDOOR_LIMITS.hoverAltRms, 'm'),
-        crit('墜落', sim.crashed() ? 1 : 0, 1, '回'),
-        crit('ホバリング到達', win.length > 0 ? 1 : 0, 1, '', 'gte'),
-      ];
-    },
+    evaluate: (sim) => evalOutdoorHover(sim),
   },
   {
     id: 'GB-5b',
@@ -171,21 +159,129 @@ export const OUTDOOR_SCENARIOS: ScenarioDef[] = [
     course: COURSE_OUTDOOR_SQUARE,
     env: ENV_OUTDOOR,
     maxTime: 150,
+    evaluate: (sim) => evalOutdoorRoute(sim),
+  },
+];
+
+/** Hover window after settling: max horizontal error and altitude RMS. */
+export const hoverStats = (sim: Simulation): { maxH: number; altRms: number; n: number } => {
+  const hover = inPhase(sim.samples, 'hover');
+  const t0 = hover.length ? hover[0].t + HOVER_SETTLE_TIME : 0;
+  const win = hover.filter((s) => s.t >= t0);
+  const maxH = win.reduce((m, s) => Math.max(m, Math.hypot(s.p.x - s.sp.x, s.p.y - s.sp.y)), 0);
+  const altRms = Math.sqrt(win.reduce((a, s) => a + (s.p.z - s.sp.z) ** 2, 0) / Math.max(1, win.length));
+  return { maxH: win.length ? maxH : Infinity, altRms: win.length ? altRms : Infinity, n: win.length };
+};
+
+function evalOutdoorHover(sim: Simulation, horizLimit: number = OUTDOOR_LIMITS.hoverHoriz): Criterion[] {
+  const h = hoverStats(sim);
+  return [
+    crit('水平位置誤差 最大', h.maxH, horizLimit, 'm'),
+    crit('高度誤差 RMS', h.altRms, OUTDOOR_LIMITS.hoverAltRms, 'm'),
+    crit('墜落', sim.crashed() ? 1 : 0, 1, '回'),
+    crit('ホバリング到達', h.n > 0 ? 1 : 0, 1, '', 'gte'),
+  ];
+}
+
+function landingStats(sim: Simulation, target: Vec3): { landed: boolean; landErr: number } {
+  const landed = sim.samples.some((s) => s.phase === 'landed');
+  const last = sim.samples[sim.samples.length - 1];
+  return { landed, landErr: Math.hypot(last.p.x - target.x, last.p.y - target.y) };
+}
+
+function evalOutdoorRoute(sim: Simulation): Criterion[] {
+  const wps = sim.config.course.waypoints;
+  const worst = wps.reduce((m, w) => Math.max(m, minDistanceToPoint(sim.samples, w)), 0);
+  const l = landingStats(sim, sim.config.course.goal);
+  return [
+    crit('経由点の最大通過誤差', worst, OUTDOOR_LIMITS.waypoint, 'm'),
+    crit('着陸位置誤差', l.landErr, OUTDOOR_LIMITS.landing, 'm'),
+    crit('着陸完了', l.landed ? 1 : 0, 1, '', 'gte'),
+    crit('墜落', sim.crashed() ? 1 : 0, 1, '回'),
+  ];
+}
+
+/** Variant C: stronger wind, wider route, return-to-home failsafe. */
+export const OUTDOOR_C_LIMITS = { strongWindHoriz: 4.0, windSweepHoriz: 3.0 } as const;
+
+export const OUTDOOR_C_SCENARIOS: ScenarioDef[] = [
+  {
+    id: 'GC-5a',
+    title: '屋外ホバリング（GNSS・平均風 5 m/s＋突風）',
+    description: '高度 5 m で 30 秒ホバリング。平均風 5 m/s、突風 σ1.5 m/s（瞬間 8 m/s 程度）',
+    course: COURSE_OUTDOOR_C_HOVER,
+    env: () => ENV_OUTDOOR_C(5, 1.5),
+    maxTime: 70,
+    evaluate: (sim) => evalOutdoorHover(sim),
+  },
+  {
+    id: 'GC-5b',
+    title: '屋外 40 m 四方の経由点飛行（高度 10 m・4 m/s）',
+    description: '平均風 5 m/s＋突風の中、40 m 四方を 4 m/s で周回して出発点に着陸',
+    course: COURSE_OUTDOOR_WIDE,
+    env: () => ENV_OUTDOOR_C(5, 1.5),
+    maxTime: 200,
+    evaluate: (sim) => evalOutdoorRoute(sim),
+  },
+  {
+    id: 'GC-5c',
+    title: '強風ホバリング（平均風 8 m/s＋突風）',
+    description: '高度 5 m で 30 秒ホバリング。平均風 8 m/s、突風 σ2 m/s（瞬間 12 m/s 程度）。位置誤差 4 m 以内',
+    course: COURSE_OUTDOOR_C_HOVER,
+    env: () => ENV_OUTDOOR_C(8, 2),
+    maxTime: 70,
+    evaluate: (sim) => evalOutdoorHover(sim, OUTDOOR_C_LIMITS.strongWindHoriz),
+  },
+  {
+    id: 'GC-6',
+    title: '通信断からの自動帰還（RTH）',
+    description: '30 m 先へ向かう途中（t=32 s）で通信断 → 高度 12 m に上昇してホームへ戻り着陸（平均風 5 m/s）',
+    course: COURSE_OUTDOOR_RTH,
+    env: () => ENV_OUTDOOR_C(5, 1.5),
+    maxTime: 150,
     evaluate: (sim) => {
-      const wps = sim.config.course.waypoints;
-      const worst = wps.reduce((m, w) => Math.max(m, minDistanceToPoint(sim.samples, w)), 0);
-      const landed = sim.samples.some((s) => s.phase === 'landed');
-      const last = sim.samples[sim.samples.length - 1];
-      const landErr = Math.hypot(last.p.x - sim.config.course.goal.x, last.p.y - sim.config.course.goal.y);
+      const fired = sim.events.some((e) => e.kind === 'failsafe' && e.detail.startsWith('通信断'));
+      const rth = sim.samples.some((s) => s.phase === 'rth');
+      const l = landingStats(sim, sim.config.course.start);
       return [
-        crit('経由点の最大通過誤差', worst, OUTDOOR_LIMITS.waypoint, 'm'),
-        crit('着陸位置誤差', landErr, OUTDOOR_LIMITS.landing, 'm'),
-        crit('着陸完了', landed ? 1 : 0, 1, '', 'gte'),
+        crit('フェイルセーフ発動', fired ? 1 : 0, 1, '', 'gte'),
+        crit('帰還飛行', rth ? 1 : 0, 1, '', 'gte'),
+        crit('ホームからの着陸位置誤差', l.landErr, OUTDOOR_LIMITS.landing, 'm'),
+        crit('着陸完了', l.landed ? 1 : 0, 1, '', 'gte'),
         crit('墜落', sim.crashed() ? 1 : 0, 1, '回'),
       ];
     },
   },
 ];
+
+export interface WindSweepPoint {
+  wind: number;
+  /** Worst hover error over the seeds (Infinity if crashed / never hovered) [m]. */
+  maxH: number;
+  crashes: number;
+  pass: boolean;
+}
+
+/** Hover at increasing mean wind; the wind limit is the highest wind where every seed stays within the limit. */
+export const windSweep = (params: DroneParams, winds: number[], seeds: number[], gustRatio = 0.25, limit: number = OUTDOOR_C_LIMITS.windSweepHoriz): { points: WindSweepPoint[]; limit: number } => {
+  const points: WindSweepPoint[] = [];
+  for (const w of winds) {
+    let maxH = 0, crashes = 0;
+    for (const seed of seeds) {
+      const sim = createSimulation({ params, env: ENV_OUTDOOR_C(w, w * gustRatio), course: COURSE_OUTDOOR_C_HOVER(), seed, estimator: 'filter', idealSensors: false });
+      sim.runToEnd(70);
+      if (sim.crashed()) crashes++;
+      maxH = Math.max(maxH, hoverStats(sim).maxH);
+    }
+    points.push({ wind: w, maxH, crashes, pass: crashes === 0 && maxH < limit });
+  }
+  let lim = 0;
+  for (const p of points) {
+    if (!p.pass) break;
+    lim = p.wind;
+  }
+  return { points, limit: lim };
+};
 
 export interface RunOptions {
   /** True vehicle for sim-to-real studies (controller keeps using `params`). */
@@ -218,5 +314,41 @@ export const runScenario = (def: ScenarioDef, params: DroneParams, o: RunOptions
     crashed: sim.crashed(),
     events: sim.events.map((e) => `${e.t.toFixed(2)}s [${e.kind}] ${e.detail}`),
     sim,
+  };
+};
+
+export interface HoverMargin {
+  wind: number;
+  /** 99th percentile of the motor commands while hovering (0..1). */
+  uP99: number;
+  /** Share of hover samples with a saturated motor. */
+  saturation: number;
+  meanCurrent: number;
+  /** Hover endurance extrapolated from the mean current (usable capacity 80 %) [min]. */
+  enduranceMin: number;
+  maxTiltDeg: number;
+  maxH: number;
+  altRms: number;
+  crashed: boolean;
+}
+
+/** Thrust margin and endurance of a GNSS hover at a given mean wind (gust σ = gustRatio × mean). */
+export const hoverMargin = (params: DroneParams, wind: number, seed: number, gustRatio = 0.25, usable = 0.8): HoverMargin => {
+  const sim = createSimulation({ params, env: ENV_OUTDOOR_C(wind, wind * gustRatio), course: COURSE_OUTDOOR_C_HOVER(), seed, estimator: 'filter', idealSensors: false });
+  sim.runToEnd(70);
+  const hov = inPhase(sim.samples, 'hover');
+  const us = hov.flatMap((s) => s.u).sort((a, b) => a - b);
+  const meanCurrent = hov.reduce((a, s) => a + s.current, 0) / Math.max(1, hov.length);
+  const h = hoverStats(sim);
+  return {
+    wind,
+    uP99: us.length ? us[Math.min(us.length - 1, Math.floor(us.length * 0.99))] : Infinity,
+    saturation: hov.filter((s) => s.u.some((u) => u >= 0.999)).length / Math.max(1, hov.length),
+    meanCurrent,
+    enduranceMin: meanCurrent > 0 ? ((usable * params.battery.capacityAh) / meanCurrent) * 60 : 0,
+    maxTiltDeg: (hov.reduce((m, s) => Math.max(m, Math.hypot(s.roll, s.pitch)), 0) * 180) / Math.PI,
+    maxH: h.maxH,
+    altRms: h.altRms,
+    crashed: sim.crashed(),
   };
 };

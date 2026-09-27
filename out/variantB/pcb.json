@@ -42164,7 +42164,7 @@
       "drcViolations": 0,
       "tracks": 0,
       "vias": 0,
-      "timeMs": 2813,
+      "timeMs": 2826,
       "note": "配置失敗: J8: 配置できる空きがありません"
     },
     {
@@ -42177,7 +42177,7 @@
       "drcViolations": 3,
       "tracks": 719,
       "vias": 184,
-      "timeMs": 5766,
+      "timeMs": 7017,
       "note": "GNSS_TX: 未接続: J8.3 / EN: 未接続: J7.5 / PWM2: 未接続: R7.1 / DRC unconnected 3"
     },
     {
@@ -42194,7 +42194,7 @@
       "drcViolations": 4,
       "tracks": 676,
       "vias": 191,
-      "timeMs": 6313,
+      "timeMs": 7114,
       "note": "SPI_MOSI: 未接続: U3.14 / 3V3: 未接続: C9.1 / PWM4: 未接続: R11.1 / BOOT: 未接続: R2.2"
     },
     {
@@ -42207,7 +42207,7 @@
       "drcViolations": 1,
       "tracks": 733,
       "vias": 171,
-      "timeMs": 5343,
+      "timeMs": 6276,
       "note": "PWM3: 未接続: R9.1 / DRC unconnected 1"
     },
     {
@@ -42222,7 +42222,7 @@
       "drcViolations": 0,
       "tracks": 768,
       "vias": 180,
-      "timeMs": 5527,
+      "timeMs": 7118,
       "note": "成功"
     }
   ]

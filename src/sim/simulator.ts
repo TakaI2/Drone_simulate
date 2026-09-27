@@ -17,7 +17,7 @@ import type { EstimatorMode, StateEstimate } from './estimator';
 import { createSensors } from './sensors';
 import { createWind } from './wind';
 
-export type MissionPhase = 'arming' | 'takeoff' | 'mission' | 'hover' | 'land' | 'landed' | 'manual' | 'crashed';
+export type MissionPhase = 'arming' | 'takeoff' | 'mission' | 'hover' | 'rth' | 'land' | 'landed' | 'manual' | 'crashed';
 
 export interface SimConfig {
   /** Vehicle model known to the controller (design values). */
@@ -153,6 +153,9 @@ export const createSimulation = (config: SimConfig): Simulation => {
   let crashed = false;
   let finished = false;
   let manual: ManualInput | null = null;
+  let rthFollower: PathFollower | null = null;
+  const rthAlt = course.rthAltitude ?? course.cruiseAltitude;
+  const home = v3(course.start.x, course.start.y, rthAlt);
   let lastOut: ControlOutput | null = null;
   let u = new Array<number>(params.rotors.length).fill(0);
   const yaw0 = config.initialYaw ?? 0;
@@ -173,19 +176,42 @@ export const createSimulation = (config: SimConfig): Simulation => {
     setPhase('crashed', reason);
   };
 
+  /** Return to home: climb (or descend) to the RTH altitude, fly straight to home, then land. */
+  const startRth = (reason: string): void => {
+    const here = v3(e.p.x, e.p.y, e.p.z);
+    rthFollower = createPathFollower([here, v3(here.x, here.y, rthAlt), home], {
+      cruiseSpeed: course.cruiseSpeed,
+      accel: M.followerAccel,
+      cornerSpeedFactor: M.cornerSpeedFactor,
+      maxTrackingError: course.maxTrackingError ?? M.maxTrackingError,
+    });
+    setPhase('rth', reason);
+  };
+
   const updateMission = (): void => {
     const elapsed = t - phaseStart;
     const airborne = !s.onGround;
+    const rth = course.failsafeAction === 'rth';
     // failsafe: low battery under load
     const cellV = e.vbat / params.battery.cells;
     if (airborne && !failsafe && phase !== 'land' && phase !== 'landed') {
       lowVoltTimer = cellV < params.landCellVoltage ? lowVoltTimer + ctrlEvery * dt : 0;
       if (lowVoltTimer >= M.failsafeHoldTime) {
         failsafe = true;
-        events.push({ t, kind: 'failsafe', detail: `セル電圧 ${cellV.toFixed(2)} V < ${params.landCellVoltage} V → 自動着陸` });
+        events.push({ t, kind: 'failsafe', detail: `セル電圧 ${cellV.toFixed(2)} V < ${params.landCellVoltage} V → ${rth ? '自動帰還' : '自動着陸'}` });
         holdPoint = v3(e.p.x, e.p.y, e.p.z);
-        setPhase('land', '低電圧');
+        if (rth) startRth('低電圧');
+        else setPhase('land', '低電圧');
       }
+    }
+    // failsafe: link loss (manual input is ignored from then on)
+    if (course.linkLossAt !== undefined && t >= course.linkLossAt && airborne && !failsafe && phase !== 'land' && phase !== 'landed') {
+      failsafe = true;
+      manual = null;
+      events.push({ t, kind: 'failsafe', detail: `通信断 → ${rth ? '自動帰還' : '自動着陸'}` });
+      holdPoint = v3(e.p.x, e.p.y, e.p.z);
+      if (rth) startRth('通信断');
+      else setPhase('land', '通信断');
     }
     if (manual) {
       if (phase !== 'manual') setPhase('manual');
@@ -223,6 +249,17 @@ export const createSimulation = (config: SimConfig): Simulation => {
           else finished = true;
         }
         break;
+      case 'rth': {
+        if (!rthFollower) break;
+        const f = rthFollower.step(e.p, ctrlEvery * dt);
+        spPos = f.pos;
+        sp = { kind: 'position', pos: f.pos, velFF: f.vel, accFF: v3(), yaw: yaw0 };
+        if (f.done && vDist(e.p, f.pos) < M.rthArriveTolerance) {
+          holdPoint = home;
+          setPhase('land', '帰還完了');
+        }
+        break;
+      }
       case 'land': {
         const z = Math.max(-0.3, holdPoint.z - M.landSpeed * elapsed);
         spPos = v3(holdPoint.x, holdPoint.y, z);
@@ -262,7 +299,7 @@ export const createSimulation = (config: SimConfig): Simulation => {
 
     if (tickCount % ctrlEvery === 0 && !crashed) {
       updateMission();
-      const landedFlag = s.onGround && (phase === 'takeoff' ? t - phaseStart < 0.3 : phase !== 'mission' && phase !== 'hover');
+      const landedFlag = s.onGround && (phase === 'takeoff' ? t - phaseStart < 0.3 : phase !== 'mission' && phase !== 'hover' && phase !== 'rth');
       lastOut = ctrl.update(e, sp, ctrlEvery * dt, landedFlag);
       u = lastOut.u;
     }

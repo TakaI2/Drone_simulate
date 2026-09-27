@@ -4,8 +4,25 @@ import type { BatterySpec, MotorSpec, PropSpec } from '../core/types';
 import { cellOcv } from '../sim/battery';
 import { kvRad, rotorCoefficients, steadyCurrent, steadyOmega, voltageForOmega } from '../sim/motor';
 
+export interface SizingRules {
+  minTwr: number;
+  maxHoverThrottle: number;
+  minFlightTimeMin: number;
+  usableCapacity: number;
+  typicalSoc: number;
+  massLimit: number;
+  motorCurrentMargin: number;
+}
+
+/** Non-propulsion mass model: frame per wheelbase plus fixed extra items. */
+export interface MassModel {
+  /** Frame mass per metre of motor-to-motor diagonal [kg/m]. */
+  frameMassPerWheelbase: number;
+  extras: Array<{ item: string; mass: number }>;
+}
+
 /** Sizing assumptions (design rules of thumb, not measured values). */
-export const SIZING_RULES = {
+export const SIZING_RULES: SizingRules = {
   minTwr: 2.0,
   maxHoverThrottle: 0.6,
   minFlightTimeMin: 5,
@@ -16,7 +33,19 @@ export const SIZING_RULES = {
   massLimit: 0.1,
   /** Motor current margin vs. continuous rating. */
   motorCurrentMargin: 1.0,
-} as const;
+};
+
+/**
+ * Outdoor rules (variant C): extra thrust margin for wind/gusts, lower hover throttle,
+ * and a 95 g design target that keeps the built vehicle below the 100 g threshold.
+ */
+export const SIZING_RULES_OUTDOOR: SizingRules = {
+  ...SIZING_RULES,
+  minTwr: 3.0,
+  maxHoverThrottle: 0.45,
+  minFlightTimeMin: 7,
+  massLimit: 0.095,
+};
 
 /** Mass model for non-propulsion parts of a Class A micro frame. */
 export const CLASS_A_MASS_MODEL = {
@@ -27,6 +56,35 @@ export const CLASS_A_MASS_MODEL = {
   /** Optical flow + ToF module [kg]. */
   flowModule: 0.002,
 } as const;
+
+export const MASS_MODEL_A: MassModel = {
+  frameMassPerWheelbase: CLASS_A_MASS_MODEL.frameMassPerWheelbase,
+  extras: [
+    { item: 'フロー＋ToF モジュール', mass: CLASS_A_MASS_MODEL.flowModule },
+    { item: '配線・ねじ等', mass: CLASS_A_MASS_MODEL.misc },
+  ],
+};
+
+/** Outdoor (variant C) non-propulsion parts. */
+export const OUTDOOR_MASS_MODEL = {
+  /** Thicker printed arms + bolt-on motor pads [kg/m]. */
+  frameMassPerWheelbase: 0.16,
+  /** 4-in-1 AM32 ESC, 20x20 mm, 2-4S ~12 A (typical) [kg]. */
+  esc: 0.0045,
+  /** GNSS + compass module [kg]. */
+  gnss: 0.005,
+  /** XT30 pigtail, motor wires, screws, spacers, strap [kg]. */
+  misc: 0.006,
+} as const;
+
+export const MASS_MODEL_OUTDOOR: MassModel = {
+  frameMassPerWheelbase: OUTDOOR_MASS_MODEL.frameMassPerWheelbase,
+  extras: [
+    { item: '4-in-1 ESC（市販）', mass: OUTDOOR_MASS_MODEL.esc },
+    { item: 'GNSS＋コンパス', mass: OUTDOOR_MASS_MODEL.gnss },
+    { item: '配線・XT30・ねじ等', mass: OUTDOOR_MASS_MODEL.misc },
+  ],
+};
 
 export interface SizingInput {
   rotorCount: number;
@@ -39,6 +97,10 @@ export interface SizingInput {
   frameMass?: number;
   airDensity?: number;
   gravity?: number;
+  /** Design rules for the checks (default: Class A rules). */
+  rules?: SizingRules;
+  /** Non-propulsion mass model (default: Class A). */
+  massModel?: MassModel;
 }
 
 export interface OperatingPoint {
@@ -120,22 +182,23 @@ export const sizePropulsion = (inp: SizingInput): SizingResult => {
   const n = inp.rotorCount;
   const arm = minArmLength(n, inp.prop.diameter);
   const wheelbase = 2 * arm;
-  const frameMass = inp.frameMass ?? CLASS_A_MASS_MODEL.frameMassPerWheelbase * wheelbase;
+  const rules = inp.rules ?? SIZING_RULES;
+  const massModel = inp.massModel ?? MASS_MODEL_A;
+  const frameMass = inp.frameMass ?? massModel.frameMassPerWheelbase * wheelbase;
   const massBreakdown = [
     { item: `モータ ×${n}`, mass: n * inp.motor.mass },
     { item: `プロペラ ×${n}`, mass: n * inp.prop.mass },
     { item: '電池', mass: inp.battery.mass },
     { item: '電子回路（基板＋部品）', mass: inp.electronicsMass },
     { item: 'フレーム', mass: frameMass },
-    { item: 'フロー＋ToF モジュール', mass: CLASS_A_MASS_MODEL.flowModule },
-    { item: '配線・ねじ等', mass: CLASS_A_MASS_MODEL.misc },
+    ...massModel.extras,
   ];
   const auw = massBreakdown.reduce((s, m) => s + m.mass, 0);
   const { kT, kQ } = rotorCoefficients(inp.prop, rho);
   const hover = solveOperatingPoint(n, inp.motor, inp.battery, kT, kQ, { kind: 'thrust', thrust: (auw * g) / n });
   const max = solveOperatingPoint(n, inp.motor, inp.battery, kT, kQ, { kind: 'full' });
   const twr = (n * max.thrustPerRotor) / (auw * g);
-  const flightTimeMin = ((SIZING_RULES.usableCapacity * inp.battery.capacityAh) / hover.batteryCurrent) * 60;
+  const flightTimeMin = ((rules.usableCapacity * inp.battery.capacityAh) / hover.batteryCurrent) * 60;
   const area = (Math.PI * inp.prop.diameter ** 2) / 4;
   const idealHoverPowerPerRotor = Math.pow(hover.thrustPerRotor, 1.5) / Math.sqrt(2 * rho * area);
   const figureOfMerit = idealHoverPowerPerRotor / hover.mechanicalPowerPerRotor;
@@ -144,12 +207,12 @@ export const sizePropulsion = (inp: SizingInput): SizingResult => {
     label, value, limit, unit, op, pass: op === 'lt' ? value < limit : value >= limit,
   });
   const checks = [
-    c('推力重量比 TWR', twr, SIZING_RULES.minTwr, '', 'gte'),
-    c('ホバリングスロットル', hover.throttle * 100, SIZING_RULES.maxHoverThrottle * 100, '%', 'lt'),
-    c('推定ホバリング飛行時間', flightTimeMin, SIZING_RULES.minFlightTimeMin, 'min', 'gte'),
-    c('全備重量', auw * 1000, SIZING_RULES.massLimit * 1000, 'g', 'lt'),
+    c('推力重量比 TWR', twr, rules.minTwr, '', 'gte'),
+    c('ホバリングスロットル', hover.throttle * 100, rules.maxHoverThrottle * 100, '%', 'lt'),
+    c('推定ホバリング飛行時間', flightTimeMin, rules.minFlightTimeMin, 'min', 'gte'),
+    c('全備重量', auw * 1000, rules.massLimit * 1000, 'g', 'lt'),
     c('最大放電レート', maxBatteryC, inp.battery.maxDischargeC, 'C', 'lt'),
-    c('モータ最大電流', max.motorCurrent, inp.motor.maxCurrent * SIZING_RULES.motorCurrentMargin, 'A', 'lt'),
+    c('モータ最大電流', max.motorCurrent, inp.motor.maxCurrent * rules.motorCurrentMargin, 'A', 'lt'),
   ];
   return {
     input: inp,
@@ -191,13 +254,21 @@ export interface SearchResult {
 }
 
 /** Exhaustive search over the propulsion catalog. */
-export const searchPropulsion = (rotorCount: number, electronicsMass: number): SearchResult => {
+export interface SearchOptions {
+  motors?: MotorSpec[];
+  props?: PropSpec[];
+  batteries?: BatterySpec[];
+  rules?: SizingRules;
+  massModel?: MassModel;
+}
+
+export const searchPropulsion = (rotorCount: number, electronicsMass: number, o: SearchOptions = {}): SearchResult => {
   const all: SizingResult[] = [];
-  for (const motor of MOTORS)
-    for (const prop of PROPS)
-      for (const battery of BATTERIES) {
+  for (const motor of o.motors ?? MOTORS)
+    for (const prop of o.props ?? PROPS)
+      for (const battery of o.batteries ?? BATTERIES) {
         if (!compatible(motor, prop, battery)) continue;
-        all.push(sizePropulsion({ rotorCount, motor, prop, battery, electronicsMass }));
+        all.push(sizePropulsion({ rotorCount, motor, prop, battery, electronicsMass, rules: o.rules, massModel: o.massModel }));
       }
   // generic multi-vendor parts first (plan: low vendor lock-in), then longest flight time
   const rank = (r: SizingResult): number =>

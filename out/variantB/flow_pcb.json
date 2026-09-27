@@ -15263,7 +15263,7 @@
       "drcViolations": 0,
       "tracks": 0,
       "vias": 0,
-      "timeMs": 591,
+      "timeMs": 534,
       "note": "配置失敗: U3: 配置できる空きがありません"
     },
     {
@@ -15276,7 +15276,7 @@
       "drcViolations": 0,
       "tracks": 0,
       "vias": 0,
-      "timeMs": 315,
+      "timeMs": 303,
       "note": "配置失敗: U3: 配置できる空きがありません"
     },
     {
@@ -15289,7 +15289,7 @@
       "drcViolations": 0,
       "tracks": 0,
       "vias": 0,
-      "timeMs": 300,
+      "timeMs": 308,
       "note": "配置失敗: U3: 配置できる空きがありません"
     },
     {
@@ -15302,7 +15302,7 @@
       "drcViolations": 0,
       "tracks": 0,
       "vias": 0,
-      "timeMs": 305,
+      "timeMs": 418,
       "note": "配置失敗: U3: 配置できる空きがありません"
     },
     {
@@ -15315,7 +15315,7 @@
       "drcViolations": 2,
       "tracks": 218,
       "vias": 88,
-      "timeMs": 1204,
+      "timeMs": 1316,
       "note": "TOF_XSHUT: 未接続: R2.2 / 3V3: 未接続: U3.11 / DRC unconnected 2"
     },
     {
@@ -15331,7 +15331,7 @@
       "drcViolations": 1,
       "tracks": 253,
       "vias": 86,
-      "timeMs": 947,
+      "timeMs": 1134,
       "note": "TOF_XSHUT: 未接続: R2.2 / DRC unconnected 1"
     },
     {
@@ -15344,7 +15344,7 @@
       "drcViolations": 2,
       "tracks": 234,
       "vias": 81,
-      "timeMs": 1369,
+      "timeMs": 1649,
       "note": "SPI_SCK: 未接続: U2.6 / 3V3: 未接続: U3.11 / DRC unconnected 2"
     },
     {
@@ -15360,7 +15360,7 @@
       "drcViolations": 0,
       "tracks": 223,
       "vias": 80,
-      "timeMs": 872,
+      "timeMs": 1153,
       "note": "成功"
     }
   ],

@@ -73,8 +73,8 @@ pre{background:#f0efec;padding:10px;border-radius:6px;overflow:auto}
 .svgbox{background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;overflow:auto}
 `;
 
-const STAGE_NAMES = ['総合', '1 シミュレーション', '2 推進・電気', '3 部品・基板', '4 機体', '5 統合', 'B 改良版'];
-const STAGE_FILES = ['index.html', 'stage1.html', 'stage2.html', 'stage3.html', 'stage4.html', 'stage5.html', 'variantB.html'];
+const STAGE_NAMES = ['総合', '1 シミュレーション', '2 推進・電気', '3 部品・基板', '4 機体', '5 統合', 'B 改良版', 'C 屋外機'];
+const STAGE_FILES = ['index.html', 'stage1.html', 'stage2.html', 'stage3.html', 'stage4.html', 'stage5.html', 'variantB.html', 'variantC.html'];
 
 export const renderReport = (r: ReportPage): string => {
   const passCount = r.goals.filter((g) => g.pass).length;

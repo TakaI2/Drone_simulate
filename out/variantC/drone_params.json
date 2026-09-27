@@ -1,0 +1,249 @@
+{
+  "name": "版 C 屋外機（ブラシレス 2S・GNSS、設計値から導出）",
+  "mass": 0.09361979325063996,
+  "inertia": [
+    0.00008745937261122157,
+    -8.723474913343306e-9,
+    -0.0000014266177336090655,
+    -8.723474913343306e-9,
+    0.00008820375153622469,
+    2.1679736391205467e-8,
+    -0.0000014266177336090655,
+    2.1679736391205467e-8,
+    0.00016123514321889356
+  ],
+  "rotors": [
+    {
+      "position": {
+        "x": 0.04299937307215116,
+        "y": -0.04300000000000309,
+        "z": 0.015648286686616185
+      },
+      "spin": 1,
+      "motor": {
+        "id": "bl-1204-5000",
+        "name": "Brushless 1204 5000KV",
+        "kind": "brushless",
+        "kv": 5000,
+        "resistance": 0.2,
+        "noLoadCurrent": 0.3,
+        "timeConstant": 0.025,
+        "maxCurrent": 7,
+        "mass": 0.0065,
+        "diameter": 0.0155,
+        "length": 0.012,
+        "shaftDiameter": 0.0015,
+        "mountSpacing": 0.009
+      },
+      "prop": {
+        "id": "prop-76-3b",
+        "name": "3 inch 3-blade (76mm, 3016)",
+        "diameter": 0.076,
+        "pitch": 0.04,
+        "blades": 3,
+        "ct": 0.13,
+        "cp": 0.07,
+        "mass": 0.0014,
+        "bore": 0.0015
+      }
+    },
+    {
+      "position": {
+        "x": 0.04299937307215116,
+        "y": 0.04299999999999691,
+        "z": 0.015648286686616185
+      },
+      "spin": -1,
+      "motor": {
+        "id": "bl-1204-5000",
+        "name": "Brushless 1204 5000KV",
+        "kind": "brushless",
+        "kv": 5000,
+        "resistance": 0.2,
+        "noLoadCurrent": 0.3,
+        "timeConstant": 0.025,
+        "maxCurrent": 7,
+        "mass": 0.0065,
+        "diameter": 0.0155,
+        "length": 0.012,
+        "shaftDiameter": 0.0015,
+        "mountSpacing": 0.009
+      },
+      "prop": {
+        "id": "prop-76-3b",
+        "name": "3 inch 3-blade (76mm, 3016)",
+        "diameter": 0.076,
+        "pitch": 0.04,
+        "blades": 3,
+        "ct": 0.13,
+        "cp": 0.07,
+        "mass": 0.0014,
+        "bore": 0.0015
+      }
+    },
+    {
+      "position": {
+        "x": -0.04300062692784884,
+        "y": 0.04299999999999691,
+        "z": 0.015648286686616185
+      },
+      "spin": 1,
+      "motor": {
+        "id": "bl-1204-5000",
+        "name": "Brushless 1204 5000KV",
+        "kind": "brushless",
+        "kv": 5000,
+        "resistance": 0.2,
+        "noLoadCurrent": 0.3,
+        "timeConstant": 0.025,
+        "maxCurrent": 7,
+        "mass": 0.0065,
+        "diameter": 0.0155,
+        "length": 0.012,
+        "shaftDiameter": 0.0015,
+        "mountSpacing": 0.009
+      },
+      "prop": {
+        "id": "prop-76-3b",
+        "name": "3 inch 3-blade (76mm, 3016)",
+        "diameter": 0.076,
+        "pitch": 0.04,
+        "blades": 3,
+        "ct": 0.13,
+        "cp": 0.07,
+        "mass": 0.0014,
+        "bore": 0.0015
+      }
+    },
+    {
+      "position": {
+        "x": -0.043000626927848846,
+        "y": -0.04300000000000309,
+        "z": 0.015648286686616185
+      },
+      "spin": -1,
+      "motor": {
+        "id": "bl-1204-5000",
+        "name": "Brushless 1204 5000KV",
+        "kind": "brushless",
+        "kv": 5000,
+        "resistance": 0.2,
+        "noLoadCurrent": 0.3,
+        "timeConstant": 0.025,
+        "maxCurrent": 7,
+        "mass": 0.0065,
+        "diameter": 0.0155,
+        "length": 0.012,
+        "shaftDiameter": 0.0015,
+        "mountSpacing": 0.009
+      },
+      "prop": {
+        "id": "prop-76-3b",
+        "name": "3 inch 3-blade (76mm, 3016)",
+        "diameter": 0.076,
+        "pitch": 0.04,
+        "blades": 3,
+        "ct": 0.13,
+        "cp": 0.07,
+        "mass": 0.0014,
+        "bore": 0.0015
+      }
+    }
+  ],
+  "battery": {
+    "id": "lipo-2s-450",
+    "name": "LiPo 2S 450mAh",
+    "cells": 2,
+    "capacityAh": 0.45,
+    "internalResistance": 0.07,
+    "mass": 0.026,
+    "cellVoltageMin": 3.3,
+    "cellVoltageNominal": 3.7,
+    "cellVoltageMax": 4.2,
+    "maxDischargeC": 75,
+    "size": {
+      "x": 0.057,
+      "y": 0.018,
+      "z": 0.014
+    },
+    "connector": "XT30"
+  },
+  "dragArea": 0.0018230399999999997,
+  "rotorDrag": 0.018723958650127992,
+  "collisionRadius": 0.09881118318204309,
+  "gearHeight": 0.018351713313383818,
+  "sensors": {
+    "gyroStd": 0.01,
+    "gyroBiasWalk": 0.0005,
+    "accelStd": 0.15,
+    "accelBias": 0.05,
+    "posStd": 0.3,
+    "posRateHz": 10,
+    "posDriftWalk": 0,
+    "altStd": 0.15,
+    "altRateHz": 25,
+    "yawStd": 0.05,
+    "voltStd": 0.01,
+    "posBiasStd": 1,
+    "posBiasTau": 60,
+    "altBiasStd": 0.3,
+    "altBiasTau": 120
+  },
+  "gains": {
+    "posP": {
+      "x": 1.2,
+      "y": 1.2,
+      "z": 1.5
+    },
+    "velP": {
+      "x": 2.8,
+      "y": 2.8,
+      "z": 5
+    },
+    "velI": {
+      "x": 0.8,
+      "y": 0.8,
+      "z": 2
+    },
+    "velD": {
+      "x": 0.05,
+      "y": 0.05,
+      "z": 0.05
+    },
+    "attP": {
+      "x": 7,
+      "y": 7,
+      "z": 3
+    },
+    "rateP": {
+      "x": 16,
+      "y": 16,
+      "z": 8
+    },
+    "rateI": {
+      "x": 10,
+      "y": 10,
+      "z": 3
+    },
+    "rateD": {
+      "x": 0.25,
+      "y": 0.25,
+      "z": 0
+    },
+    "rateDCutoffHz": 30,
+    "maxTiltRad": 0.7853981633974483,
+    "maxHorizSpeed": 5,
+    "maxVertSpeed": 1.5,
+    "maxHorizAccel": 9,
+    "maxRate": {
+      "x": 4,
+      "y": 4,
+      "z": 2
+    },
+    "velIntLimit": 8,
+    "rateIntLimit": 30
+  },
+  "landCellVoltage": 3.4,
+  "physicsRateHz": 1000,
+  "controlRateHz": 500
+}

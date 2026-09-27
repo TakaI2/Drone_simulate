@@ -55,13 +55,29 @@ export interface CircuitOptions {
   rotorCount: number;
   /** Variant B: JST-SH 6 for an external GNSS + compass module (UART1 + shared I2C). */
   gnssConnector?: boolean;
+  /** 3.3 V supply: 1S LDO (variants A/B) or step-down DC-DC from 2-4S (variant C). */
+  power?: 'ldo-1s' | 'buck';
+  /** Motor outputs: on-board brushed MOSFET drivers (A/B) or a 4-in-1 ESC harness (variant C). */
+  motorDrive?: 'brushed' | 'esc';
 }
+
+/**
+ * Variant C ESC harness GPIOs, all on the module edge that faces the ESC connector:
+ * DShot via RMT (any GPIO), current sense on ADC1, telemetry via the GPIO matrix UART.
+ */
+export const ESC_GPIO = { motors: ['IO15', 'IO16', 'IO17', 'IO18'], current: 'IO4', telemetry: 'IO5' } as const;
+
+/** Step-down feedback divider (top / bottom) [ohm]: Vout = Vfb (1 + Rtop / Rbottom). */
+export const BUCK_FEEDBACK = { top: 100e3, bottom: 33e3 } as const;
+
+/** Battery divider (top / bottom) [ohm] per supply type. */
+export const VBAT_DIVIDER = { 'ldo-1s': { top: 100e3, bottom: 100e3 }, buck: { top: 100e3, bottom: 10e3 } } as const;
 
 /** GNSS UART pins (free on ESP32-S3-WROOM-1-N8, not strapping, not used by PSRAM on N8). */
 export const GNSS_GPIO = { tx: 'IO47', rx: 'IO48' } as const;
 
 const classOfNet = (name: string): NetClass =>
-  name === 'GND' ? 'gnd' : name === 'VBAT' || name === '3V3' || name === '1V8' ? 'power' : name.startsWith('MOT') ? 'motor' : 'signal';
+  name === 'GND' ? 'gnd' : name === 'VBAT' || name === '3V3' || name === '1V8' || name === 'SW' ? 'power' : name.startsWith('MOT') ? 'motor' : 'signal';
 
 /** Collect nets from component pins. */
 export const buildNets = (components: Component[]): Net[] => {
@@ -90,6 +106,9 @@ const MOTOR_GPIOS = ['IO4', 'IO5', 'IO6', 'IO7', 'IO15', 'IO16', 'IO17', 'IO18']
 
 export const generateCircuit = (o: CircuitOptions): Circuit => {
   if (o.rotorCount > MOTOR_GPIOS.length - 2) throw new Error(`ロータ数 ${o.rotorCount} は GPIO 割当ての上限を超えています`);
+  const power = o.power ?? 'ldo-1s';
+  const esc = (o.motorDrive ?? 'brushed') === 'esc';
+  if (esc && o.rotorCount !== 4) throw new Error('ESC 端子は 4-in-1 ESC（4 ロータ）専用です');
   const components: Component[] = [];
   const counters: Record<string, number> = {};
   const nextRef = (prefix: string): string => {
@@ -98,7 +117,7 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
   };
   const add = (prefix: string, partId: string, block: BlockId, pins: PinDef[], extra: Partial<Component> = {}): Component => {
     const part = findPart(partId);
-    const c: Component = { ref: nextRef(prefix), partId, part, value: String(part.specs['抵抗値'] ?? part.specs['容量'] ?? part.mpn), block, pins, ...extra };
+    const c: Component = { ref: nextRef(prefix), partId, part, value: String(part.specs['抵抗値'] ?? part.specs['容量'] ?? part.specs['インダクタンス'] ?? part.mpn), block, pins, ...extra };
     components.push(c);
     return c;
   };
@@ -108,27 +127,69 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
   ];
 
   // ---------------- power ----------------
-  add('J', 'BatteryPad', 'power', [{ num: '1', name: 'BAT+', net: 'VBAT' }, { num: '2', name: 'BAT-', net: 'GND' }]);
-  add('C', 'C1206-47u', 'power', two('VBAT', 'GND'), { near: 'J1' });
-  add('C', 'C1206-47u', 'power', two('VBAT', 'GND'), { near: 'J1' });
-  add('U', 'XC6220B331MR', 'power', [
-    { num: '1', name: 'VIN', net: 'VBAT' },
-    { num: '2', name: 'VSS', net: 'GND' },
-    { num: '3', name: 'CE', net: 'VBAT' },
-    { num: '4', name: 'NC', net: null },
-    { num: '5', name: 'VOUT', net: '3V3' },
-  ], { thermalPins: ['2'], near: 'J1' });
-  add('C', 'C0603-1u', 'power', two('VBAT', 'GND'), { near: 'U1' });
-  add('C', 'C0805-10u', 'power', two('3V3', 'GND'), { near: 'U1' });
+  const motorNet = (i: number): string => (esc ? `ESC_M${i + 1}` : `PWM${i + 1}`);
+  if (esc) {
+    // FC is powered from the ESC harness; the ESC carries the battery current
+    add('J', 'JST-SM08B-ESC', 'power', [
+      { num: '1', name: 'VBAT', net: 'VBAT' },
+      { num: '2', name: 'GND', net: 'GND' },
+      { num: '3', name: 'CURR', net: 'ESC_CURR' },
+      ...Array.from({ length: 4 }, (_, i) => ({ num: String(4 + i), name: `M${i + 1}`, net: motorNet(i) })),
+      { num: '8', name: 'TLM', net: 'ESC_TLM' },
+      { num: 'MP1', name: 'MP', net: 'GND' },
+      { num: 'MP2', name: 'MP', net: 'GND' },
+    ]);
+  } else {
+    add('J', 'BatteryPad', 'power', [{ num: '1', name: 'BAT+', net: 'VBAT' }, { num: '2', name: 'BAT-', net: 'GND' }]);
+  }
+  if (power === 'buck') {
+    add('U', 'MP2359DJ', 'power', [
+      { num: '1', name: 'BST', net: 'BST' },
+      { num: '2', name: 'GND', net: 'GND' },
+      { num: '3', name: 'FB', net: 'FB' },
+      { num: '4', name: 'EN', net: 'BUCK_EN' },
+      { num: '5', name: 'IN', net: 'VBAT' },
+      { num: '6', name: 'SW', net: 'SW' },
+    ], { thermalPins: ['2'], near: 'J1' });
+    add('C', 'C0805-10u-25V', 'power', two('VBAT', 'GND'), { near: 'U1' });
+    add('C', 'C0805-10u-25V', 'power', two('VBAT', 'GND'), { near: 'U1' });
+    add('C', 'C0603-100n', 'power', two('BST', 'SW'), { near: 'U1' });
+    add('D', 'B5819W', 'power', [
+      { num: '1', name: 'K', net: 'SW' },
+      { num: '2', name: 'A', net: 'GND' },
+    ], { near: 'U1' });
+    add('L', 'L-10u-4020', 'power', two('SW', '3V3'), { near: 'U1' });
+    add('R', 'R0603-100kΩ', 'power', two('3V3', 'FB'), { near: 'U1' });
+    add('R', 'R0603-33kΩ', 'power', two('FB', 'GND'), { near: 'U1' });
+    add('R', 'R0603-100kΩ', 'power', two('VBAT', 'BUCK_EN'), { near: 'U1' });
+    add('C', 'C0805-10u', 'power', two('3V3', 'GND'), { near: 'U1' });
+    add('C', 'C0805-10u', 'power', two('3V3', 'GND'), { near: 'U1' });
+  } else {
+    add('C', 'C1206-47u', 'power', two('VBAT', 'GND'), { near: 'J1' });
+    add('C', 'C1206-47u', 'power', two('VBAT', 'GND'), { near: 'J1' });
+    add('U', 'XC6220B331MR', 'power', [
+      { num: '1', name: 'VIN', net: 'VBAT' },
+      { num: '2', name: 'VSS', net: 'GND' },
+      { num: '3', name: 'CE', net: 'VBAT' },
+      { num: '4', name: 'NC', net: null },
+      { num: '5', name: 'VOUT', net: '3V3' },
+    ], { thermalPins: ['2'], near: 'J1' });
+    add('C', 'C0603-1u', 'power', two('VBAT', 'GND'), { near: 'U1' });
+    add('C', 'C0805-10u', 'power', two('3V3', 'GND'), { near: 'U1' });
+  }
 
   // ---------------- MCU ----------------
-  const motorNet = (i: number): string => `PWM${i + 1}`;
   const gpioNet: Record<string, string> = {
     GND: 'GND', '3V3': '3V3', EN: 'EN', IO0: 'BOOT', TXD0: 'TXD0', RXD0: 'RXD0',
     IO12: 'SPI_SCK', IO11: 'SPI_MOSI', IO13: 'SPI_MISO', IO10: 'IMU_CS', IO9: 'IMU_INT', IO14: 'FLOW_CS',
     IO8: 'I2C_SDA', IO21: 'I2C_SCL', IO1: 'VBAT_SENSE', IO2: 'LED', EPAD: 'GND',
   };
-  for (let i = 0; i < o.rotorCount; i++) gpioNet[MOTOR_GPIOS[i]] = motorNet(i);
+  const motorGpio = (i: number): string => (esc ? ESC_GPIO.motors[i] : MOTOR_GPIOS[i]);
+  for (let i = 0; i < o.rotorCount; i++) gpioNet[motorGpio(i)] = motorNet(i);
+  if (esc) {
+    gpioNet[ESC_GPIO.current] = 'ESC_CURR';
+    gpioNet[ESC_GPIO.telemetry] = 'ESC_TLM';
+  }
   if (o.gnssConnector) {
     gpioNet[GNSS_GPIO.tx] = 'GNSS_TX';
     gpioNet[GNSS_GPIO.rx] = 'GNSS_RX';
@@ -188,7 +249,7 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
   ]);
 
   // ---------------- motor drivers ----------------
-  for (let i = 0; i < o.rotorCount; i++) {
+  for (let i = 0; i < (esc ? 0 : o.rotorCount); i++) {
     const g = `M${i + 1}`;
     const qRef = `Q${(counters.Q ?? 0) + 1}`;
     const padRef = `J${(counters.J ?? 0) + 1}`;
@@ -211,8 +272,9 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
 
   // ---------------- monitor ----------------
   add('R', 'R0603-100kΩ', 'monitor', two('VBAT', 'VBAT_SENSE'));
-  add('R', 'R0603-100kΩ', 'monitor', two('VBAT_SENSE', 'GND'));
+  add('R', power === 'buck' ? 'R0603-10kΩ' : 'R0603-100kΩ', 'monitor', two('VBAT_SENSE', 'GND'));
   add('C', 'C0603-100n', 'monitor', two('VBAT_SENSE', 'GND'));
+  if (esc) add('C', 'C0603-100n', 'monitor', two('ESC_CURR', 'GND'), { near: 'U2' });
   add('R', 'R0603-1kΩ', 'monitor', two('LED', 'LED_A'), { near: 'U2' });
   add('D', 'LED0603-R', 'monitor', [
     { num: '1', name: 'K', net: 'GND' },
@@ -257,7 +319,8 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
   const nets = buildNets(components);
 
   const gpio = [
-    ...Array.from({ length: o.rotorCount }, (_, i) => ({ signal: `モータ ${i + 1} PWM`, gpio: MOTOR_GPIOS[i], note: 'LEDC 20 kHz 推奨（可聴域外）' })),
+    ...Array.from({ length: o.rotorCount }, (_, i) =>
+      esc ? { signal: `ESC モータ ${i + 1}`, gpio: motorGpio(i), note: 'DShot300/600（RMT）' } : { signal: `モータ ${i + 1} PWM`, gpio: MOTOR_GPIOS[i], note: 'LEDC 20 kHz 推奨（可聴域外）' }),
     { signal: 'SPI SCK', gpio: 'IO12', note: 'IMU とフローセンサで共用' },
     { signal: 'SPI MOSI', gpio: 'IO11', note: '' },
     { signal: 'SPI MISO', gpio: 'IO13', note: '' },
@@ -268,10 +331,18 @@ export const generateCircuit = (o: CircuitOptions): Circuit => {
     { signal: 'I²C SCL', gpio: 'IO21', note: '' },
     { signal: '電池電圧', gpio: 'IO1', note: 'ADC1_CH0（Wi-Fi 使用中も読める ADC1 を使用）' },
     { signal: '状態 LED', gpio: 'IO2', note: '' },
+    ...(esc
+      ? [
+          { signal: 'ESC 電流センサ', gpio: ESC_GPIO.current, note: 'ADC1_CH3（倍率は ESC ごとに校正）' },
+          { signal: 'ESC テレメトリ', gpio: ESC_GPIO.telemetry, note: 'UART2 RX（GPIO マトリクス、115200 bps、KISS 形式）' },
+        ]
+      : []),
     { signal: 'UART0 TX/RX', gpio: 'IO43 / IO44', note: '書込み・ログ' },
     ...(o.gnssConnector ? [{ signal: 'GNSS UART1 TX / RX', gpio: `${GNSS_GPIO.tx} / ${GNSS_GPIO.rx}`, note: 'J8（GNSS＋コンパス）。コンパスは I²C 共用' }] : []),
   ];
 
-  const name = `Class A フライトコントローラ（${o.rotorCount} ロータ${o.gnssConnector ? '、GNSS 端子付き' : ''}）`;
+  const name = esc
+    ? `Class C フライトコントローラ（${o.rotorCount} ロータ、降圧電源・ESC 端子${o.gnssConnector ? '・GNSS 端子' : ''}）`
+    : `Class A フライトコントローラ（${o.rotorCount} ロータ${o.gnssConnector ? '、GNSS 端子付き' : ''}）`;
   return { name, components, nets, gpio };
 };

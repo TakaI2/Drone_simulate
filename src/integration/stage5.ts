@@ -1,4 +1,4 @@
-import { FRAME_DEFAULTS } from '../airframe/design';
+import { motorHeights } from '../airframe/design';
 import type { AirframeInput } from '../airframe/design';
 import { v3 } from '../core/math';
 import { GAINS_DEFAULT, SENSORS_MICRO } from '../core/presets';
@@ -43,7 +43,7 @@ export const deriveDroneParams = (sizing: SizingResult, af: AirframeLike, o: Mea
   const k = (o.inertiaScale ?? 1) * 1e-9 * (massKg / (af.massG / 1000));
   const I = af.inertia.map((v) => v * k) as DroneParams['inertia'];
   const bh = af.input.battery.size[2];
-  const motorBottom = FRAME_DEFAULTS.tubeHeight + FRAME_DEFAULTS.motorAboveTube - af.input.motor.length;
+  const motorBottom = motorHeights(af.input).motorBottom;
   const lowest = Math.min(-bh, motorBottom);
   const top = af.rotors[0]?.hubZ ?? 0;
   const frontal = (af.input.pcb.h * (top - lowest) * AERO.frontalFill + af.rotors.length * af.input.motor.diameter * af.input.motor.length) * 1e-6;

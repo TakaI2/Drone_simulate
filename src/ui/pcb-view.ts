@@ -23,6 +23,14 @@ const DOWNLOADS_B: Array<[string, string]> = [
   ['センサ子基板 回路図', '/out/variantB/flow_schematic.svg'],
 ];
 
+const DOWNLOADS_C: Array<[string, string]> = [
+  ['版 C 基板 Gerber（ZIP）', '/out/variantC/fc_gerber.zip'],
+  ['版 C 基板 KiCad', '/out/variantC/fc.kicad_pcb'],
+  ['版 C 部品実装座標（CPL）', '/out/variantC/fc_cpl.csv'],
+  ['版 C 回路図', '/out/variantC/schematic.svg'],
+  ['版 C BOM', '/out/variantC/bom.csv'],
+];
+
 const DOWNLOADS: Array<[string, string]> = [
   ['Gerber 一式（ZIP）', '/out/stage3/drone_fc_gerber.zip'],
   ['KiCad 基板', '/out/stage3/drone_fc.kicad_pcb'],
@@ -55,8 +63,9 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
   const mainBox = el('div', { class: 'main-col' });
   root.append(el('div', { class: 'layout' }, [side, mainBox]));
   const isB = query.get('variant') === 'B';
+  const isC = query.get('variant') === 'C';
   const state = { view: query.get('view') ?? '2d', F: true, B: true, pour: true, pkg: query.get('pkg') ?? 'ESP32-S3-WROOM-1', board: query.get('board') ?? 'main' };
-  const pcbUrl = (): string => (isB ? (state.board === 'flow' ? '/out/variantB/flow_pcb.json' : '/out/variantB/pcb.json') : '/out/stage3/pcb.json');
+  const pcbUrl = (): string => (isB ? (state.board === 'flow' ? '/out/variantB/flow_pcb.json' : '/out/variantB/pcb.json') : isC ? '/out/variantC/pcb.json' : '/out/stage3/pcb.json');
   let vp: Viewport | null = null;
   let data: PcbJson | null = null;
   const info = el('div', { class: 'hint' });
@@ -148,7 +157,7 @@ export const mount = (root: HTMLElement, query: URLSearchParams): (() => void) =
     heading('基板情報'),
     info,
     heading('製造データ'),
-    ...(isB ? DOWNLOADS_B : DOWNLOADS).map(([t, href]) => el('div', {}, [el('a', { href, text: t, download: '' })])),
+    ...(isB ? DOWNLOADS_B : isC ? DOWNLOADS_C : DOWNLOADS).map(([t, href]) => el('div', {}, [el('a', { href, text: t, download: '' })])),
     el('p', { class: 'hint', text: '基板は npm run stage3 で自動配置・自動配線されます（配置 → ファンアウト → 2 層 A* → GND ベタ → DRC → Gerber）。' }),
   );
 

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { buildBoard3d } from '../pcb/board3d';
 import type { PcbDesign } from '../pcb/types';
-import { corelessMotorMesh, flowModuleMesh, lipoMesh, mat, propDiskMesh, propellerMesh } from '../parts3d/models';
-import { FRAME_DEFAULTS } from './design';
+import { brushlessMotorMesh, corelessMotorMesh, escBoardMesh, flowModuleMesh, gnssModuleMesh, lipoMesh, mat, propDiskMesh, propellerMesh } from '../parts3d/models';
+import { frameParams, motorHeights, noseGeometry } from './design';
 import type { AirframeInput } from './design';
 
 export interface AssemblyInfo {
@@ -43,12 +43,14 @@ export const buildAssembly = (frameGeo: THREE.BufferGeometry, pcb: PcbDesign | n
     board.position.z = a.pcbZ;
     g.add(board);
   }
-  const F = FRAME_DEFAULTS;
-  const motorTop = F.tubeHeight + F.motorAboveTube;
+  const F = frameParams(a.input);
+  const { motorBottom } = motorHeights(a.input);
+  const bolt = a.input.motorMount === 'bolt';
   const props: THREE.Object3D[] = [];
   for (const r of a.rotors) {
-    const m = corelessMotorMesh({ diameter: a.input.motor.diameter, length: a.input.motor.length, shaft: 1 });
-    m.position.set(r.x, r.y, motorTop - a.input.motor.length);
+    const dims = { diameter: a.input.motor.diameter, length: a.input.motor.length, shaft: bolt ? 1.5 : 1 };
+    const m = bolt ? brushlessMotorMesh(dims) : corelessMotorMesh(dims);
+    m.position.set(r.x, r.y, motorBottom);
     g.add(m);
     const p = propellerMesh(a.input.prop.diameter, a.input.prop.blades, r.spin);
     p.position.set(r.x, r.y, r.hubZ);
@@ -66,8 +68,24 @@ export const buildAssembly = (frameGeo: THREE.BufferGeometry, pcb: PcbDesign | n
   bat.rotation.z = Math.PI / 2; // length along y
   bat.position.set(a.battery.x, a.battery.y, -bh);
   g.add(bat);
-  const fx = a.input.pcb.w / 2 + (a.input.flow.noseLength ?? F.noseLength) / 2;
-  if (a.flowBoard) {
+  const fx = noseGeometry(a.input).cx;
+  if (a.input.esc) {
+    const [ew, eh, ez] = a.input.esc.size;
+    const esc = escBoardMesh(ew, eh, ez);
+    esc.position.set(0, 0, F.plateThickness + a.input.esc.postHeight);
+    esc.name = 'esc';
+    g.add(esc);
+  }
+  if (a.input.gnss) {
+    const [gw, gh, gz] = a.input.gnss.size;
+    const gn = gnssModuleMesh(gw, gh, gz);
+    gn.position.set(fx, 0, F.plateThickness);
+    gn.name = 'gnss';
+    g.add(gn);
+  }
+  if (!a.input.flow) {
+    // variant C: nothing under the nose
+  } else if (a.flowBoard) {
     // component side faces the floor: flip about x, back side against the plate bottom
     const sub = buildBoard3d(a.flowBoard, { tracks: false });
     if (a.flowLens) {

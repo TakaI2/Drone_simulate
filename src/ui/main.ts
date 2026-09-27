@@ -60,14 +60,14 @@ const show = (id: string, push = true): void => {
 };
 
 const variantSel = el('select', { title: '設計の版' });
-for (const [v, label] of [['A', '版 A（元設計）'], ['B', '版 B（センサ子基板＋GNSS 端子）']]) {
+for (const [v, label] of [['A', '版 A（元設計）'], ['B', '版 B（センサ子基板＋GNSS 端子）'], ['C', '版 C（屋外機：ブラシレス＋GNSS）']]) {
   const o = el('option', { value: v, text: label });
   if ((new URLSearchParams(location.search).get('variant') ?? 'A') === v) o.selected = true;
   variantSel.append(o);
 }
 variantSel.addEventListener('change', () => {
   const q = new URLSearchParams(location.search);
-  if (variantSel.value === 'B') q.set('variant', 'B');
+  if (variantSel.value !== 'A') q.set('variant', variantSel.value);
   else q.delete('variant');
   history.replaceState(null, '', `?${q.toString()}`);
   show(q.get('tab') ?? 'sim', false);

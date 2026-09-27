@@ -38,6 +38,7 @@
 - `npm test` — 単体テスト
 - `npm run typecheck` / `npm run lint`
 - `npm run stage1`〜`stage5` — 段階ゴールの判定、成果物とレポート（`reports/`）の生成
+- `npm run variantB` / `variantC` — 改良版 B（センサ子基板＋GNSS 端子）・改良版 C（屋外機）の判定とレポート
 
 ## Development Style
 

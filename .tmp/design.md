@@ -218,3 +218,23 @@ PWM デューティ u と電池端子電圧 V から実効電圧 Ve = u·V。
 - GNSS コネクタ: JST-SH 6（SM06B-SRSS-TB）、UART1 TX=IO47 / RX=IO48、I²C はセンサと共用（磁気センサ用）。
 - GNSS 誤差: `SensorSpec` に Gauss–Markov の位置・高度バイアス（σ, τ）を追加。屋外環境（±40 m）と 20 m 四方の経由点コースを追加。
 - フレーム: 機首付け根にケーブル通し穴（3×8 mm）。機首下面の質量・寸法は子基板の実値を使う。
+
+## 19. 改良版 C（屋外機）の設計
+
+- 版の切替: 版 A・B のコード経路と出力は変えない。成果物は `out/variantC/`、レポートは `reports/variantC.html`、`npm run variantC`。
+- 推進系: `propulsion-catalog.ts` に屋外用候補（`MOTORS_OUTDOOR`・`PROPS_OUTDOOR`・`BATTERIES_OUTDOOR`）を別配列で追加し、`searchPropulsion(n, mass, { catalog, rules, massModel })` で探索対象・基準・質量モデルを差し替える（既定値は版 A と同じ）。屋外質量モデルは ESC（4-in-1）、GNSS、XT30・配線、太い腕のフレームを含む。
+- 回路: `CircuitOptions` に `power: 'ldo-1s' | 'buck'` と `motorDrive: 'brushed' | 'esc'` を追加。
+  - 降圧 DC-DC: MP2359（SOT-23-6、4.5〜24 V、1.2 A、FB 0.81 V）＋ショットキー B5819W、10 µH、ブートストラップ 100 nF、FB 分圧 100 k/33 k（3.26 V）、EN は 100 k で VIN へ。
+  - ESC 端子: JST-SH 8（VBAT・GND・CURR・M1〜M4・TLM）。ESC 側の信号はすべてモジュールの同じ辺に集める：DShot（RMT、IO15〜IO18）、電流センサ ADC1（IO4）、テレメトリ UART（IO5、GPIO マトリクス）。
+  - 電池電圧: ESC ハーネスの VBAT を 100 k/10 k で分圧（4S 満充電でも ADC 上限未満）。
+  - 電気計算は `computeElectricalEsc`（降圧器の入力耐圧・電流・損失・出力電圧、分圧器、ESC 電流・耐圧余裕、I²C、LED、ネットリスト）。
+- 基板: 既存パイプラインで 36〜40 mm 角を試行。
+- フレーム（`designAirframe` の拡張、既定値は版 A と同じ形状）:
+  - `motorMount: 'bolt'`：腕先端に円形台座（M2 通し穴 4 個・シャフト逃げ穴）。モータ下面＝台座上面。
+  - `frame`：寸法の上書き（腕断面 7×5 mm、FC スタンドオフ 10 mm 等）。
+  - `esc`：プレート上の 20×20 mm 支柱に 4-in-1 ESC、その上に FC（スタック）。
+  - `gnss`：機首の上面に GNSS を平置き（プロペラ面より十分低く、ESC・FC の真上と FC 後端の無線アンテナを避ける。機首下は子基板の後付け用に空けておく）。
+  - `flow` は任意（版 C では未装着。機首は残し子基板を後付け可能）。
+- シミュレーション: `deriveDroneParams` にセンサ・ゲイン・名前の上書き。屋外用ゲイン（水平速度 5 m/s、傾き 35°）。
+- フェイルセーフ: `CourseSpec.linkLossAt`（通信断の発生時刻）と `failsafeAction: 'land' | 'rth'`。RTH は現在位置から RTH 高度へ上昇→ホーム上空へ直線移動→着陸。版 A・B のコースは未指定なので従来動作。
+- 屋外シナリオ（版 C）: 平均風 5 m/s（突風 σ1.5）ホバリング、40 m 四方 10 m 高度 4 m/s、平均風 8 m/s（突風 σ2）ホバリング、通信断 RTH。耐風限界は平均風 0〜12 m/s を掃引。

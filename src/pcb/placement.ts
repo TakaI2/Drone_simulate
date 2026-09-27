@@ -173,7 +173,7 @@ export const placeComponents = (circuit: Circuit, o: PlacementOptions): Placemen
     if (c.part.category === 'mosfet') return 0;
     if (c.group) return 1;
     if (c.part.category === 'imu') return 2;
-    if (c.part.category === 'ldo' || c.part.category === 'baro') return 3;
+    if (c.part.category === 'ldo' || c.part.category === 'dcdc' || c.part.category === 'baro') return 3;
     if (c.near) return 4;
     return 5;
   };

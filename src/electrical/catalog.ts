@@ -6,7 +6,7 @@
 
 export type PartCategory =
   | 'mcu' | 'imu' | 'baro' | 'ldo' | 'mosfet' | 'diode' | 'resistor' | 'capacitor' | 'led'
-  | 'connector' | 'switch' | 'module' | 'pad' | 'mechanical' | 'sensor';
+  | 'connector' | 'switch' | 'module' | 'pad' | 'mechanical' | 'sensor' | 'dcdc' | 'inductor';
 
 export interface Alternative {
   mpn: string;
@@ -167,10 +167,12 @@ export const PARTS: PartRecord[] = [
   chipR('4.7kΩ', '4K7'),
   chipR('10kΩ', '10K'),
   chipR('100kΩ', '100K'),
+  chipR('33kΩ', '33K'),
   chipC('C0603-100n', '100 nF', 'GRM188R71C104KA01D', 'C0603', '16 V', 'X7R', 0.005, [1.6, 0.8, 0.8]),
   chipC('C0603-1u', '1 µF', 'GRM188R61A105KA61D', 'C0603', '10 V', 'X5R', 0.005, [1.6, 0.8, 0.8]),
   chipC('C0805-10u', '10 µF', 'GRM21BR61A106KE19L', 'C0805', '10 V', 'X5R', 0.012, [2.0, 1.25, 1.25]),
   chipC('C1206-47u', '47 µF', 'GRM31CR60J476ME19L', 'C1206', '6.3 V', 'X5R', 0.03, [3.2, 1.6, 1.6]),
+  chipC('C0805-10u-25V', '10 µF', 'GRM21BR61E106KA73L', 'C0805', '25 V', 'X5R', 0.012, [2.0, 1.25, 1.25]),
   {
     id: 'LED0603-R',
     category: 'led',
@@ -338,6 +340,65 @@ export const PARTS: PartRecord[] = [
     ],
   },
 ];
+
+/** Variant C (outdoor): step-down regulator, inductor, ESC harness connector and the off-the-shelf ESC. */
+PARTS.push(
+  {
+    id: 'MP2359DJ',
+    category: 'dcdc',
+    name: '降圧 DC-DC コンバータ 1.2 A（4.5〜24 V 入力、非同期整流）',
+    mpn: 'MP2359DJ-LF-Z',
+    manufacturer: 'Monolithic Power Systems',
+    package: 'SOT-23-6',
+    specs: { 入力電圧: '4.5–24 V', 最大入力: 24, 最大出力電流: 1.2, 帰還電圧: 0.81, スイッチング周波数: 1.4e6, 最小入力: 4.5 },
+    massG: 0.015,
+    dims: [2.9, 1.6, 1.1],
+    alternatives: [
+      { mpn: 'MT2492 / SY8201 系', manufacturer: 'Aerosemi / Silergy', note: '同系統の SOT-23-6 降圧。ピン配置・帰還電圧が異なるので要確認' },
+      { mpn: 'TPS560430', manufacturer: 'Texas Instruments', note: '同期整流（外付けダイオード不要）。回路の変更が必要' },
+    ],
+    verify: 'ピン配置（1 BST / 2 GND / 3 FB / 4 EN / 5 IN / 6 SW）、EN 端子の最大定格、推奨インダクタ値',
+  },
+  {
+    id: 'L-10u-4020',
+    category: 'inductor',
+    name: 'SMD パワーインダクタ 10 µH（4×4×2 mm）',
+    mpn: 'SWPA4020S100MT',
+    manufacturer: 'Sunlord',
+    package: 'L-Power-4x4',
+    specs: { インダクタンス: '10 µH', 飽和電流: 1.0, 直流抵抗: '0.2 Ω' },
+    massG: 0.12,
+    dims: [4.0, 4.0, 2.0],
+    alternatives: [{ mpn: 'NR4018T100M', manufacturer: 'Taiyo Yuden', note: '同サイズ・同値' }, { mpn: 'LQH44PN100MP0', manufacturer: 'Murata', note: '同サイズ・同値' }],
+    verify: '飽和電流・直流抵抗（シリーズにより差がある）',
+  },
+  {
+    id: 'JST-SM08B-ESC',
+    category: 'connector',
+    name: '4-in-1 ESC ハーネス用 JST SH 8 ピン（SMD）',
+    mpn: 'SM08B-SRSS-TB(LF)(SN)',
+    manufacturer: 'J.S.T. Mfg.',
+    package: 'JST-SH-8-SMD',
+    specs: { ピッチ: '1.0 mm', 定格電流: 1 },
+    massG: 0.1,
+    dims: [10.0, 4.25, 2.9],
+    alternatives: [{ mpn: 'SH 互換 1.0 mm 8P', manufacturer: '各社', note: '互換品' }],
+    verify: 'ESC 付属ハーネスのピン順（製品ごとに異なる。VBAT/GND/CURR/M1–M4/TLM で配線）',
+  },
+  {
+    id: 'ESC-4in1-AM32',
+    category: 'module',
+    name: '4-in-1 ブラシレス ESC（AM32 系、20×20 mm 取付、2〜4S、各 12 A）',
+    mpn: 'AM32 対応 4-in-1 ESC 12A 20×20',
+    manufacturer: '各社（汎用品）',
+    package: 'external',
+    specs: { 連続電流: 12, 対応電圧: '2–4S', 最大電圧: 18, 信号: 'DShot300/600・PWM', 取付: '20×20 mm M2', 電流センサ: 'あり（アナログ）' },
+    massG: 4.5,
+    dims: [26, 26, 4],
+    alternatives: [{ mpn: 'BLHeli_S 系 4-in-1 12A', manufacturer: '各社', note: 'DShot 対応なら同様に使える（ファームは GPL/独自、流用はしない）' }],
+    verify: '連続電流・電流センサの出力倍率・ハーネスのピン順',
+  },
+);
 
 export const findPart = (id: string): PartRecord => {
   const p = PARTS.find((x) => x.id === id);

@@ -65,18 +65,58 @@ export const BATTERIES: BatterySpec[] = [
   },
 ];
 
+/**
+ * Outdoor (variant C) candidates: bolt-on brushless micro motors, 1.5 mm-bore props and 2S/3S packs.
+ * Kept separate so the Class A search (stage 2) is unchanged.
+ */
+export const MOTORS_OUTDOOR: MotorSpec[] = [
+  { id: 'bl-1103-8000', name: 'Brushless 1103 8000KV', kind: 'brushless', kv: 8000, resistance: 0.33, noLoadCurrent: 0.2, timeConstant: 0.02, maxCurrent: 4, mass: g(3.6), diameter: mm(13.8), length: mm(9.5), shaftDiameter: mm(1.5), mountSpacing: mm(6.6) },
+  { id: 'bl-1204-5000', name: 'Brushless 1204 5000KV', kind: 'brushless', kv: 5000, resistance: 0.2, noLoadCurrent: 0.3, timeConstant: 0.025, maxCurrent: 7, mass: g(6.5), diameter: mm(15.5), length: mm(12), shaftDiameter: mm(1.5), mountSpacing: mm(9) },
+  { id: 'bl-1404-3800', name: 'Brushless 1404 3800KV', kind: 'brushless', kv: 3800, resistance: 0.18, noLoadCurrent: 0.35, timeConstant: 0.03, maxCurrent: 9, mass: g(9), diameter: mm(18), length: mm(13), shaftDiameter: mm(1.5), mountSpacing: mm(9) },
+  { id: 'bl-1404-4600', name: 'Brushless 1404 4600KV', kind: 'brushless', kv: 4600, resistance: 0.14, noLoadCurrent: 0.4, timeConstant: 0.03, maxCurrent: 10, mass: g(9), diameter: mm(18), length: mm(13), shaftDiameter: mm(1.5), mountSpacing: mm(9) },
+];
+
+export const PROPS_OUTDOOR: PropSpec[] = [
+  { id: 'prop-63-3b', name: '2.5 inch 3-blade (63mm)', diameter: mm(63), pitch: mm(38), blades: 3, ct: 0.12, cp: 0.065, mass: g(0.8), bore: mm(1.5) },
+  { id: 'prop-76-2b', name: '3 inch 2-blade (76mm, 3018)', diameter: mm(76), pitch: mm(46), blades: 2, ct: 0.11, cp: 0.055, mass: g(1.1), bore: mm(1.5) },
+  { id: 'prop-76-3b', name: '3 inch 3-blade (76mm, 3016)', diameter: mm(76), pitch: mm(40), blades: 3, ct: 0.13, cp: 0.07, mass: g(1.4), bore: mm(1.5) },
+  { id: 'prop-90-2b', name: '3.5 inch 2-blade (90mm)', diameter: mm(90), pitch: mm(50), blades: 2, ct: 0.11, cp: 0.055, mass: g(1.6), bore: mm(1.5) },
+];
+
+const lipoPack = (cells: number, mah: number, grams: number, r: number, cRate: number, l: number, w: number, h: number): BatterySpec => ({
+  id: `lipo-${cells}s-${mah}`,
+  name: `LiPo ${cells}S ${mah}mAh`,
+  cells,
+  capacityAh: mah / 1000,
+  internalResistance: r,
+  mass: g(grams),
+  cellVoltageMin: 3.3,
+  cellVoltageNominal: 3.7,
+  cellVoltageMax: 4.2,
+  maxDischargeC: cRate,
+  size: v3(mm(l), mm(w), mm(h)),
+  connector: 'XT30',
+});
+
+export const BATTERIES_OUTDOOR: BatterySpec[] = [
+  lipoPack(2, 300, 19, 0.08, 75, 45, 17, 13),
+  lipoPack(2, 450, 26, 0.07, 75, 57, 18, 14),
+  lipoPack(2, 550, 32, 0.06, 75, 60, 20, 15),
+  lipoPack(3, 450, 38, 0.1, 75, 57, 18, 20),
+];
+
 export const findMotor = (id: string): MotorSpec => {
-  const m = MOTORS.find((x) => x.id === id);
+  const m = [...MOTORS, ...MOTORS_OUTDOOR].find((x) => x.id === id);
   if (!m) throw new Error(`Unknown motor ${id}`);
   return m;
 };
 export const findProp = (id: string): PropSpec => {
-  const p = PROPS.find((x) => x.id === id);
+  const p = [...PROPS, ...PROPS_OUTDOOR].find((x) => x.id === id);
   if (!p) throw new Error(`Unknown prop ${id}`);
   return p;
 };
 export const findBattery = (id: string): BatterySpec => {
-  const b = BATTERIES.find((x) => x.id === id);
+  const b = [...BATTERIES, ...BATTERIES_OUTDOOR].find((x) => x.id === id);
   if (!b) throw new Error(`Unknown battery ${id}`);
   return b;
 };

@@ -17,11 +17,13 @@ export interface AirframeJson extends AssemblyInfo, AirframeLike {
   checks: Check[];
 }
 
-/** Output locations of the two design variants (A = original, B = sensor sub-board + GNSS port). */
+/** Output locations of the design variants (A = original, B = sensor sub-board + GNSS port, C = outdoor vehicle). */
 export const variantPaths = (variant: string | null): { frame: string; airframe: string; pcb: string; flowPcb: string | null } =>
   variant === 'B'
     ? { frame: '/out/variantB/frame.stl', airframe: '/out/variantB/airframe.json', pcb: '/out/variantB/pcb.json', flowPcb: '/out/variantB/flow_pcb.json' }
-    : { frame: '/out/stage4/frame.stl', airframe: '/out/stage4/airframe.json', pcb: '/out/stage3/pcb.json', flowPcb: null };
+    : variant === 'C'
+      ? { frame: '/out/variantC/frame.stl', airframe: '/out/variantC/airframe.json', pcb: '/out/variantC/pcb.json', flowPcb: null }
+      : { frame: '/out/stage4/frame.stl', airframe: '/out/stage4/airframe.json', pcb: '/out/stage3/pcb.json', flowPcb: null };
 
 export const loadAirframeAssets = async (variant: string | null = null): Promise<{ geo: THREE.BufferGeometry; info: AirframeJson; pcb: PcbDesign | null } | null> => {
   const paths = variantPaths(variant);
