@@ -167,7 +167,39 @@ npm run city       # 建物データの取得・変換、経路計画、飛行�
 - 「3D 都市モデル（Project PLATEAU）横浜市（2024 年度）」（国土交通省）を加工して作成
 - © OpenStreetMap contributors（ODbL）
 
-## 4. コマンドと成果物
+## 4. 予算（部品価格）
+
+```bash
+npm run budget     # reports/budget.html、out/budget/budget.csv
+```
+
+![予算レポート](img/budget-report.png)
+
+版 A・B・C の BOM と部品価格表から、3 種類の費用を計算します。
+
+| 費用 | 内容 |
+|---|---|
+| 1 機分の部品代 | 2 機目以降の材料費。基板の段取り費などの固定費は含まない |
+| 初回に必要な費用 | 基板の最小ロット（製造 5 枚・実装 2 枚）、実装費、電池 3 本、予備プロペラ、PLA 1 巻、送料、輸入消費税 |
+| 道具 | 充電器、書込み用の USB-シリアル変換とポゴピン治具、LiPo 保管袋 |
+
+**価格の出どころ**
+- 主要部品は、2026-09-28 に Web 検索で個別に確認した価格です。参照元と確認日を価格表に載せています。
+- 確認できなかった品目は、一般的な価格からの推定値です。レポートでは「推定」と表示します。
+- 為替（1 USD = 157 円）、送料、税率、購入数は `src/budget/prices.ts` の `BUDGET_SETTINGS` と `PCB_ORDER` で変えられます。
+- 価格を更新したら `npm run budget` で再計算します。
+
+**2026-09-28 時点の目安**
+
+| 版 | 1 機分 | 初回 | 道具 |
+|---|---|---|---|
+| A | 約 1.2 万円 | 約 3.7 万円 | 約 0.7 万円 |
+| B | 約 1.4 万円 | 約 4.4 万円 | 約 0.7 万円 |
+| C | 約 2.4 万円 | 約 5.2 万円 | 約 0.9 万円 |
+
+価格には幅があります（詳細はレポートを参照）。国内の通販で買うと、海外価格の 1.3〜2 倍程度になることが多いです。
+
+## 5. コマンドと成果物
 
 | コマンド | 内容 | 主な成果物 |
 |---|---|---|
@@ -177,6 +209,7 @@ npm run city       # 建物データの取得・変換、経路計画、飛行�
 | `npm run variantB` | 改良版 B | `out/variantB/`、`reports/variantB.html` |
 | `npm run variantC` | 改良版 C（屋外機） | `out/variantC/`、`reports/variantC.html` |
 | `npm run city` | 都市シミュレーション | `out/city/`、`reports/city.html` |
+| `npm run budget` | 予算（部品価格） | `out/budget/`、`reports/budget.html` |
 | `npm run report` | 総合レポート | `reports/index.html` |
 | `npm run manual` | このマニュアルのスクリーンショット | `docs/img/` |
 

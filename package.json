@@ -19,6 +19,7 @@
     "variantB": "tsx scripts/variant-b.ts",
     "variantC": "tsx scripts/variant-c.ts",
     "city": "tsx scripts/city.ts",
+    "budget": "tsx scripts/budget.ts",
     "manual": "tsx scripts/manual-shots.ts",
     "report": "tsx scripts/report-index.ts",
     "all": "npm run stage1 && npm run stage2 && npm run stage3 && npm run stage4 && npm run stage5 && npm run report"

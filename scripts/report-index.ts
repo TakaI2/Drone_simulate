@@ -71,7 +71,7 @@ const main = (): void => {
       },
       {
         title: '各段階のレポート',
-        html: `<ul>${all.map((s) => `<li><a href="stage${s.n}.html">段階${s.n}：${esc(s.title)}</a>（${s.goals.filter((g) => g.pass).length}/${s.goals.length} 合格）</li>`).join('')}${goalsB.length ? `<li><a href="variantB.html">改良版 B：センサ子基板＋GNSS 端子</a>（${goalsB.filter((g) => g.pass).length}/${goalsB.length} 合格）</li>` : ''}${goalsC.length ? `<li><a href="variantC.html">改良版 C：屋外飛行機</a>（${goalsC.filter((g) => g.pass).length}/${goalsC.length} 合格）</li>` : ''}${goalsY.length ? `<li><a href="city.html">都市シミュレーション：横浜・みなとみらい</a>（${goalsY.filter((g) => g.pass).length}/${goalsY.length} 合格）</li>` : ''}</ul>
+        html: `<ul>${all.map((s) => `<li><a href="stage${s.n}.html">段階${s.n}：${esc(s.title)}</a>（${s.goals.filter((g) => g.pass).length}/${s.goals.length} 合格）</li>`).join('')}${goalsB.length ? `<li><a href="variantB.html">改良版 B：センサ子基板＋GNSS 端子</a>（${goalsB.filter((g) => g.pass).length}/${goalsB.length} 合格）</li>` : ''}${goalsC.length ? `<li><a href="variantC.html">改良版 C：屋外飛行機</a>（${goalsC.filter((g) => g.pass).length}/${goalsC.length} 合格）</li>` : ''}${goalsY.length ? `<li><a href="city.html">都市シミュレーション：横浜・みなとみらい</a>（${goalsY.filter((g) => g.pass).length}/${goalsY.length} 合格）</li>` : ''}${existsSync('reports/budget.html') ? '<li><a href="budget.html">予算（部品価格・版 A/B/C）</a></li>' : ''}</ul>
 <p>操作方法は <code>docs/manual.md</code>（ユーザーマニュアル）を参照。</p>`,
       },
       {
@@ -83,6 +83,7 @@ npm run all          # 段階1〜5 のゴール判定・成果物・レポート
 npm run variantB     # 改良版 B（センサ子基板＋GNSS 端子）
 npm run variantC     # 改良版 C（屋外飛行機）
 npm run city         # 都市シミュレーション（横浜・みなとみらい、初回はデータを取得）
+npm run budget       # 予算（部品価格表から版 A/B/C の費用を計算）
 npm run manual       # マニュアル用スクリーンショット（docs/img）</pre>
 ${table(['成果物', '場所'], [
   ['回路図・ネットリスト・BOM', 'out/stage2/（schematic.svg、netlist.net、bom.csv）'],
