@@ -32,6 +32,8 @@ const TUNING = {
   biasWalk: 0.02,
   /** Tilt correction from the horizontal accel-bias estimate [1/s] (aided INS). */
   tiltFromBiasGain: 0.5,
+  /** Gyro-bias learning from the aided-INS tilt error [1/s^2]. */
+  gyroBiasFromTilt: 0.05,
 } as const;
 
 /**
@@ -118,7 +120,10 @@ export const createEstimator = (
       // (A gravity-only reference is unusable on multirotors: rotor drag puts horizontal force on the IMU.)
       const bx = kx.get().b, by = ky.get().b;
       const k = TUNING.tiltFromBiasGain;
-      corr = vAdd(corr, qRotateInv(q, v3((k * by) / gravity, (-k * bx) / gravity, 0)));
+      const tiltErr = qRotateInv(q, v3(by / gravity, -bx / gravity, 0));
+      corr = vAdd(corr, vScale(tiltErr, k));
+      // integral part: a persistent tilt correction means an uncompensated gyro bias
+      bias = vSub(bias, vScale(tiltErr, TUNING.gyroBiasFromTilt * dt));
       kx.shiftBias(-k * bx * dt);
       ky.shiftBias(-k * by * dt);
     }

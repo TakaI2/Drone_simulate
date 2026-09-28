@@ -9,12 +9,13 @@ import { astar, shortcutPath } from '../planning/astar';
 import { createPathFollower } from '../planning/follower';
 import type { PathFollower } from '../planning/follower';
 import { buildVoxelGrid } from '../planning/voxel';
-import { minObstacleDistance } from './collision';
+import { createObstacleIndex, minObstacleDistance } from './collision';
 import { createDynamics } from './dynamics';
 import type { DroneState } from './dynamics';
 import { createEstimator } from './estimator';
 import type { EstimatorMode, StateEstimate } from './estimator';
 import { createSensors } from './sensors';
+import { gnssQualityFrom } from './urban';
 import { createWind } from './wind';
 
 export type MissionPhase = 'arming' | 'takeoff' | 'mission' | 'hover' | 'rth' | 'land' | 'landed' | 'manual' | 'crashed';
@@ -96,7 +97,9 @@ export const createSimulation = (config: SimConfig): Simulation => {
   const ctrl = createController(params, env, ctrlModel.coeffs);
   if (!ctrl.allocator.controllable) throw new Error('ロータ配置が制御不能です（配分行列のランク不足）');
   const wind = createWind(env.wind, rng);
-  const sensors = createSensors(params.sensors, rng, config.idealSensors);
+  const sensors = createSensors(params.sensors, rng, config.idealSensors, env.gnssSky && params.sensors.posBiasStd ? gnssQualityFrom(env.gnssSky) : undefined);
+  // many obstacles (city blocks): nearest-obstacle queries through a 2D grid index
+  const index = course.obstacles.length > M.obstacleIndexThreshold ? createObstacleIndex(course.obstacles, M.obstacleIndexCell, M.obstacleIndexRange) : null;
   let s = dyn.initialState(course.start, config.initialYaw ?? 0);
   s = { ...s, soc: config.initialSoc ?? 1 };
   const est = createEstimator(config.estimator, params.sensors, env.gravity, s);
@@ -115,9 +118,9 @@ export const createSimulation = (config: SimConfig): Simulation => {
     const grid = buildVoxelGrid(course.obstacles, {
       min: env.boundsMin,
       max: env.boundsMax,
-      res: PLANNER_DEFAULTS.resolution,
-      inflate: params.collisionRadius + PLANNER_DEFAULTS.safetyMargin,
-      floor: Math.min(PLANNER_DEFAULTS.floor, course.cruiseAltitude),
+      res: course.planner?.resolution ?? PLANNER_DEFAULTS.resolution,
+      inflate: params.collisionRadius + (course.planner?.safetyMargin ?? PLANNER_DEFAULTS.safetyMargin),
+      floor: Math.min(course.planner?.floor ?? PLANNER_DEFAULTS.floor, course.cruiseAltitude),
       ceilingMargin: PLANNER_DEFAULTS.ceilingMargin,
     });
     const plan = astar(grid, takeoffPoint, goalAir);
@@ -279,7 +282,7 @@ export const createSimulation = (config: SimConfig): Simulation => {
 
   const tick = (): void => {
     if (finished) return;
-    const w = wind.step(dt);
+    const w = wind.step(dt, s.p.z);
     const res = dyn.step(s, u, w, dt);
     s = res.state;
     t += dt;
@@ -292,7 +295,7 @@ export const createSimulation = (config: SimConfig): Simulation => {
       crash(`地面に ${(-res.diag.impactSpeed).toFixed(2)} m/s で衝突`);
     const up = qRotate(s.q, v3(0, 0, 1));
     if (s.onGround && Math.acos(Math.min(1, up.z)) > M.crashTiltRad) crash('接地時に転倒');
-    const near = minObstacleDistance(s.p, course.obstacles);
+    const near = index ? index.nearest(s.p) : minObstacleDistance(s.p, course.obstacles);
     if (near.distance < params.collisionRadius) crash(`障害物 ${near.id} に接触`);
     const out = s.p.x < env.boundsMin.x || s.p.y < env.boundsMin.y || s.p.x > env.boundsMax.x || s.p.y > env.boundsMax.y || s.p.z > env.boundsMax.z;
     if (out) crash('飛行空間の外に出た');

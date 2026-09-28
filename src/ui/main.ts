@@ -37,6 +37,7 @@ const TABS: Array<{ id: string; label: string; mount: Mount }> = [
   { id: 'pcb', label: '3 部品・基板', mount: lazy(() => import('./pcb-view')) },
   { id: 'airframe', label: '4 機体', mount: lazy(() => import('./airframe-view')) },
   { id: 'assembly', label: '5 統合', mount: lazy(() => import('./assembly-view')) },
+  { id: 'city', label: '6 都市（横浜）', mount: lazy(() => import('./city-view')) },
 ];
 
 const app = document.getElementById('app') as HTMLElement;

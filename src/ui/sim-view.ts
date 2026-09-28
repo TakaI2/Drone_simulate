@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { v3 } from '../core/math';
 import type { Vec3 } from '../core/math';
 import { COURSE_PRESETS, ENV_CALM } from '../core/presets';
-import type { CourseSpec, DroneParams, Obstacle } from '../core/types';
+import type { CourseSpec, DroneParams, EnvironmentSpec, Obstacle } from '../core/types';
 import { CHART_CSS, lineChartSvg } from '../report/chart';
 import { OUTDOOR_C_SCENARIOS, OUTDOOR_SCENARIOS, SCENARIOS, runScenario } from '../sim/scenarios';
 import type { ScenarioDef } from '../sim/scenarios';
@@ -20,8 +20,11 @@ export interface SimViewOptions {
   /** Optional detailed mesh factory (e.g. assembled design from stage 5). */
   meshFactory?: (droneKey: string, p: DroneParams) => DroneMesh | null;
   initialDrone?: string;
-  /** Extra goal scenarios listed in the side panel (variant C outdoor scenarios). */
+  /** Extra goal scenarios listed in the side panel (variant C outdoor scenarios, city). */
   scenarios?: ScenarioDef[];
+  /** Initial course / environment (city view). */
+  initialCourse?: CourseSpec;
+  initialEnv?: EnvironmentSpec;
 }
 
 const isVec = (x: Vec3 | null | undefined): x is Vec3 =>
@@ -34,6 +37,7 @@ export const parseCourse = (text: string, fallback: CourseSpec): CourseSpec => {
   const obstacles: Obstacle[] = (raw.obstacles ?? []).map((o, i) => {
     if (o.kind === 'box' && isVec(o.center) && isVec(o.size)) return { ...o, id: o.id ?? `box-${i}` };
     if (o.kind === 'cylinder' && isVec(o.base) && typeof o.radius === 'number' && typeof o.height === 'number') return { ...o, id: o.id ?? `cyl-${i}` };
+    if (o.kind === 'prism' && Array.isArray(o.footprint) && o.footprint.length >= 3 && o.footprint.every((q) => typeof q.x === 'number' && typeof q.y === 'number') && typeof o.zMin === 'number' && typeof o.zMax === 'number') return { ...o, id: o.id ?? `prism-${i}` };
     throw new Error(`obstacles[${i}] が不正です`);
   });
   return {
@@ -44,15 +48,18 @@ export const parseCourse = (text: string, fallback: CourseSpec): CourseSpec => {
   } as CourseSpec;
 };
 
+/** Select value of the course passed in by the caller (city view). */
+const INITIAL_COURSE_KEY = '__initial';
+
 export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void) => {
   const style = el('style', { text: CHART_CSS });
   document.head.append(style);
   const q = o.query;
   const state = {
     droneKey: q.get('drone') ?? o.initialDrone ?? Object.keys(o.drones)[0],
-    courseKey: q.get('course') ?? 'obstacles',
-    env: ENV_CALM(),
-    course: COURSE_PRESETS[q.get('course') ?? 'obstacles']?.() ?? COURSE_PRESETS.obstacles(),
+    courseKey: o.initialCourse ? INITIAL_COURSE_KEY : (q.get('course') ?? 'obstacles'),
+    env: o.initialEnv ?? ENV_CALM(),
+    course: o.initialCourse ?? COURSE_PRESETS[q.get('course') ?? 'obstacles']?.() ?? COURSE_PRESETS.obstacles(),
     estimator: 'filter' as 'filter' | 'truth',
     seed: 42,
     speed: 1,
@@ -236,13 +243,16 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
     numberField('平均風 北向き [m/s]', state.env.wind.mean.y, 0.5, (v) => { state.env = { ...state.env, wind: { ...state.env.wind, mean: v3(state.env.wind.mean.x, v, 0) } }; reset(); }),
     numberField('突風 σ [m/s]', state.env.wind.gustStd, 0.1, (v) => { state.env = { ...state.env, wind: { ...state.env.wind, gustStd: Math.max(0, v) } }; reset(); }),
     heading('コース'),
-    selectField('プリセット', Object.keys(COURSE_PRESETS).map((k) => ({ value: k, label: COURSE_PRESETS[k]().name })), state.courseKey, (v) => {
+    selectField('プリセット', [
+      ...(o.initialCourse ? [{ value: INITIAL_COURSE_KEY, label: o.initialCourse.name }] : []),
+      ...Object.keys(COURSE_PRESETS).map((k) => ({ value: k, label: COURSE_PRESETS[k]().name })),
+    ], state.courseKey, (v) => {
       state.courseKey = v;
-      state.course = COURSE_PRESETS[v]();
+      state.course = v === INITIAL_COURSE_KEY && o.initialCourse ? JSON.parse(JSON.stringify(o.initialCourse)) as CourseSpec : COURSE_PRESETS[v]();
       refreshCourseText();
       reset();
     }),
-    el('div', { class: 'hint', text: 'コース定義（JSON）を編集して「適用」。obstacles は box（center,size）と cylinder（base,radius,height）。' }),
+    el('div', { class: 'hint', text: 'コース定義（JSON）を編集して「適用」。obstacles は box（center,size）、cylinder（base,radius,height）、prism（footprint,zMin,zMax：建物）。' }),
     courseText,
     el('div', { class: 'btn-row' }, [
       button('適用', () => {
@@ -285,7 +295,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
 
   /** Run a goal scenario to completion and display the full trajectory. */
   const showScenario = (id: string): void => {
-    const def = [...SCENARIOS, ...OUTDOOR_SCENARIOS, ...OUTDOOR_C_SCENARIOS].find((d) => d.id === id);
+    const def = [...SCENARIOS, ...OUTDOOR_SCENARIOS, ...OUTDOOR_C_SCENARIOS, ...(o.scenarios ?? [])].find((d) => d.id === id);
     if (!def) return;
     state.env = def.env();
     state.course = def.course();
@@ -340,11 +350,18 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
       const smp = S.find((x) => x.t >= t) ?? S[S.length - 1];
       const p = smp ? smp.p : sim.state().p;
       spMarker.visible = false;
+      vp.camera.near = 0.005;
+      vp.camera.far = Math.max(500, 5 * Math.max(state.env.boundsMax.x - state.env.boundsMin.x, state.env.boundsMax.y - state.env.boundsMin.y));
+      vp.camera.updateProjectionMatrix();
       vp.lookAt(new THREE.Vector3(p.x, p.y, p.z), new THREE.Vector3(p.x - 0.28, p.y - 0.36, p.z + 0.2));
       return;
     }
     // camera distance follows the flying field size (indoor room = 12 m -> factor 1)
     const k = Math.max(1, Math.max(state.env.boundsMax.x - state.env.boundsMin.x, state.env.boundsMax.y - state.env.boundsMin.y) / 12);
+    // clip planes follow the field size too (city blocks are ~1 km across)
+    vp.camera.near = Math.min(0.05 * k, 1);
+    vp.camera.far = Math.max(500, 60 * k);
+    vp.camera.updateProjectionMatrix();
     if (view === 'top') vp.lookAt(new THREE.Vector3(cx, cy, 0), new THREE.Vector3(cx, cy - 0.01, 14 * k));
     else if (view === 'close') vp.lookAt(new THREE.Vector3(0, 0, 1), new THREE.Vector3(-1.6, -2.2, 1.8));
     else vp.lookAt(new THREE.Vector3(cx, cy, 0.8), new THREE.Vector3(cx - 7 * k, cy - 9 * k, 7 * k));

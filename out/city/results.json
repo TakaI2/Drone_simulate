@@ -1,0 +1,172 @@
+{
+  "goals": [
+    {
+      "id": "GY-1",
+      "title": "都市データ",
+      "criteria": "OSM・PLATEAU の建物を取得・変換、ランドマークタワーの高さが両データで 5 % 以内",
+      "result": "PLATEAU 126 棟・OSM 183 棟、ランドマーク PLATEAU 290.6 m / OSM 295.8 m",
+      "pass": true
+    },
+    {
+      "id": "GY-2",
+      "title": "建物群の経路計画",
+      "criteria": "高度 40 m 前後、建物までの距離 ≥ 安全余裕 − 格子 1 m",
+      "result": "経路 968 m、最小距離 8.91 m（余裕 8 m）、計画 1812 ms",
+      "pass": true
+    },
+    {
+      "id": "GY-3",
+      "title": "飛行（開けた空の GNSS）",
+      "criteria": "5 シードすべて衝突なし・着陸",
+      "result": "5/5",
+      "pass": true
+    },
+    {
+      "id": "GY-4",
+      "title": "飛行（都市の GNSS 劣化＋高さの風）",
+      "criteria": "安全余裕 8 m で 5 シードすべて衝突なし・着陸",
+      "result": "余裕 3 m（試行）4/5 → 余裕 8 m 5/5",
+      "pass": true
+    },
+    {
+      "id": "GY-5",
+      "title": "法規チェック",
+      "criteria": "高度・公園・DID 等の確認結果を出力",
+      "result": "飛行高度: ok、公園の上空: warn、人口集中地区: info、小型無人機等飛行禁止法: info、第三者・建物との距離: info",
+      "pass": true
+    },
+    {
+      "id": "GY-6",
+      "title": "UI 表示",
+      "criteria": "都市タブで都市と飛行を 3D 表示（スクリーンショット）",
+      "result": "3 枚撮影",
+      "pass": true
+    }
+  ],
+  "plans": [
+    {
+      "source": "plateau",
+      "margin": 3,
+      "length": 964.8334898994647,
+      "clearance": 3.3441022011598514,
+      "ms": 1490
+    },
+    {
+      "source": "plateau",
+      "margin": 8,
+      "length": 968.0348769601412,
+      "clearance": 8.913851235951528,
+      "ms": 1812
+    },
+    {
+      "source": "osm",
+      "margin": 8,
+      "length": 965.8827374636966,
+      "clearance": 3.6340420010097283,
+      "ms": 1480
+    }
+  ],
+  "flights": [
+    {
+      "id": "GY-3",
+      "pass": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "crashed": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": "GY-4a",
+      "pass": [
+        true,
+        false,
+        true,
+        true,
+        true
+      ],
+      "crashed": [
+        false,
+        true,
+        false,
+        false,
+        false
+      ]
+    },
+    {
+      "id": "GY-4",
+      "pass": [
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "crashed": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
+  "errBands": [
+    {
+      "band": "f ≥ 0.8（開けた空）",
+      "n": 17938,
+      "rms": 1.6777514844315133
+    },
+    {
+      "band": "0.6 ≤ f < 0.8",
+      "n": 2550,
+      "rms": 2.768162528241196
+    },
+    {
+      "band": "0.4 ≤ f < 0.6",
+      "n": 1067,
+      "rms": 4.013096154916267
+    },
+    {
+      "band": "f < 0.4（ビル谷間）",
+      "n": 0,
+      "rms": null
+    }
+  ],
+  "legal": [
+    {
+      "item": "飛行高度（地表から 150 m 未満）",
+      "status": "ok",
+      "detail": "経路の最高高度 53 m"
+    },
+    {
+      "item": "公園の上空（横浜市は市管理公園でのドローン飛行を原則禁止）",
+      "status": "warn",
+      "detail": "通過: グランモール公園 美術の広場、（名称なし）（公園管理者の許可が必要か要確認）"
+    },
+    {
+      "item": "人口集中地区（DID）",
+      "status": "info",
+      "detail": "みなとみらい地区は人口集中地区内（国勢調査の境界データで要確認）。本機 93.6 g は 100 g 未満のため航空法の許可対象外。ただし土地管理者・条例の確認は必要"
+    },
+    {
+      "item": "小型無人機等飛行禁止法（重要施設周辺）",
+      "status": "info",
+      "detail": "対象施設（警察庁・国交省の公示）の周辺 300 m に当たらないか飛行前に確認"
+    },
+    {
+      "item": "第三者・建物との距離",
+      "status": "info",
+      "detail": "建物からの最小距離は計画の安全余裕で確保。人の上空を飛ばない運用が前提"
+    }
+  ],
+  "buildingArea": 233565.09666840552
+}

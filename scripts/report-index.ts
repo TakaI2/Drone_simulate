@@ -37,6 +37,9 @@ const main = (): void => {
   if (goalsB.length) goals.push({ id: '改良版 B', title: 'センサ子基板＋GNSS 端子', criteria: goalsB.map((g) => g.id).join('、'), result: `${goalsB.filter((g) => g.pass).length} / ${goalsB.length} 合格`, pass: goalsB.every((g) => g.pass) });
   const fC = 'out/variantC/results.json';
   const goalsC: GoalRow[] = existsSync(fC) ? ((JSON.parse(readFileSync(fC, 'utf-8')) as { goals?: GoalRow[] }).goals ?? []) : [];
+  const fY = 'out/city/results.json';
+  const goalsY: GoalRow[] = existsSync(fY) ? ((JSON.parse(readFileSync(fY, 'utf-8')) as { goals?: GoalRow[] }).goals ?? []) : [];
+  if (goalsY.length) goals.push({ id: '都市（横浜）', title: 'みなとみらいの建物・GNSS 劣化・経路計画・飛行', criteria: goalsY.map((g) => g.id).join('、'), result: `${goalsY.filter((g) => g.pass).length} / ${goalsY.length} 合格`, pass: goalsY.every((g) => g.pass) });
   if (goalsC.length) goals.push({ id: '改良版 C', title: '屋外飛行機（ブラシレス 2S・GNSS・自動帰還）', criteria: goalsC.map((g) => g.id).join('、'), result: `${goalsC.filter((g) => g.pass).length} / ${goalsC.length} 合格`, pass: goalsC.every((g) => g.pass) });
   const html = renderReport({
     stage: 0,
@@ -68,7 +71,8 @@ const main = (): void => {
       },
       {
         title: '各段階のレポート',
-        html: `<ul>${all.map((s) => `<li><a href="stage${s.n}.html">段階${s.n}：${esc(s.title)}</a>（${s.goals.filter((g) => g.pass).length}/${s.goals.length} 合格）</li>`).join('')}${goalsB.length ? `<li><a href="variantB.html">改良版 B：センサ子基板＋GNSS 端子</a>（${goalsB.filter((g) => g.pass).length}/${goalsB.length} 合格）</li>` : ''}${goalsC.length ? `<li><a href="variantC.html">改良版 C：屋外飛行機</a>（${goalsC.filter((g) => g.pass).length}/${goalsC.length} 合格）</li>` : ''}</ul>`,
+        html: `<ul>${all.map((s) => `<li><a href="stage${s.n}.html">段階${s.n}：${esc(s.title)}</a>（${s.goals.filter((g) => g.pass).length}/${s.goals.length} 合格）</li>`).join('')}${goalsB.length ? `<li><a href="variantB.html">改良版 B：センサ子基板＋GNSS 端子</a>（${goalsB.filter((g) => g.pass).length}/${goalsB.length} 合格）</li>` : ''}${goalsC.length ? `<li><a href="variantC.html">改良版 C：屋外飛行機</a>（${goalsC.filter((g) => g.pass).length}/${goalsC.length} 合格）</li>` : ''}${goalsY.length ? `<li><a href="city.html">都市シミュレーション：横浜・みなとみらい</a>（${goalsY.filter((g) => g.pass).length}/${goalsY.length} 合格）</li>` : ''}</ul>
+<p>操作方法は <code>docs/manual.md</code>（ユーザーマニュアル）を参照。</p>`,
       },
       {
         title: '使い方',
@@ -77,7 +81,9 @@ npm run dev          # UI（http://localhost:5173）: 1 シミュレーション
 npm test             # 単体テスト
 npm run all          # 段階1〜5 のゴール判定・成果物・レポートを一括生成（Chrome を使って撮影）
 npm run variantB     # 改良版 B（センサ子基板＋GNSS 端子）
-npm run variantC     # 改良版 C（屋外飛行機）</pre>
+npm run variantC     # 改良版 C（屋外飛行機）
+npm run city         # 都市シミュレーション（横浜・みなとみらい、初回はデータを取得）
+npm run manual       # マニュアル用スクリーンショット（docs/img）</pre>
 ${table(['成果物', '場所'], [
   ['回路図・ネットリスト・BOM', 'out/stage2/（schematic.svg、netlist.net、bom.csv）'],
   ['基板製造データ（Gerber・ドリル）', 'out/stage3/drone_fc_gerber.zip'],

@@ -21,7 +21,10 @@ export interface SensorModel {
   read: (s: DroneState, gravity: number, dt: number) => SensorReadings;
 }
 
-export const createSensors = (spec: SensorSpec, rng: Rng, ideal = false): SensorModel => {
+/** Position-fix quality at a location: error scale and whether a fix is available (urban GNSS). */
+export type FixQuality = (p: Vec3) => { scale: number; fix: boolean };
+
+export const createSensors = (spec: SensorSpec, rng: Rng, ideal = false, quality?: FixQuality): SensorModel => {
   const gyroBias = v3();
   const accelBias = v3(spec.accelBias * rng.gauss(), spec.accelBias * rng.gauss(), spec.accelBias * rng.gauss());
   const drift = { x: 0, y: 0 };
@@ -61,7 +64,12 @@ export const createSensors = (spec: SensorSpec, rng: Rng, ideal = false): Sensor
     let yaw: number | null = null;
     if (posTimer >= 1 / spec.posRateHz - 1e-9) {
       posTimer = 0;
-      pos = { x: s.p.x + n(spec.posStd) + (ideal ? 0 : drift.x + gm.x), y: s.p.y + n(spec.posStd) + (ideal ? 0 : drift.y + gm.y) };
+      const q = quality && !ideal ? quality(s.p) : null;
+      if (!q) pos = { x: s.p.x + n(spec.posStd) + (ideal ? 0 : drift.x + gm.x), y: s.p.y + n(spec.posStd) + (ideal ? 0 : drift.y + gm.y) };
+      else {
+        const ex = n(spec.posStd) + gm.x, ey = n(spec.posStd) + gm.y;
+        pos = q.fix ? { x: s.p.x + q.scale * ex + drift.x, y: s.p.y + q.scale * ey + drift.y } : null;
+      }
       yaw = wrapPi(qToEuler(s.q).yaw + n(spec.yawStd));
     }
     let alt: number | null = null;

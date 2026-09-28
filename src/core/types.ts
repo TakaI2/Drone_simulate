@@ -156,6 +156,20 @@ export interface WindSpec {
   gustStd: number;
   /** Gust correlation time [s]. */
   gustTau: number;
+  /** Power-law height profile: mean and gusts scale with (z / refHeight)^exponent (mean given at refHeight). */
+  profile?: { refHeight: number; exponent: number; minHeight: number };
+}
+
+/** Open-sky fraction on a regular grid (x, y, height), used for urban GNSS degradation. */
+export interface SkyMap {
+  x0: number;
+  y0: number;
+  spacing: number;
+  nx: number;
+  ny: number;
+  heights: number[];
+  /** data[(k * ny + j) * nx + i] in 0..1. */
+  data: number[];
 }
 
 export interface EnvironmentSpec {
@@ -166,11 +180,15 @@ export interface EnvironmentSpec {
   /** Planner / world bounds. */
   boundsMin: Vec3;
   boundsMax: Vec3;
+  /** Urban GNSS degradation map (open-sky fraction); absent = open sky everywhere. */
+  gnssSky?: SkyMap;
 }
 
 export type Obstacle =
   | { kind: 'box'; id: string; center: Vec3; size: Vec3 }
-  | { kind: 'cylinder'; id: string; base: Vec3; radius: number; height: number };
+  | { kind: 'cylinder'; id: string; base: Vec3; radius: number; height: number }
+  /** Extruded footprint polygon (buildings); footprint in world x/y, vertical extent zMin..zMax. */
+  | { kind: 'prism'; id: string; footprint: Array<{ x: number; y: number }>; zMin: number; zMax: number };
 
 export interface CourseSpec {
   name: string;
@@ -193,4 +211,6 @@ export interface CourseSpec {
   failsafeAction?: 'land' | 'rth';
   /** Return-to-home altitude [m] (default: cruise altitude). */
   rthAltitude?: number;
+  /** Planner overrides for large (city) courses. */
+  planner?: { resolution?: number; safetyMargin?: number; floor?: number };
 }

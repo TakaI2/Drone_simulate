@@ -33411,7 +33411,7 @@
       "drcViolations": 3,
       "tracks": 614,
       "vias": 185,
-      "timeMs": 5495,
+      "timeMs": 4389,
       "note": "IMU_CS: 未接続: U3.12 / BUCK_EN: 未接続: R3.2 / FB: 未接続: R1.2 / DRC unconnected 3"
     },
     {
@@ -33428,7 +33428,7 @@
       "drcViolations": 5,
       "tracks": 593,
       "vias": 182,
-      "timeMs": 5343,
+      "timeMs": 4333,
       "note": "SPI_SCK: 未接続: U3.13 / ESC_M4: 未接続: U2.11 / ESC_M2: 未接続: U2.9 / ESC_M1: 未接続: U2.8"
     },
     {
@@ -33450,7 +33450,7 @@
       "drcViolations": 4,
       "tracks": 532,
       "vias": 183,
-      "timeMs": 5896,
+      "timeMs": 5054,
       "note": "3V3: 未接続: U3.5 / BST: 未接続: C3.1 / TXD0: 未接続: J3.3 / ESC_TLM: 未接続: U2.5"
     },
     {
@@ -33476,7 +33476,7 @@
       "drcViolations": 3,
       "tracks": 651,
       "vias": 197,
-      "timeMs": 5411,
+      "timeMs": 4372,
       "note": "IMU_INT: 未接続: U3.4 / VBAT_SENSE: 未接続: R8.2, R9.1, C12.1 / EN: 未接続: R4.2 / DRC unconnected 3"
     },
     {
@@ -33489,7 +33489,7 @@
       "drcViolations": 4,
       "tracks": 599,
       "vias": 160,
-      "timeMs": 8439,
+      "timeMs": 7232,
       "note": "BUCK_EN: 未接続: R3.2 / BOOT: 未接続: J3.6 / EN: 未接続: J3.5 / GND: 未接続: U4.3"
     },
     {
@@ -33506,7 +33506,7 @@
       "drcViolations": 0,
       "tracks": 623,
       "vias": 159,
-      "timeMs": 5055,
+      "timeMs": 4103,
       "note": "成功"
     }
   ]

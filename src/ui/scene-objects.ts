@@ -8,6 +8,12 @@ export const obstacleMesh = (o: Obstacle): THREE.Mesh => {
   if (o.kind === 'box') {
     mesh = new THREE.Mesh(new THREE.BoxGeometry(o.size.x, o.size.y, o.size.z), mat);
     mesh.position.set(o.center.x, o.center.y, o.center.z);
+  } else if (o.kind === 'prism') {
+    const shape = new THREE.Shape(o.footprint.map((q) => new THREE.Vector2(q.x, q.y)));
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: o.zMax - o.zMin, bevelEnabled: false });
+    mat.color.set(0xb9b4a8);
+    mesh = new THREE.Mesh(geo, mat);
+    mesh.position.z = o.zMin;
   } else {
     mesh = new THREE.Mesh(new THREE.CylinderGeometry(o.radius, o.radius, o.height, 32), mat);
     mesh.rotation.x = Math.PI / 2;

@@ -289,8 +289,14 @@ export const MISSION_DEFAULTS = {
   cornerSpeedFactor: 0.35,
   maxTrackingError: 0.35,
   crashImpactSpeed: 2.0,
+  /** Use a 2D grid index for collision queries above this many obstacles; cell size / search range [m]. */
+  obstacleIndexThreshold: 50,
+  obstacleIndexCell: 20,
+  obstacleIndexRange: 40,
   /** Distance to the home point (estimate) at which RTH switches to landing [m]. */
   rthArriveTolerance: 1.0,
+  /** Parks within this horizontal distance of the route are listed as nearby [m]. */
+  parkWarnDistance: 30,
   crashTiltRad: (60 * Math.PI) / 180,
   logRateHz: 50,
 } as const;
@@ -403,3 +409,27 @@ export const COURSE_OUTDOOR_RTH = (): CourseSpec => ({
   failsafeAction: 'rth',
   rthAltitude: 12,
 });
+
+// ------------------------------------------------------------------ city simulation (Yokohama Minatomirai)
+
+/** Study area: square around the origin, PLATEAU 3rd-order meshes that cover it, data sources. */
+export const CITY_AREA_MINATOMIRAI = {
+  name: '横浜・みなとみらい',
+  origin: { lat: 35.4575, lon: 139.632 },
+  halfSize: 400,
+  meshes: ['53391540', '53391550'],
+  plateau: {
+    dataset: '3D 都市モデル（Project PLATEAU）横浜市（2024 年度）',
+    url: 'https://assets.cms.plateau.reearth.io/assets/04/96d45a-a30b-4c9f-88c0-c1323b5a0f86/14100_yokohama-shi_city_2024_citygml_2_op.zip',
+  },
+  overpass: 'https://overpass-api.de/api/interpreter',
+} as const;
+
+/** GNSS urban degradation (empirical): error scale s = 1 + gain·(1 − f), no fix below fMin (f = open-sky fraction). */
+export const GNSS_URBAN = { gain: 4, fMin: 0.25, elevationMask: 15, azimuths: 24, rayStep: 2, rayRange: 300, gridSpacing: 10, heights: [2, 10, 20, 40, 60, 90] } as const;
+
+/** Urban wind profile (power law, exponent for city centres) referenced to 10 m. */
+export const WIND_PROFILE_URBAN = { refHeight: 10, exponent: 0.27, minHeight: 2 } as const;
+
+/** City planning: 2 m voxels; clearance = vehicle radius + margin (margin covers GNSS error near buildings). */
+export const CITY_PLANNER = { resolution: 2, ceiling: 120, safetyMarginOpen: 3, safetyMarginUrban: 8 } as const;
