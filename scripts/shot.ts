@@ -14,7 +14,7 @@ const CHROME_CANDIDATES = [
 ].filter(Boolean);
 
 export interface Shooter {
-  shoot: (query: string, file: string, opts?: { width?: number; height?: number; selector?: string; timeoutMs?: number }) => Promise<void>;
+  shoot: (query: string, file: string, opts?: { width?: number; height?: number; selector?: string; timeoutMs?: number; waitMs?: number }) => Promise<void>;
   page: () => Page;
   close: () => Promise<void>;
 }
@@ -34,7 +34,7 @@ export const startShooter = async (): Promise<Shooter> => {
     await page.setViewportSize({ width: opts.width ?? 1500, height: opts.height ?? 900 });
     await page.goto(`http://localhost:${port}/?${query}`);
     await page.waitForSelector('body[data-ready="1"]', { timeout: opts.timeoutMs ?? 120000 });
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(opts.waitMs ?? 400);
     if (opts.selector) await page.locator(opts.selector).first().screenshot({ path: file });
     else await page.screenshot({ path: file });
   };

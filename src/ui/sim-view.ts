@@ -48,6 +48,11 @@ export const parseCourse = (text: string, fallback: CourseSpec): CourseSpec => {
   } as CourseSpec;
 };
 
+type CameraMode = 'free' | 'orbit' | 'chase' | 'top';
+
+/** Follow-camera tuning: distance [m], chase height ratio, smoothing rate [1/s]. */
+const CAMERA_FOLLOW = { defaultDistance: 4, chaseHeight: 0.35, topHeight: 2.5, smoothing: 4, minSpeedForHeading: 0.5 } as const;
+
 /** Select value of the course passed in by the caller (city view). */
 const INITIAL_COURSE_KEY = '__initial';
 
@@ -64,7 +69,11 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
     seed: 42,
     speed: 1,
     visualScale: Number(q.get('scale') ?? 3),
-    follow: false,
+    /** Camera mode: free overview, follow (orbit with mouse), chase (behind), top-down follow. */
+    cam: (q.get('cam') ?? 'free') as CameraMode,
+    followDist: Number(q.get('camDist') ?? CAMERA_FOLLOW.defaultDistance),
+    /** Replay time of a recorded scenario (null = not replaying). */
+    replayT: null as number | null,
     manual: false,
     running: false,
   };
@@ -113,6 +122,8 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
   const reset = (): void => {
     error = '';
     state.running = false;
+    state.replayT = null;
+    stopReplay();
     trail.clear();
     sampleIdx = 0;
     if (pathLine) vp.scene.remove(pathLine);
@@ -230,8 +241,77 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
   const runBtn = button('▶ 実行', () => {
     if (!sim) return;
     state.running = !state.running;
+    if (state.running) stopReplay();
     runBtn.textContent = state.running ? '⏸ 一時停止' : '▶ 実行';
   }, 'btn primary');
+  // ---------- follow camera ----------
+  const lastP = new THREE.Vector3();
+  const chaseDir = new THREE.Vector3(1, 0, 0);
+  const setCamMode = (mode: CameraMode): void => {
+    state.cam = mode;
+    vp.controls.enabled = mode === 'free' || mode === 'orbit';
+    if (mode === 'free' || !mesh) return;
+    const p = mesh.group.position;
+    const d = state.followDist;
+    // close-range clip planes: the vehicle is a few tenths of a metre across
+    vp.camera.near = 0.01;
+    vp.camera.far = Math.max(2000, 5 * Math.max(state.env.boundsMax.x - state.env.boundsMin.x, state.env.boundsMax.y - state.env.boundsMin.y));
+    vp.camera.updateProjectionMatrix();
+    spMarker.visible = true;
+    lastP.copy(p);
+    if (mode === 'orbit') vp.lookAt(p.clone(), new THREE.Vector3(p.x - 0.6 * d, p.y - 0.8 * d, p.z + 0.5 * d));
+  };
+  const updateFollowCamera = (dt: number): void => {
+    if (state.cam === 'free' || !mesh) return;
+    const p = mesh.group.position;
+    const d = state.followDist;
+    const moved = new THREE.Vector3().subVectors(p, lastP);
+    if (state.cam === 'orbit') {
+      // keep the user's orbit offset, translate with the vehicle
+      vp.camera.position.add(moved);
+      vp.controls.target.copy(p);
+    } else {
+      const speed = dt > 0 ? Math.hypot(moved.x, moved.y) / dt : 0;
+      if (speed > CAMERA_FOLLOW.minSpeedForHeading) chaseDir.lerp(new THREE.Vector3(moved.x, moved.y, 0).normalize(), Math.min(1, dt * CAMERA_FOLLOW.smoothing)).normalize();
+      
+      const want = state.cam === 'chase'
+        ? new THREE.Vector3(p.x - chaseDir.x * d, p.y - chaseDir.y * d, p.z + CAMERA_FOLLOW.chaseHeight * d)
+        : new THREE.Vector3(p.x, p.y - 0.01, p.z + CAMERA_FOLLOW.topHeight * d);
+      vp.camera.position.lerp(want, Math.min(1, dt * CAMERA_FOLLOW.smoothing));
+      vp.controls.target.copy(p);
+      vp.camera.lookAt(p);
+    }
+    lastP.copy(p);
+  };
+
+  // ---------- replay of a recorded (scenario) flight ----------
+  let replaying = false;
+  const stopReplay = (): void => {
+    replaying = false;
+    replayBtn.textContent = '▶ 記録を再生';
+  };
+  const replayBtn = button('▶ 記録を再生', () => {
+    if (!sim || sim.samples.length === 0) return;
+    if (replaying) {
+      stopReplay();
+      return;
+    }
+    state.running = false;
+    runBtn.textContent = '▶ 実行';
+    const T = sim.samples[sim.samples.length - 1].t;
+    if (state.replayT === null || state.replayT >= T) state.replayT = 0;
+    replaying = true;
+    replayBtn.textContent = '⏸ 再生を停止';
+  });
+  const replaySlider = el('input', { type: 'range', min: '0', max: '1000', value: '1000', title: '再生位置（記録済みの飛行）' });
+  replaySlider.style.width = '100%';
+  replaySlider.addEventListener('input', () => {
+    if (!sim || sim.samples.length === 0) return;
+    stopReplay();
+    state.replayT = (Number(replaySlider.value) / 1000) * sim.samples[sim.samples.length - 1].t;
+    poseAt(state.replayT);
+  });
+
   side.append(
     heading('機体'),
     selectField('プリセット', droneOptions, state.droneKey, (v) => { state.droneKey = v; reset(); }),
@@ -275,7 +355,15 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
     selectField('状態推定', [{ value: 'filter', label: 'センサ＋推定器' }, { value: 'truth', label: '真値（理想）' }], state.estimator, (v) => { state.estimator = v === 'truth' ? 'truth' : 'filter'; reset(); }),
     numberField('乱数シード', state.seed, 1, (v) => { state.seed = Math.round(v); reset(); }),
     selectField('再生速度', ['0.25', '0.5', '1', '2', '5'].map((x) => ({ value: x, label: `×${x}` })), '1', (v) => { state.speed = parseFloat(v); }),
-    checkField('カメラ追従', state.follow, (v) => { state.follow = v; }),
+    selectField('カメラ', [
+      { value: 'free', label: '全体（自由に操作）' },
+      { value: 'orbit', label: '機体を追従（マウスで回転・ズーム可）' },
+      { value: 'chase', label: '機体の後方から追従' },
+      { value: 'top', label: '機体の真上から追従' },
+    ], state.cam, (v) => setCamMode(v as CameraMode)),
+    numberField('追従距離 [m]', state.followDist, 0.5, (v) => { state.followDist = Math.max(0.3, v); setCamMode(state.cam); }),
+    el('div', { class: 'btn-row' }, [replayBtn]),
+    replaySlider,
     el('div', { class: 'btn-row' }, [runBtn, button('⟲ リセット', () => { reset(); runBtn.textContent = '▶ 実行'; })]),
     heading('手動飛行'),
     checkField('手動モード（高度維持＋角度）', state.manual, (v) => {
@@ -320,6 +408,13 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
   // ---------- loop ----------
   let chartTimer = 0;
   vp.onFrame((dt) => {
+    if (sim && replaying && state.replayT !== null && sim.samples.length) {
+      const T = sim.samples[sim.samples.length - 1].t;
+      state.replayT = Math.min(T, state.replayT + dt * state.speed);
+      poseAt(state.replayT);
+      replaySlider.value = String(Math.round((state.replayT / T) * 1000));
+      if (state.replayT >= T) stopReplay();
+    }
     if (sim && state.running && !sim.finished()) {
       if (state.manual) sim.setManual(manualInput());
       sim.advance(dt * state.speed);
@@ -333,10 +428,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
       updateOverlay();
     }
     if (sim && mesh) mesh.update(sim.state().rotorSpeed, dt * state.speed);
-    if (state.follow && mesh) {
-      const target = mesh.group.position;
-      vp.controls.target.lerp(target, 0.1);
-    }
+    updateFollowCamera(dt);
   });
 
   // ---------- camera presets ----------
@@ -369,6 +461,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
 
   reset();
   setCamera(q.get('view') ?? 'iso');
+  if (state.cam !== 'free') setCamMode(state.cam);
   /** Pose the vehicle at a logged time (for screenshots of the flight). */
   const poseAt = (t: number): void => {
     if (!sim || !mesh) return;
@@ -397,6 +490,7 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
     const at = q.get('at');
     if (at) poseAt(parseFloat(at));
     setCamera(q.get('view') ?? 'iso');
+    if (state.cam !== 'free') setCamMode(state.cam);
     markReady();
   } else if (q.get('autorun')) {
     (sim as Simulation | null)?.runToEnd(120);

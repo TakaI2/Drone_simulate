@@ -1,7 +1,7 @@
 /** Screenshots of the UI for the user manual (docs/manual.md → docs/img). */
 import { startShooter } from './shot';
 
-const SHOTS: Array<{ q: string; f: string; opts?: { width?: number; height?: number; timeoutMs?: number } }> = [
+const SHOTS: Array<{ q: string; f: string; opts?: { width?: number; height?: number; timeoutMs?: number; waitMs?: number } }> = [
   { q: 'tab=sim&course=obstacles&view=iso', f: 'ui-1-sim.png' },
   { q: 'tab=electrical', f: 'ui-2-electrical.png' },
   { q: 'tab=pcb&view=2d', f: 'ui-3-pcb.png' },
@@ -11,7 +11,8 @@ const SHOTS: Array<{ q: string; f: string; opts?: { width?: number; height?: num
   { q: 'tab=assembly&variant=C&scenario=GC-5b&view=top&scale=25', f: 'ui-variant-c-outdoor.png' },
   { q: 'tab=city', f: 'ui-6-city.png', opts: { timeoutMs: 300000 } },
   { q: 'tab=city&scenario=GY-4&view=iso&scale=40', f: 'ui-6-city-flight.png', opts: { timeoutMs: 300000 } },
-  { q: 'tab=city&scenario=GY-4&view=follow&at=150&scale=1', f: 'ui-6-city-follow.png', opts: { timeoutMs: 300000 } },
+  { q: 'tab=city&scenario=GY-4&at=150&cam=chase&scale=3', f: 'ui-6-city-chase.png', opts: { timeoutMs: 300000, waitMs: 2000 } },
+  { q: 'tab=city&scenario=GY-4&at=150&cam=top&camDist=6&scale=3', f: 'ui-6-city-top.png', opts: { timeoutMs: 300000, waitMs: 2000 } },
 ];
 
 const main = async (): Promise<void> => {
