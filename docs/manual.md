@@ -199,7 +199,23 @@ npm run budget     # reports/budget.html、out/budget/budget.csv
 
 価格には幅があります（詳細はレポートを参照）。国内の通販で買うと、海外価格の 1.3〜2 倍程度になることが多いです。
 
-## 5. コマンドと成果物
+## 5. 動画
+
+`docs/video/` に WebM 動画があります（ブラウザや Windows のメディアプレーヤーで再生できます）。`npm run videos` で撮り直せます（開発サーバは不要です。特定の動画だけなら `npm run videos -- city` のようにファイル名の一部を指定します）。
+
+| 動画 | 内容 |
+|---|---|
+| [indoor-chase.webm](video/indoor-chase.webm) | 屋内の障害物コース（版 A の完成機体、後方から追従） |
+| [outdoor-square-chase.webm](video/outdoor-square-chase.webm) | 屋外 40 m 四方・平均風 5 m/s（版 C、後方から追従、4 倍速） |
+| [city-chase.webm](video/city-chase.webm) | みなとみらい横断（版 C、後方から追従、5 倍速） |
+| [airframe-a-orbit.webm](video/airframe-a-orbit.webm) / [b](video/airframe-b-orbit.webm) / [c](video/airframe-c-orbit.webm) | 完成機体（版 A・B・C）を一周 |
+| [pcb-a-orbit.webm](video/pcb-a-orbit.webm) / [pcb-c-orbit.webm](video/pcb-c-orbit.webm) / [pcb-flow-orbit.webm](video/pcb-flow-orbit.webm) | 基板（版 A の FC、版 C の FC、版 B のセンサ子基板）を一周 |
+
+![都市の追従動画の 1 コマ](video/city-chase.png)
+
+動画は 3D 表示を 1 コマずつ描画して作るので、PC の速さに関係なくコマ落ちしません。エンコードには ffmpeg を使います。見つからない場合は、環境変数 `FFMPEG_PATH` で指定してください（Playwright に付属するものも自動で探します）。
+
+## 6. コマンドと成果物
 
 | コマンド | 内容 | 主な成果物 |
 |---|---|---|
@@ -212,5 +228,6 @@ npm run budget     # reports/budget.html、out/budget/budget.csv
 | `npm run budget` | 予算（部品価格） | `out/budget/`、`reports/budget.html` |
 | `npm run report` | 総合レポート | `reports/index.html` |
 | `npm run manual` | このマニュアルのスクリーンショット | `docs/img/` |
+| `npm run videos` | 追従視点の飛行動画、機体・基板の回転動画 | `docs/video/` |
 
 スクリーンショットの撮影には、インストール済みの Chrome（または Edge）を使います。見つからない場合は、環境変数 `CHROME_PATH` でパスを指定してください。

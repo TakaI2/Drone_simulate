@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { captureEnabled } from './capture';
+import type { CaptureWindow } from './capture';
 
 THREE.Object3D.DEFAULT_UP.set(0, 0, 1);
 
@@ -74,6 +76,25 @@ export const createViewport = (container: HTMLElement, o: ViewportOptions = {}):
     renderer.render(scene, camera);
   };
   loop();
+
+  if (captureEnabled()) {
+    (window as CaptureWindow).__ddsViewport = {
+      orbit: (az, el, dist) => {
+        const t = controls.target;
+        const d = dist ?? camera.position.distanceTo(t);
+        const a = (az * Math.PI) / 180, e = (el * Math.PI) / 180;
+        camera.position.set(t.x + d * Math.cos(e) * Math.cos(a), t.y + d * Math.cos(e) * Math.sin(a), t.z + d * Math.sin(e));
+        camera.lookAt(t);
+        controls.update();
+      },
+      distance: () => camera.position.distanceTo(controls.target),
+      frame: (quality = 0.9) => {
+        resize();
+        renderer.render(scene, camera);
+        return renderer.domElement.toDataURL('image/jpeg', quality);
+      },
+    };
+  }
 
   return {
     scene,

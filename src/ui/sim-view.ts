@@ -11,6 +11,8 @@ import type { Simulation } from '../sim/simulator';
 import { buildDroneMesh } from './drone-mesh';
 import type { DroneMesh } from './drone-mesh';
 import { buildCourseGroup, createTrail, polyline } from './scene-objects';
+import { captureEnabled } from './capture';
+import type { CaptureWindow } from './capture';
 import { createViewport } from './viewport';
 import { button, checkField, el, heading, markReady, numberField, selectField } from './widgets';
 
@@ -407,7 +409,25 @@ export const mountSimView = (root: HTMLElement, o: SimViewOptions): (() => void)
 
   // ---------- loop ----------
   let chartTimer = 0;
+  /** Capture scripts drive replay and camera frame by frame (the real-time loop stays idle). */
+  let externalClock = false;
+  if (captureEnabled()) {
+    (window as CaptureWindow).__ddsSim = {
+      duration: () => (sim && sim.samples.length ? sim.samples[sim.samples.length - 1].t : 0),
+      step: (t, dt) => {
+        externalClock = true;
+        poseAt(t);
+        if (sim && mesh) mesh.update(new Array<number>(8).fill(60), dt);
+        updateFollowCamera(dt);
+      },
+      setCamera: (mode, distance) => {
+        if (distance !== undefined) state.followDist = distance;
+        setCamMode(mode);
+      },
+    };
+  }
   vp.onFrame((dt) => {
+    if (externalClock) return;
     if (sim && replaying && state.replayT !== null && sim.samples.length) {
       const T = sim.samples[sim.samples.length - 1].t;
       state.replayT = Math.min(T, state.replayT + dt * state.speed);
