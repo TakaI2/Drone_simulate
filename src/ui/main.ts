@@ -81,5 +81,19 @@ for (const t of TABS) {
   b.addEventListener('click', () => show(t.id));
   nav.append(b);
 }
-document.getElementById('app-header')?.append(variantSel);
+const headerLinks = el('div', { class: 'header-links' });
+headerLinks.style.cssText = 'display:flex;gap:12px;margin-left:14px;font-size:12px;white-space:nowrap';
+for (const [label, href] of [
+  // the manual is rendered to HTML at build time; the dev server shows the Markdown source
+  ['マニュアル', import.meta.env.DEV ? '/docs/manual.md' : '/docs/manual.html'],
+  ['レポート', '/reports/index.html'],
+  ['注意・ライセンス', '/notice.html'],
+]) {
+  const a = el('a', { href, text: label });
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.style.color = '#c3c2b7';
+  headerLinks.append(a);
+}
+document.getElementById('app-header')?.append(variantSel, headerLinks);
 show(new URLSearchParams(location.search).get('tab') ?? 'sim', false);

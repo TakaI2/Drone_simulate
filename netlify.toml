@@ -1,0 +1,25 @@
+# Netlify: static site (Vite build + generated data/reports/docs copied by vite.config.ts)
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"
+
+# generated data: short cache so re-published designs show up quickly
+[[headers]]
+  for = "/out/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# hashed bundles
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

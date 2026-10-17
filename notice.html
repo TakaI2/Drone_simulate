@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>注意事項・ライセンス — Drone Design Studio</title>
+    <link rel="icon" href="data:," />
+    <style>
+      body { font-family: system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif; max-width: 860px; margin: 0 auto; padding: 24px 20px 60px; line-height: 1.75; color: #1d1d1b; background: #fcfcfb; }
+      h1 { font-size: 22px; } h2 { font-size: 17px; margin-top: 28px; border-bottom: 1px solid #e1e0d9; padding-bottom: 4px; }
+      a { color: #1f66c1; } .warn { background: #fff4e5; border: 1px solid #f0c27b; border-radius: 6px; padding: 12px 16px; }
+      code { background: #f0efe9; padding: 1px 4px; border-radius: 3px; }
+    </style>
+  </head>
+  <body>
+    <p><a href="/">← アプリへ戻る</a> ・ <a href="/docs/manual.html">マニュアル</a> ・ <a href="/reports/index.html">レポート</a></p>
+    <h1>注意事項・ライセンス</h1>
+
+    <div class="warn">
+      <p><b>このツールの結果は、シミュレーションと計算上の値です。</b>機体・基板・回路の安全性、性能、実際に飛ばせるかどうかを保証するものではありません。部品のランドパターンや定格には近似値を含みます。製作・発注の前に、必ず各部品のデータシートと実測で確認してください。</p>
+      <p><b>ドローンを飛ばすときは、航空法・小型無人機等飛行禁止法・電波法・自治体の条例・土地管理者の規則に従ってください。</b>100 g 未満の機体にも適用される規制があります。レポート内の「法規チェック」は参考情報であり、飛行の可否の判断ではありません。</p>
+      <p>リチウムポリマー電池とプロペラは、扱いを誤ると火災やけがの原因になります。</p>
+    </div>
+
+    <h2>ライセンス</h2>
+    <p>ソースコードは <a href="https://opensource.org/licenses/MIT">MIT License</a> で公開しています（Copyright (c) 2026 Takayuki Itou (TakaI2)）。</p>
+
+    <h2>データの出典</h2>
+    <ul>
+      <li>建物（都市シミュレーション）：「3D 都市モデル（Project PLATEAU）横浜市（2024 年度）」（国土交通省）を加工して作成</li>
+      <li>建物・公園（比較用）：© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>。派生データ <code>/out/city/buildings_osm.json</code> は <a href="https://opendatacommons.org/licenses/odbl/">ODbL 1.0</a> で提供します。</li>
+      <li>部品価格：各販売店の公開価格を個別に確認した参考値です（調査日・参照元は予算レポートに記載）。価格は変動します。</li>
+    </ul>
+
+    <h2>使用しているライブラリ</h2>
+    <p>three.js（MIT）、manifold-3d（Apache-2.0）ほか。GPL のソフトウェア（ArduPilot、Betaflight、AM32 など）は設計の参考にしただけで、コードは含んでいません。</p>
+  </body>
+</html>
