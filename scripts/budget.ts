@@ -127,7 +127,7 @@ const main = (): void => {
   for (const r of results)
     for (const [sec, ls] of [['per_vehicle', r.perVehicle], ['first_build', r.firstBuild], ['tools', r.tools]] as Array<[string, BudgetLine[]]>)
       for (const l of ls) csv.push([r.input.variant, sec, l.group, l.item, l.qty, l.unitUsd, l.totalUsd.toFixed(3), Math.round(l.totalUsd * JPY), l.basis, l.source].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(','));
-  writeText('out/budget/budget.csv', `﻿${csv.join('\r\n')}\r\n`);
+  writeText('out/budget/budget.csv', `\uFEFF${csv.join('\r\n')}\r\n`);
   for (const r of results) console.log(`[budget] ${r.input.variant}: 1 機 ${yenRange(r.totals.perVehicle)} / 初回 ${yenRange(r.totals.firstBuild)} / 道具 ${yenRange(r.totals.tools)}`);
   for (const g of goals) console.log(`  ${g.id} ${g.pass ? 'PASS' : 'FAIL'} ${g.result}`);
   if (!goals.every((g) => g.pass)) process.exitCode = 1;
